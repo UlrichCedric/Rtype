@@ -8,6 +8,7 @@
 #include "IComponent.hpp"
 #include "constants.hpp"
 #include "Entity.hpp"
+#include "../../Errors.hpp"
 
 #include "Components/Drawable.hpp"
 #include "Components/Health.hpp"
@@ -26,9 +27,9 @@ class Entity {
         _id = id;
     }
 
-    Entity(const Entity &e) {
+    Entity(Entity &e) {
         _id = e.getId();
-        _comps.clear()
+        _comps.clear();
         for (auto comp: e._comps) {
             _comps.push_back(comp);
         }
@@ -61,31 +62,33 @@ class Entity {
         for (auto c: intToCmps) {
             if (c.first == cmp) {
                 std::shared_ptr<IComponent> p = c.second();
-                if (p == nullptr || p.get() == nullptr) {
-                    std::cerr << "Error: couldn't create object" << std::endl;
+                if (p.get() == nullptr) {
+                    throw Error("Empty component list in addComponent");
                 }
-                _comps.push_back(std::move(p));
+                _comps.push_back(p);
                 return;
             }
         }
+        throw Error("Component not found in addComponent");
     }
 
     void addComponent(std::string name) {
         for (auto c: strToCmps) {
             if (c.first == name) {
                 std::shared_ptr<IComponent> p = c.second();
-                if (p == nullptr || p.get() == nullptr) {
-                    std::cerr << "Error: couldn't create object" << std::endl;
+                if (p.get() == nullptr) {
+                    throw Error("Empty component list in addComponent");
                 }
                 _comps.push_back(std::move(p));
                 return;
             }
         }
+        throw Error("Component not found in addComponent");
     }
 
     void removeComponent(int cmp) {
         if (!has(cmp)) {
-            std::cerr << "Error: couldn't find compoent number " << cmp << std::endl;
+            std::cerr << "Error: couldn't find component number " << cmp << std::endl;
             return;
         }
 
@@ -95,7 +98,6 @@ class Entity {
                 return;
             }
         }
-        std::cerr << "Error: couldn't find compoent number " << cmp << std::endl;
     }
 
     void removeComponent(std::string name) {
@@ -110,7 +112,6 @@ class Entity {
                 return;
             }
         }
-        std::cerr << "Error: couldn't find component " << name << std::endl;
     }
 
     std::shared_ptr<IComponent> getComponent(std::string name) {
@@ -121,7 +122,7 @@ class Entity {
                 return comp;
             }
         }
-        return nullptr;
+        throw Error("Couldn't find component");
     }
 
     std::shared_ptr<IComponent> getComponent(components c) {
@@ -135,7 +136,7 @@ class Entity {
         throw Error("Couldn't find component");
     }
 
-    ~Entity() { std::cout << "Destructing entity with id " << _id << std::endl; }
+    ~Entity() {  }
 
     std::list<std::shared_ptr<IComponent>> _comps;
 

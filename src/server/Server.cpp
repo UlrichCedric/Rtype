@@ -13,7 +13,7 @@ void Server::initEcs(void)
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    std::shared_ptr<Entity> e1 = std::move(_f.get()->createEntity("Background"));
+    std::shared_ptr<Entity> e1 = _f.get()->createEntity("Background");
     if (e1.get() != nullptr) {
         std::cout << "c'est nul" << std::endl;
     }

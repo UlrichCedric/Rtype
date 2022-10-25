@@ -14,6 +14,8 @@ class Position: public AComponent {
     public:
     Position(std::pair<int, int> pos): _x(pos.first), _y(pos.second) {  };
     Position(int x = 0, int y = 0): _x(x), _y(y) {  };
+    Position(Position &p): _x(p._x), _y(p._y) {  };
+
     std::string getName(void) { return "position"; }
     int getEnum(void) { return POSITION; };
     void setXPos(int x) { _x = x; };

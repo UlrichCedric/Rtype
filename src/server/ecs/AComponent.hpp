@@ -6,5 +6,6 @@
 class AComponent: public IComponent {
     public:
     AComponent() = default;
+    AComponent(AComponent &) = default;
     ~AComponent() = default;
 };

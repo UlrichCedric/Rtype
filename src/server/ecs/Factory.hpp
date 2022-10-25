@@ -75,8 +75,7 @@ class Factory {
                 return e;
             }
         }
-        std::cerr << "Error entity creation: " << name << " not found" << std::endl;
-        return nullptr;
+        throw Error("Entity not found");
     }
 
     std::shared_ptr<Entity> getEntityById(std::size_t id) {
@@ -89,7 +88,7 @@ class Factory {
                 return e;
             }
         }
-        return nullptr;
+        throw Error("Entity not found");
     }
 
     ~Factory() {  }

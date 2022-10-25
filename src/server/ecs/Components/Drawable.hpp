@@ -22,6 +22,14 @@ class Drawable: public AComponent {
         _path = path;
     }
 
+    Drawable(Drawable &d) {
+        _sizeX = d._sizeX;
+        _sizeY = d._sizeY;
+        _offsetX = d._offsetX;
+        _offsetY = d._offsetY;
+        _path = d._path;
+    }
+
     std::string getName(void) { return "drawable"; }
     int getEnum(void) { return DRAWABLE; };
     std::pair<int, int> getOffset(void) { return { _offsetX, _offsetY }; }

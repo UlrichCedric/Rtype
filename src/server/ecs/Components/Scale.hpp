@@ -6,6 +6,7 @@
 class Scale: public AComponent {
     public:
     Scale(float x = 1.0f, float y = 1.0f) {  }
+    Scale(Scale &s): _x(s._x), _y(s._y) {  }
     std::string getName(void) { return "scale"; }
     float getXScale(void) { return _x; }
     float getYScale(void) { return _y; }
