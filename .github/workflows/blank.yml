@@ -1,0 +1,70 @@
+name: Build Test on different os
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - '.github/workflows/cmake.yml'
+      - 'CMakeList.txt'
+      - 'CMakeOptions.txt'
+      - 'cmake/**'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'examples/**'
+      - '.github/workflows/cmake.yml'
+      - 'CMakeList.txt'
+      - 'CMakeOptions.txt'
+      - 'cmake/**'
+
+env:
+  BUILD_TYPE: Release
+
+permissions:
+  contents: read
+jobs:
+  build_windows:
+    name: Windows Build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Conan
+        run: pip install conan
+      - name: Update profile
+        run: conan profile new default --detect
+      - name: Start build
+        run : ./windows.bat
+
+  build_linux:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Conan
+        run : pip install conan
+      - name: Update profile
+        run: conan profile new default --detect
+      - name: Build
+        run: |
+          sudo apt-get clean
+          sudo apt-get autoclean
+          sudo rm -rf /var/lib/apt/lists/
+          sudo apt-get update -y -qq 
+          sudo apt-get install -y gcc-multilib 
+          sudo apt-get install -y --no-install-recommends libglfw3 libglfw3-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev
+          sudo apt install -y libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
+          sudo apt update
+          sudo apt install -y software-properties-common lsb-release
+          sudo apt clean all
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+          sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+          sudo apt update
+          sudo apt install kitware-archive-keyring
+          sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
+          sudo apt update -y
+          sudo apt install cmake -y
+          chmod 777 Linux
+          ./Linux

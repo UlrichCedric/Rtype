@@ -1,0 +1,20 @@
+------------                    -------------
+|          |        data        |           |
+|  CLIENT  |--->--->--->--->--->|  SERVEUR  |
+|          |                    |           |
+------------                    -------------
+     ^                                |
+     |                                |
+     |                                |
+     |                                v
+  [ASYNC]<-------------------------[ASYNC]
+ SEND DATA                       RECEIVE DATA
+ TO *SENDER*                     FROM *SENDER*
+
+
+                         ----> soit un boost::array vide
+data CLIENT--->SERVEUR --|
+                         ----> soit un boost::array d'une input
+
+
+data SERVEUR-->CLIENT ------> un boost::array des positions de tous les sprites (pour l'instant juste ça)

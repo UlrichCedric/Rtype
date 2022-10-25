@@ -1,5 +1,10 @@
 # Prerequisites
 *.d
+build/*
+_deps/*
+CMakeFiles/*
+notes
+setup
 
 # Compiled Object files
 *.slo
@@ -30,3 +35,19 @@
 *.exe
 *.out
 *.app
+
+./build/*
+.pdb
+.vscode/
+conanbuildinfo.txt
+conanbuildinfo.cmake
+conaninfo.txt
+conan_imports_manifest.txt
+conan.lock
+graph_info.json
+r-type_client
+r-type_server
+.vscode/
+.vscode/
+.vscode/settings.json
+rtype-0.1.1-Linux.deb

@@ -1,0 +1,142 @@
+Epitech Nancy                                                   M. Nowak
+                                                                M. Weber
+                                                              E. Koehler
+                                                                G. Paris
+                                                               C. Ulrich
+                                                                 Epitech
+                                                          Promotion 2025
+
+                            R-Type Protocols
+
+Preface
+
+    This protocol is the official written protocol of our R-TYPE project.
+    There is two different protocols inside the project: the TCP protocol
+    (used to connect and insure the connection between the new player and
+    the server) and the UDP protocol (used to transmit realtime 
+    information about the currently played game). This R-TYPE project is
+    a third year project from EPITECH.
+
+Table of Contents
+
+   1.   Introduction . . . . . . . . . . . . . . . . . . . . . . . . . 1
+   2.   R-Type TCP Protocol  . . . . . . . . . . . . . . . . . . . . . 1
+   3a.   Payload . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+   3.   R-Type UDP Protocol  . . . . . . . . . . . . . . . . . . . . . 2
+   3a.   Payload . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+
+
+1.  Introduction
+
+   The goal of the R-Type project is reproduce the the classic: 
+   R-Type game (1987). But, it needs to be a bit refreshed by a online
+   multiplayer system.
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in RFC 2119.
+
+2.  R-Type TCP Protocol
+
+    As I explained in the preface, all the client-server communications
+    before the game's launch are done by using this R-Type TCP Protocol.
+
+
+Epitech               R-TYPE ONLINE MULTIPLAYER                 [Page 1]
+
+RFC 0418                   R-Type Protocols               Promotion 2025
+
+
+    2a.  Payload
+
+        Every transmission done with the R-Type TCP Protocol MUST
+        transmit a payload containing this 3 datas:
+
+            ACTION ACTION_NAME;
+            int SIZE;
+            void *VALUE;
+
+        Where ACTION_NAME is an element of the ACTION enumeration
+        (described below) representing the action to do with the
+        payload, SIZE is the size (in bytes) of VALUE, and VALUE is the
+        data to be processed.
+        The ACTION enumeration:
+
+        enum ACTION {
+            CREATE,
+            JOIN,
+            DISCONNECT,
+            START,
+            DIRECTION
+         };
+
+        As I mentionned before, this enum is a set of action that can be
+        request by the client. The action :
+
+        - CREATE : used to create a lobby
+        
+        - JOIN : used to join a lobby
+        
+        - DISCONNECT : used to tell the server that the client is
+                       leaving
+        
+        - START : used to tell from the server to client that the game
+                  is starting
+        
+        - DIRECTION : not used in the tcp protocol
+
+        The client have to write ACTION_NAME, SIZE and VALUE in a row.
+        These data wil be readen by the server in a row too and thanks
+        to the SIZE, the server will know how many bytes he have to
+        read.
+
+Epitech               R-TYPE ONLINE MULTIPLAYER                 [Page 2]
+
+RFC 0418                   R-Type Protocols               Promotion 2025
+
+3.  R-Type UDP Protocol
+
+    Once the game is launched, the client-server communications are
+    done by using this R-Type UDP Protocol. The server will send
+    frame by frame to all clients.
+
+    3a. Payload
+
+        As the R-TYPE TCP protocol, the R-TYPE UDP protocol contain an
+        enum to list the ACTION to be made:
+
+        enum ACTION {
+            POSITION,
+            OK/KO
+        }
+
+        The POSITION is a struct of different data:
+
+        struct POSITION {
+            int x,
+            int y, 
+            std::size_t id
+        }
+
+        Where x and y is the position of the element to be display, and 
+        the id is used to track every element to display.
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epitech               R-TYPE ONLINE MULTIPLAYER                 [Page 3]
