@@ -16,6 +16,7 @@
 #include "Common.hpp"
 #include "ecs/Factory.hpp"
 
+// Server class
 class Server {
     public:
     Server(boost::asio::io_context& io_context)
