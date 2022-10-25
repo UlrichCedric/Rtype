@@ -8,7 +8,6 @@ jobs:
   build_windows:
     name: Windows Build
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Get Conan
@@ -63,7 +62,20 @@ jobs:
           chmod 777 ./Linux
           ./Linux
 
+  formatting-check:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run clang-format style check for C/C++/Protobuf programs.
+      uses: jidicula/clang-format-action@v4.9.0
+      with:
+        clang-format-version: '13'
+        check-path: 'src'
+        fallback-style: 'Mozilla' # optional
+        
   Push:
+      name: Push
       runs-on: ubuntu-latest
       container: epitechcontent/epitest-docker
       steps:
