@@ -4,6 +4,6 @@
 
 class ISystem {
     public:
-    virtual void run(void) = 0;
-    virtual ~ISystem() = default;
+    virtual void run(std::list<std::shared_ptr<Entity>> &) = 0;
+    virtual ~ISystem(void) = default;
 };

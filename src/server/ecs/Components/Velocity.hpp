@@ -21,9 +21,9 @@ class Velocity: public AComponent {
     int _y;
 };
 
-bool operator==(const Velocity& v1, const Velocity& v2) {
+inline bool operator==(const Velocity& v1, const Velocity& v2) {
     return v1.getXVelocity() == v2.getXVelocity() && v1.getYVelocity() == v2.getYVelocity();
 }
-bool operator!=(const Velocity& v1, const Velocity& v2) {
+inline bool operator!=(const Velocity& v1, const Velocity& v2) {
     return v1.getXVelocity() != v2.getXVelocity() || v1.getYVelocity() != v2.getYVelocity();
 }

@@ -38,9 +38,9 @@ class Position: public AComponent {
     int _y;
 };
 
-bool operator==(Position& p1, Position& p2) {
+inline bool operator==(Position& p1, Position& p2) {
     return p1.getXPos() == p2.getXPos() && p1.getYPos() == p2.getYPos();
 }
-bool operator!=(Position& p1, Position& p2) {
+inline bool operator!=(Position& p1, Position& p2) {
     return p1.getXPos() != p2.getXPos() || p1.getYPos() != p2.getYPos();
 }

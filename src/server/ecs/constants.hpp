@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <functional>
 
-const int comp_nb = 7;
+const int comp_nb = 9;
 
 typedef enum comp: int {
     DRAWABLE,
@@ -13,7 +13,9 @@ typedef enum comp: int {
     VELOCITY,
     POSITION,
     REPEATABLE,
-    SOUND
+    SOUND,
+    UUID,
+    SCALE
 } components;
 
 static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
@@ -24,5 +26,9 @@ static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
     std::make_pair<std::string, int>("position", POSITION),
     std::make_pair<std::string, int>("repeatable", REPEATABLE),
     std::make_pair<std::string, int>("sound", SOUND),
+    std::make_pair<std::string, int>("uuid", UUID),
+    std::make_pair<std::string, int>("scale", SCALE),
     std::make_pair<std::string, int>("NULL", -1)
 };
+
+inline bool betw(int a, int b, int c) { return a < b && b < c; }

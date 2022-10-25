@@ -38,7 +38,7 @@ class Drawable: public AComponent {
         _offsetY = offset.second;
     }
 
-    void setSprite(std::string path) { _path = path; }
+    void setSprite(std::string path = "EMPTY") { _path = path; }
 
     ~Drawable() {  };
 
@@ -47,5 +47,7 @@ class Drawable: public AComponent {
     int _offsetY;
     int _sizeX;
     int _sizeY;
+    int maxSizeX;
+    int maxSizeY;
     std::string _path;
 };

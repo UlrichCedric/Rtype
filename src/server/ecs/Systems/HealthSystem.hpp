@@ -5,12 +5,12 @@
 
 class HealthSystem: public ASystem {
     public:
-    HealthSystem(std::list<std::shared_ptr<Entity>> &list): ASystem(list) {  };
+    HealthSystem(void) {  };
 
-    void run(void) override {
-        for (auto element : _entities) {
+    void run(std::list<std::shared_ptr<Entity>> &list) override {
+        for (auto element : list) {
             if (element.get()->has("health")) {
-                Health *hp = element.get()->getComponent("health").get();
+                Health *hp = static_cast<Health *>(element.get()->getComponent("health").get());
                 if (hp->getHp() <= 0) {
                     element.get()->removeComponent(DRAWABLE);
                     return;

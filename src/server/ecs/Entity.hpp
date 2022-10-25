@@ -7,6 +7,7 @@
 
 #include "IComponent.hpp"
 #include "constants.hpp"
+#include "Entity.hpp"
 
 #include "Components/Drawable.hpp"
 #include "Components/Health.hpp"
@@ -15,10 +16,25 @@
 #include "Components/Repeatable.hpp"
 #include "Components/Movable.hpp"
 #include "Components/Sound.hpp"
+#include "Components/Scale.hpp"
+#include "Components/Uuid.hpp"
 
 class Entity {
     public:
-    Entity(size_t id = 0): _id(id) {  }
+    Entity(size_t id = 0) {
+        std::cout << "Entity constructor with id " << id << std::endl;
+        _id = id;
+    }
+
+    Entity(const Entity &e) {
+        _id = e.getId();
+        _comps.clear()
+        for (auto comp: e._comps) {
+            _comps.push_back(comp);
+        }
+        std::cout << "Entity constructor by copy with id " << _id << std::endl;
+    }
+
     size_t getId(void) { return _id; }
     void setId(std::size_t id) { _id = id; }
 
@@ -108,7 +124,7 @@ class Entity {
         return nullptr;
     }
 
-    std::shared_ptr<IComponent> getComponent(const int c) {
+    std::shared_ptr<IComponent> getComponent(components c) {
         for (auto comp: _comps) {
             auto co = comp.get();
 
@@ -116,14 +132,15 @@ class Entity {
                 return comp;
             }
         }
-        return nullptr;
+        throw Error("Couldn't find component");
     }
 
     ~Entity() { std::cout << "Destructing entity with id " << _id << std::endl; }
 
+    std::list<std::shared_ptr<IComponent>> _comps;
+
     private:
     size_t _id;
-    std::list<std::shared_ptr<IComponent>> _comps;
 
     const std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(void)>> strToCmps = {
         { "drawable", [&](void) { return std::make_shared<Drawable>(); } },
@@ -146,9 +163,9 @@ class Entity {
     };
 };
 
-bool operator==(Entity &ent1, Entity &ent2) { return ent1.getId() == ent2.getId(); }
-bool operator!=(Entity &ent1, Entity &ent2) { return ent1.getId() != ent2.getId(); }
-bool operator< (Entity &ent1, Entity &ent2) { return ent1.getId() < ent2.getId();  }
-bool operator> (Entity &ent1, Entity &ent2) { return ent1.getId() > ent2.getId();  }
-bool operator<=(Entity &ent1, Entity &ent2) { return ent1.getId() <= ent2.getId(); }
-bool operator>=(Entity &ent1, Entity &ent2) { return ent1.getId() >= ent2.getId(); }
+inline bool operator==(Entity &ent1, Entity &ent2) { return ent1.getId() == ent2.getId(); }
+inline bool operator!=(Entity &ent1, Entity &ent2) { return ent1.getId() != ent2.getId(); }
+inline bool operator< (Entity &ent1, Entity &ent2) { return ent1.getId() < ent2.getId();  }
+inline bool operator> (Entity &ent1, Entity &ent2) { return ent1.getId() > ent2.getId();  }
+inline bool operator<=(Entity &ent1, Entity &ent2) { return ent1.getId() <= ent2.getId(); }
+inline bool operator>=(Entity &ent1, Entity &ent2) { return ent1.getId() >= ent2.getId(); }

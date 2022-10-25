@@ -30,7 +30,8 @@ class Factory {
             string = string.substr(string.find(':', 0) + 1, string.length() - 1);
 
             std::istringstream stream(string);
-            std::shared_ptr<Entity> e = std::make_shared<Entity>();
+            Entity e;
+            std::cout << "creating entity with id -1 : " << e.getId() << std::endl;
 
             while (stream >> word) {
                 if (word.empty()) {
@@ -38,20 +39,25 @@ class Factory {
                 }
                 for (auto _str: strToInt) {
                     if (word == _str.first) {
-                        e.get()->addComponent(_str.second);
+                        e.addComponent(_str.second);
                         break;
                     }
                 }
             }
 
-            _customs.insert(std::make_pair(name, std::make_shared<Entity>(*e)));
+            _customs[name] = std::make_shared<Entity>(e);
         }
 
         for (auto entity: _customs) {
             for (int i = 0; i < comp_nb; ++i) {
-                auto comp = entity.second->getComponent(i).get();
-                if (comp == nullptr) {
-                    continue;
+                std::cout << "je get le component" << std::endl;
+                try {
+                    //TODO change this awful static cast
+                    auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
+                    std::cout << i << " : ";
+                    std::cout << comp->getName() << std::endl;
+                } catch (Error &e) {
+                    std::cerr << "tout cassé : " << e.what() << std::endl;
                 }
             }
         }
@@ -60,8 +66,26 @@ class Factory {
     std::shared_ptr<Entity> createEntity(std::string name) {
         for (auto custom: _customs) {
             if (custom.first == name) {
-                std::shared_ptr<Entity> e = std::make_shared<Entity>(*(custom.second));
+                std::cout << "Creating entity " << name << std::endl;
+                std::shared_ptr<Entity> e = std::make_shared<Entity>(*custom.second.get());
+                if (e == nullptr) {
+                    std::cout << "Failed to create entity " << name << std::endl;
+                }
                 e.get()->setId(_last_id);
+                return e;
+            }
+        }
+        std::cerr << "Error entity creation: " << name << " not found" << std::endl;
+        return nullptr;
+    }
+
+    std::shared_ptr<Entity> getEntityById(std::size_t id) {
+        for (auto custom: _customs) {
+            if (custom.second.get()->getId() == id) {
+                std::shared_ptr<Entity> e = std::make_shared<Entity>(*custom.second.get());
+                if (e == nullptr) {
+                    std::cout << "Failed to get entity by id: " << id << std::endl;
+                }
                 return e;
             }
         }

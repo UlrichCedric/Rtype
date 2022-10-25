@@ -21,8 +21,6 @@ class Client {
         }
         void sendData(enum Input action);
         void receiveData(boost::array<SpriteData, 16>& recv_buf);
-        void asyncReceiveData(void);
-        void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         boost::uuids::uuid getUuid(void);
     private:
         boost::asio::io_context _io_context;
@@ -31,5 +29,4 @@ class Client {
         std::string _ip;
         std::size_t _port;
         boost::uuids::uuid _uuid;
-        boost::array<SpriteData, 16> _recv_buf;
 };

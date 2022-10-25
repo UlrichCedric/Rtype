@@ -5,6 +5,8 @@
 ** Windows
 */
 
+#pragma once
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
@@ -20,25 +22,17 @@
 #include "Paralax.hpp"
 #include "Client.hpp"
 #include "Common.hpp"
-#include "Button.hpp"
-#include "Ennemy.hpp"
-#include "Health.hpp"
-#include "Shoot.hpp"
-#include "Player.hpp"
+#include "../server/ecs/Factory.hpp"
+#include "../server/ecs/Systems/HealthSystem.hpp"
+#include "../server/ecs/Systems/DrawSystem.hpp"
 
 namespace Game {
-    enum State {
-        MENU,
-        GAME,
-        PAUSE,
-        END,
-    };
     class Windows {
         public:
             Windows();
             void Loop(Client& client);
+            void Display();
             void Display_menu();
-            void Display_pause();
             void Events();
             void Events_game();
             void Events_pause();
@@ -48,19 +42,20 @@ namespace Game {
             ~Windows() {};
         private:
             sf::RenderWindow window;
+            bool inGame;
+            bool isIp;
+            bool inPause;
             std::string _ip;
             sf::Font font;
             int fps;
             Image img;
             Image background;
-            Player _player;
+            Image player;
             Music _music;
             Paralax paralax;
+            float playerX;
+            float playerY;
             enum Input _key_pressed;
-            enum State _state;
-            Menu::Button _button;
-            Ennemy _ennemy;
-            Text _text;
-            int _score;
+            std::unordered_map<std::size_t, Image> _sprites;
     };
 }

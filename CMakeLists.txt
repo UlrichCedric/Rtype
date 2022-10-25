@@ -6,39 +6,43 @@ include(build/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 set(CMAKE_BUILD_TYPE Release)
 
+if (MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 -D_WIN32_WINNT=0x0A00")
+else()
+  set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lstdc++fs -std=c++2a -pthread")
+  SET(CMAKE_CXX_FLAGS "-g")
+endif()
+
 find_package(Boost)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package(WIX)
 
 set(SRC_CLIENT src/client/main.cpp
-				src/client/Windows.cpp
-				src/client/Image.cpp
-				src/client/Music.cpp
-				src/client/Text.cpp
-				src/client/Config.cpp
-				src/client/Paralax.cpp
-				src/client/Ennemy.cpp
-				src/client/Client.cpp
-				src/client/Button.cpp
-				src/client/Health.cpp
-				src/client/Player.cpp
-				src/client/Shoot.cpp
-				src/client/Client.cpp
-				)
+	src/client/Windows.cpp
+	src/client/Image.cpp
+	src/client/Music.cpp
+	src/client/Text.cpp
+	src/client/Config.cpp
+	src/client/Paralax.cpp
+	src/client/Client.cpp
+)
 
-set(SRC_SERVER src/server/udp_server.cpp)
+set(SRC_SERVER
+	src/server/main.cpp
+	src/server/Server.cpp
+)
 
 INCLUDE_DIRECTORIES(
         "${CMAKE_CURRENT_SOURCE_DIR}/src/client/"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/server/"
-		"${CMAKE_CURRENT_SOURCE_DIR}/src/Network/"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/Systems"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/Components"
 )
 
 add_executable(r-type_client ${SRC_CLIENT})
 target_link_libraries(r-type_client CONAN_PKG::asio
-									CONAN_PKG::boost
-									CONAN_PKG::sfml
-									)
+	CONAN_PKG::boost
+	CONAN_PKG::sfml
+)
 
 target_include_directories(r-type_client PUBLIC
 			${CONAN_INCLUDE_DIRS_SFML}
@@ -57,40 +61,4 @@ target_include_directories(r-type_server PUBLIC
 
 SET_PROPERTY(TARGET r-type_client PROPERTY CXX_STANDARD 20)
 SET_PROPERTY(TARGET r-type_server PROPERTY CXX_STANDARD 20)
-
-if (MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 -D_WIN32_WINNT=0x0A00")
-	set(CPACK_GENERATOR "WIX")
-	 install(TARGETS r-type_client
-	 RUNTIME
-	 DESTINATION bin
-	 COMPONENT applications
-	 )
-   install(TARGETS r-type_server
-	RUNTIME
-	DESTINATION bin
-	COMPONENT applications
-	 )
-else()
-  	set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lstdc++fs -std=c++2a -pthread")
-	install(TARGETS r-type_client
-	  COMPONENT linapp
-	  RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-	  LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-	  DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-  	)
-	install(TARGETS r-type_server
-	  COMPONENT linapp
-	  RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-	  LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-	  DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Compilateur"
-  	)
-  	SET(CMAKE_CXX_FLAGS "-g")
-  	SET(CPACK_GENERATOR "DEB")
-	SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "KK") #required
-endif()
-
-INCLUDE(CPack)
 ADD_CUSTOM_COMMAND(TARGET r-type_client POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets/ $<TARGET_FILE_DIR:r-type_client>/assets/)
-
-

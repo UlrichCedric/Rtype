@@ -10,21 +10,30 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = MENU;
+        playerX = 0;
+        playerY = 0;
+        inGame = true;
+        inPause = false;
         fps = 60;
-        _score = 0;
-        _text = Text("assets/police.ttf");
-        _text.SetText("Score : 0");
-        _text.setPos(0, 0);
-        _text.setFontSize(50);
         img.setTexture(Config::ExecutablePath + "assets/background.jpg");
         background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
-        _music.isRepeatable(true);
-        _music.play();
+        player.setTexture(Config::ExecutablePath + "assets/player.png");
+        player.setScale(3.0, 3.0);
+        player.setPos(100, 100);
+        player.setRect(playerX, playerY, 33, 17);
+        // _music.isRepeatable(true);
+        // _music.play();
         _key_pressed = NONE;
     }
 
-    void Windows::Display_pause()
+    void Windows::Display()
+    {
+        window.clear();
+        window.draw(img.get_sprite());
+        window.display();
+    }
+
+    void Windows::Display_menu()
     {
         window.clear();
         window.draw(background.get_sprite());
@@ -34,7 +43,7 @@ namespace Game {
     void Windows::init()
     {
         try {
-            window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
+            window.create(sf::VideoMode(1280, 920, 32), "R-Type");
             window.setFramerateLimit(fps);
         } catch (std::exception &e) {
             throw WindowCreationError();
@@ -48,24 +57,8 @@ namespace Game {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            } if (event.type == sf::Event::MouseMoved) {
-                _button.IsHover(sf::Mouse::getPosition(window));
-		    } if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (_button.IsClicked(sf::Mouse::getPosition(window))) {
-                        _state = GAME;
-                    }
-                }
             }
         }
-    }
-
-    void Windows::Display_menu()
-    {
-        window.clear();
-        window.draw(background.get_sprite());
-        window.draw(_button._image.get_sprite());
-        window.display();
     }
 
     void Windows::handleKeyPressed(sf::Event& event)
@@ -94,7 +87,8 @@ namespace Game {
     {
         switch (event.key.code) {
             case sf::Keyboard::Escape:
-                _state = PAUSE;
+                inPause = true;
+                inGame = false;
                 break;
             case sf::Keyboard::Left:
                 _key_pressed == LEFT ? _key_pressed = NONE : false;
@@ -107,9 +101,6 @@ namespace Game {
                 break;
             case sf::Keyboard::Down:
                 _key_pressed == DOWN ? _key_pressed = NONE : false;
-                break;
-            case sf::Keyboard::Space:
-                _player.bullet_reset();
                 break;
             default: break;
         }
@@ -142,9 +133,10 @@ namespace Game {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-            if (event.type == sf::Event::KeyReleased) {
+            if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape) {
-                    _state = GAME;
+                    inGame = true;
+                    inPause = false;
                 }
             }
         }
@@ -152,59 +144,42 @@ namespace Game {
 
     void Windows::Loop(Client &client)
     {
-        client.sendData(NONE);
         while (window.isOpen()) {
-            if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
-            }
+            client.sendData(_key_pressed);
+
             boost::array<SpriteData, 16> recv_buf;
             client.receiveData(recv_buf);
+
             for (int i = 0; recv_buf[i].id != 0; i++) {
-                std::cout << "x: " << recv_buf[i].coords.first << " / y: " << recv_buf[i].coords.second << std::endl;
-                _player.setPos(recv_buf[i].coords.first, recv_buf[i].coords.second);
+                // std::cout << "id: " <<
+                //     recv_buf[i].id << "\t-> x: " <<
+                //     recv_buf[i].coords.first << "\t y: "<<
+                //     recv_buf[i].coords.second << std::endl;
+
+                /*
+                    Pour l'instant il n'y a que le sprite du joueur
+                */
+                playerX = recv_buf[i].coords.first;
+                playerY = recv_buf[i].coords.second;
+                std::cout << "x: " << playerX << " / y: " << playerY << std::endl;
+                player.setPos(playerX, playerY);
             }
-            switch (_state) {
-                case MENU:
-                    Events();
-                    Display_menu();
-                    break;
-                case GAME:
-                    Events_game();
-                    window.clear();
-                    paralax.update();
-                    paralax.draw(window);
-                    window.draw(_text._item);
-                    _player.draw(window);
-                    _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-                    _player._shoot.draw(window);
-                    _ennemy.run();
-                    _ennemy.draw(window);
-                    if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-                        _ennemy.respawn();
-                        _player.bullet_reset();
-                        _score += 1;
-                    }
-                    if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-                        _player.setLife(_player._health.getHealth() - 10);
-                        if (_player._health.getHealth() <= 0) {
-                            _state = MENU;
-                            _player.setLife(100);
-                        }
-                    }
-                    window.display();
-                    _score += 2;
-                    break;
-                case PAUSE:
-                    Events_pause();
-                    Display_pause();
-                    break;
-                case END:
-                    window.close();
-                    break;
-                default:
-                    break;
+            if (!inGame) {
+                Events();
+                Display_menu();
+            } else if (inGame) {
+                Events_game();
+                window.clear();
+                paralax.update();
+                paralax.draw(window);
+                window.draw(player.get_sprite());
+                window.display();
+            } else if (inPause) {
+                Display_menu();
+                Events_pause();
+            } else {
+                std::cout << "Error" << std::endl;
             }
-            _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
         }
         _music.stop();
     }
