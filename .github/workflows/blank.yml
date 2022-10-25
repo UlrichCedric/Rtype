@@ -52,9 +52,12 @@ jobs:
     name: MacOS Build
     runs-on: macos-latest
     steps:
+      - name: Before Install
+        run: |
+          brew update
       - uses: actions/checkout@v3
-      - name: Get Conan
-        run: pip install conan
+      - name: Install Conan
+        uses: turtlebrowser/get-conan@main
       - name: Update profile
         run: conan profile new default --detect
       - name: Build
@@ -62,18 +65,21 @@ jobs:
           chmod 777 ./Linux
           ./Linux
 
-  formatting-check:
-    name: Formatting Check
+  cpp-linter:
+    name: cpp-linter
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Run clang-format style check for C/C++/Protobuf programs.
-      uses: jidicula/clang-format-action@v4.9.0
-      with:
-        clang-format-version: '13'
-        check-path: 'src'
-        fallback-style: 'Mozilla' # optional
-        
+      - uses: actions/checkout@v3
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: file
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
+        run: echo "Some files failed the linting checks!"
+
   Push:
       name: Push
       runs-on: ubuntu-latest
