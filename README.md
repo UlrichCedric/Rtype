@@ -68,9 +68,12 @@ chmod 777 Linux
 
 ## :memo: License ##
 
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
+This project is under license from GNU. For more details, see the [LICENSE](LICENSE) file.
 
 
+Made with :heart: by <a href="https://github.com/{{UlrichCedric}" target="_blank">{{UlrichCedric}}</a>
+Made with :heart: by <a href="https://github.com/{{UlrichCedric}" target="_blank">{{UlrichCedric}}</a>
+Made with :heart: by <a href="https://github.com/{{UlrichCedric}" target="_blank">{{UlrichCedric}}</a>
 Made with :heart: by <a href="https://github.com/{{UlrichCedric}" target="_blank">{{UlrichCedric}}</a>
 
 &#xa0;
