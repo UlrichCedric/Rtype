@@ -48,22 +48,22 @@ jobs:
           chmod 777 Linux
           ./Linux
     
-  build_macos:
-    name: MacOS Build
-    runs-on: macos-latest
-    steps:
-      - name: Before Install
-        run: |
-          brew update
-      - uses: actions/checkout@v3
-      - name: Install Conan
-        uses: turtlebrowser/get-conan@main
-      - name: Update profile
-        run: conan profile new default --detect
-      - name: Build
-        run: |
-          chmod 777 ./Linux
-          ./Linux
+  # build_macos:
+  #   name: MacOS Build
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Before Install
+  #       run: |
+  #         brew update
+  #     - uses: actions/checkout@v3
+  #     - name: Install Conan
+  #       uses: turtlebrowser/get-conan@main
+  #     - name: Update profile
+  #       run: conan profile new default --detect
+  #     - name: Build
+  #       run: |
+  #         chmod 777 ./Linux
+  #         ./Linux
 
   cpp-linter:
     name: cpp-linter

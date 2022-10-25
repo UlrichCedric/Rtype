@@ -8,11 +8,8 @@ sfml:graphics=True
 sfml:window=True
 sfml:audio=True
 sfml:network=True
-*:shared=True
+*:shared=False
 boost:shared=True
 
 [generators]
 cmake
-
-[imports]
-bin, *.dll -> bin

@@ -4,11 +4,10 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build)
 
 include(build/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE REALASE)
 
 find_package(Boost)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-find_package(WIX)
 
 set(SRC_CLIENT src/client/main.cpp
 				src/client/Windows.cpp
@@ -61,6 +60,7 @@ SET_PROPERTY(TARGET r-type_server PROPERTY CXX_STANDARD 20)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 -D_WIN32_WINNT=0x0A00")
 	set(CPACK_GENERATOR "WIX")
+	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION bin)
 	 install(TARGETS r-type_client
 	 RUNTIME
 	 DESTINATION bin
