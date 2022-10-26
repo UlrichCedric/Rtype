@@ -31,7 +31,7 @@ class Factory {
 
             std::istringstream stream(string);
             Entity e;
-            std::cout << "creating entity with id -1 : " << e.getId() << std::endl;
+            std::cout << "Creating entity named : " << name << " and with id : "  << e.getId() << std::endl;
 
             while (stream >> word) {
                 if (word.empty()) {
@@ -50,12 +50,11 @@ class Factory {
 
         for (auto entity: _customs) {
             for (int i = 0; i < comp_nb; ++i) {
-                if (!entity.second.get()->has(i)) {
-                    continue;
+                if (entity.second.get()->has(i)) {
+                    //TODO change this awful static cast
+                    auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
+                    std::cout << "Entity " << entity.first << "has component : " << comp->getName() << std::endl;
                 }
-                //TODO change this awful static cast
-                auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
-                std::cout << i << " : " << comp->getName() << std::endl;
             }
         }
     }

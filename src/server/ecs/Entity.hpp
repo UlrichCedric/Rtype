@@ -52,7 +52,7 @@ class Entity {
 
     bool has(int co) {
         for (auto c: _comps) {
-            std::cout << co << std::endl;
+            // std::cout << co << std::endl;
             if (c->getEnum() == co) {
                 return true;
             }
