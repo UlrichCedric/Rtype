@@ -13,10 +13,14 @@ void Server::initEcs(void)
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    std::shared_ptr<Entity> e1 = _f.get()->createEntity("Background");
-    if (e1.get() != nullptr) {
-        std::cout << "c'est nul" << std::endl;
+    std::shared_ptr<Entity> e1;
+
+    try {
+        e1 = _f.get()->createEntity("Background");
+    } catch (Error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
+
     static_cast<Drawable *>(e1.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/back.png");
     // static_cast<Velocity *>(e1.get()->getComponent("Velocity").get())->setXVelocity(-1);
     // static_cast<Scale *>(e1.get()->getComponent("Scale").get())->setScale(5.0, 6.0);

@@ -50,15 +50,12 @@ class Factory {
 
         for (auto entity: _customs) {
             for (int i = 0; i < comp_nb; ++i) {
-                std::cout << "je get le component" << std::endl;
-                try {
-                    //TODO change this awful static cast
-                    auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
-                    std::cout << i << " : ";
-                    std::cout << comp->getName() << std::endl;
-                } catch (Error &e) {
-                    std::cerr << "Error : " << e.what() << std::endl;
+                if (!entity.second.get()->has(i)) {
+                    continue;
                 }
+                //TODO change this awful static cast
+                auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
+                std::cout << i << " : " << comp->getName() << std::endl;
             }
         }
     }

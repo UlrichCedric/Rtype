@@ -129,9 +129,7 @@ class Entity {
 
     std::shared_ptr<IComponent> getComponent(components c) {
         for (auto comp: _comps) {
-            auto co = comp.get();
-
-            if (co->getEnum() == c) {
+            if (comp.get()->getEnum() == c) {
                 return comp;
             }
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../AComponent.hpp"
+#include "../constants.hpp"
 #include <utility>
 
 class Scale: public AComponent {
