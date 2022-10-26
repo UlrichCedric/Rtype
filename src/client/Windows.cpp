@@ -150,6 +150,51 @@ namespace Game {
         }
     }
 
+    void Windows::handleMenu(void)
+    {
+        Events();
+        Display_menu();
+    }
+
+    void Windows::handleGame(void)
+    {
+        Events_game();
+        window.clear();
+        paralax.update();
+        paralax.draw(window);
+        window.draw(_text._item);
+        _player.draw(window);
+        _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
+        _player._shoot.draw(window);
+        _ennemy.run();
+        _ennemy.draw(window);
+        if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
+            _ennemy.respawn();
+            _player.bullet_reset();
+            _score += 1;
+        }
+        if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
+            _player.setLife(_player._health.getHealth() - 10);
+            if (_player._health.getHealth() <= 0) {
+                _state = MENU;
+                _player.setLife(100);
+            }
+        }
+        window.display();
+        _score += 2;
+    }
+
+    void Windows::handlePause(void)
+    {
+        Events_pause();
+        Display_pause();
+    }
+
+    void Windows::handleEnd(void)
+    {
+        window.close();
+    }
+
     void Windows::Loop(Client &client)
     {
         client.sendData(NONE);
@@ -164,45 +209,11 @@ namespace Game {
                 _player.setPos(recv_buf[i].coords.first, recv_buf[i].coords.second);
             }
             switch (_state) {
-                case MENU:
-                    Events();
-                    Display_menu();
-                    break;
-                case GAME:
-                    Events_game();
-                    window.clear();
-                    paralax.update();
-                    paralax.draw(window);
-                    window.draw(_text._item);
-                    _player.draw(window);
-                    _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-                    _player._shoot.draw(window);
-                    _ennemy.run();
-                    _ennemy.draw(window);
-                    if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-                        _ennemy.respawn();
-                        _player.bullet_reset();
-                        _score += 1;
-                    }
-                    if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-                        _player.setLife(_player._health.getHealth() - 10);
-                        if (_player._health.getHealth() <= 0) {
-                            _state = MENU;
-                            _player.setLife(100);
-                        }
-                    }
-                    window.display();
-                    _score += 2;
-                    break;
-                case PAUSE:
-                    Events_pause();
-                    Display_pause();
-                    break;
-                case END:
-                    window.close();
-                    break;
-                default:
-                    break;
+                case MENU: handleMenu(); break;
+                case GAME: handleGame(); break;
+                case PAUSE: handlePause(); break;
+                case END: handleEnd(); break;
+                default: break;
             }
             _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
         }

@@ -44,6 +44,10 @@ namespace Game {
             void Events_pause();
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
+            void handleMenu(void);
+            void handleGame(void);
+            void handlePause(void);
+            void handleEnd(void);
             void init();
             ~Windows() {};
         private:
