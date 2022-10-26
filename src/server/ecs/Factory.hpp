@@ -96,6 +96,7 @@ class Factory {
     ~Factory() {  }
 
     private:
+
     std::size_t _last_id;
     std::unordered_map<std::string, std::shared_ptr<Entity>> _customs;
 };

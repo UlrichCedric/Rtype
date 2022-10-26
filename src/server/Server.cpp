@@ -14,45 +14,48 @@ void Server::initEcs(void)
     _h = std::make_unique<HealthSystem>();
 
     std::shared_ptr<Entity> e1;
+    std::shared_ptr<Entity> e2;
+    std::shared_ptr<Entity> e3;
+    std::shared_ptr<Entity> e4;
+    std::shared_ptr<Entity> e5;
 
     try {
         e1 = _f.get()->createEntity("Background");
-    } catch (Error& e) {
+        static_cast<Drawable *>(e1.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/back.png");
+        static_cast<Velocity *>(e1.get()->getComponent(VELOCITY).get())->setXVelocity(-1);
+        static_cast<Scale *>(e1.get()->getComponent(SCALE).get())->setScale(5.0, 6.0);
+
+        e2 = _f.get()->createEntity("Background");
+        static_cast<Drawable *>(e2.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/planet.png");
+        static_cast<Velocity *>(e2.get()->getComponent(VELOCITY).get())->setXVelocity(-2);
+        static_cast<Position *>(e2.get()->getComponent(POSITION).get())->setPos(std::make_pair<int, int>(10, 10));
+        static_cast<Scale *>(e2.get()->getComponent(SCALE).get())->setScale(3.0, 4.0);
+
+        e3 = _f.get()->createEntity("Background");
+        static_cast<Drawable *>(e3.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/planet.png");
+        static_cast<Velocity *>(e3.get()->getComponent(VELOCITY).get())->setXVelocity(-4);
+        static_cast<Position *>(e3.get()->getComponent(POSITION).get())->setPos(std::make_pair<int, int>(10, 500));
+        static_cast<Scale *>(e3.get()->getComponent(SCALE).get())->setScale(3.0, 4.0);
+
+        e4 = _f.get()->createEntity("Background");
+        static_cast<Drawable *>(e4.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/stars.png");
+        static_cast<Velocity *>(e4.get()->getComponent(VELOCITY).get())->setXVelocity(-3);
+        static_cast<Scale *>(e4.get()->getComponent(SCALE).get())->setScale(5.0, 6.0);
+
+        e5 = _f.get()->createEntity("Background");
+        static_cast<Drawable *>(e5.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/stars.png");
+        static_cast<Velocity *>(e5.get()->getComponent(VELOCITY).get())->setXVelocity(-4);
+        static_cast<Position *>(e5.get()->getComponent(POSITION).get())->setPos(std::make_pair<int, int>(0, 250));
+        static_cast<Scale *>(e5.get()->getComponent(SCALE).get())->setScale(5.0, 6.0);
+
+        _entities.push_back(std::move(e1));
+        _entities.push_back(std::move(e2));
+        _entities.push_back(std::move(e3));
+        _entities.push_back(std::move(e4));
+        _entities.push_back(std::move(e5));
+    } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
-    static_cast<Drawable *>(e1.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/back.png");
-    // static_cast<Velocity *>(e1.get()->getComponent("Velocity").get())->setXVelocity(-1);
-    // static_cast<Scale *>(e1.get()->getComponent("Scale").get())->setScale(5.0, 6.0);
-
-    std::shared_ptr<Entity> e2 = _f.get()->createEntity("Background");
-    static_cast<Drawable *>(e2.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/planet.png");
-    // static_cast<Velocity *>(e2.get()->getComponent("Velocity").get())->setXVelocity(-2);
-    // static_cast<Position *>(e2.get()->getComponent("Position").get())->setPos(std::make_pair<int, int>(10, 10));
-    // static_cast<Scale *>(e2.get()->getComponent("Scale").get())->setScale(3.0, 4.0);
-
-    std::shared_ptr<Entity> e3 = _f.get()->createEntity("Background");
-    static_cast<Drawable *>(e3.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/planet.png");
-    // static_cast<Velocity *>(e3.get()->getComponent("Velocity").get())->setXVelocity(-4);
-    // static_cast<Position *>(e3.get()->getComponent("Position").get())->setPos(std::make_pair<int, int>(10, 500));
-    // static_cast<Scale *>(e3.get()->getComponent("Scale").get())->setScale(3.0, 4.0);
-
-    std::shared_ptr<Entity> e4 = _f.get()->createEntity("Background");
-    static_cast<Drawable *>(e4.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/stars.png");
-    // static_cast<Velocity *>(e4.get()->getComponent("Velocity").get())->setXVelocity(-3);
-    // static_cast<Scale *>(e4.get()->getComponent("Scale").get())->setScale(5.0, 6.0);
-
-    std::shared_ptr<Entity> e5 = _f.get()->createEntity("Background");
-    static_cast<Drawable *>(e5.get()->getComponent("Drawable").get())->setSprite("../../assets/paralax/stars.png");
-    // static_cast<Velocity *>(e5.get()->getComponent("Velocity").get())->setXVelocity(-4);
-    // static_cast<Position *>(e5.get()->getComponent("Position").get())->setPos(std::make_pair<int, int>(0, 250));
-    // static_cast<Scale *>(e5.get()->getComponent("Scale").get())->setScale(5.0, 6.0);
-
-    _entities.push_back(std::move(e1));
-    _entities.push_back(std::move(e2));
-    _entities.push_back(std::move(e3));
-    _entities.push_back(std::move(e4));
-    _entities.push_back(std::move(e5));
 }
 
 void Server::startReceive(void)
