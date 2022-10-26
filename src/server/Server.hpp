@@ -28,6 +28,7 @@ class Server {
     }
 
     private:
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     void startReceive(void);
     void sendSprites(void);
     void handleReceive(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
