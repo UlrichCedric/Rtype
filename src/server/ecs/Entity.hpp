@@ -21,7 +21,9 @@
 #include "Components/Uuid.hpp"
 
 class Entity {
+
     public:
+
     Entity(size_t id = 0) {
         std::cout << "Entity constructor with id " << id << std::endl;
         _id = id;
@@ -150,17 +152,21 @@ class Entity {
         { "position", [&](void) { return std::make_shared<Position>(); } },
         { "repeatable", [&](void) { return std::make_shared<Repeatable>(); } },
         { "movable", [&](void) { return std::make_shared<Movable>(); } },
-        { "sound", [&](void){ return std::make_shared<Sound>(); } }
+        { "sound", [&](void){ return std::make_shared<Sound>(); } },
+        { "uuid", [&](void){ return std::make_shared<Uuid>(); } },
+        { "scale", [&](void){ return std::make_shared<Scale>(); } }
     };
 
-    const std::unordered_map<int, std::function<std::shared_ptr<IComponent>(void)>> intToCmps = {
+    const std::unordered_map<components, std::function<std::shared_ptr<IComponent>(void)>> intToCmps = {
         { DRAWABLE, [&](void) { return std::make_shared<Drawable>(); } },
         { HEALTH, [&](void) { return std::make_shared<Health>(); } },
         { VELOCITY, [&](void) { return std::make_shared<Velocity>(); } },
         { POSITION, [&](void) { return std::make_shared<Position>(); } },
         { REPEATABLE, [&](void) { return std::make_shared<Repeatable>(); } },
         { MOVABLE, [&](void) { return std::make_shared<Movable>(); } },
-        { SOUND, [&](void) { return std::make_shared<Sound>(); } }
+        { SOUND, [&](void) { return std::make_shared<Sound>(); } },
+        { SCALE, [&](void) { return std::make_shared<Scale>(); } },
+        { UUID, [&](void) { return std::make_shared<Uuid>(); } }
     };
 };
 

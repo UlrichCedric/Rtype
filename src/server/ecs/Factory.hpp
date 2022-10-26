@@ -57,7 +57,7 @@ class Factory {
                     std::cout << i << " : ";
                     std::cout << comp->getName() << std::endl;
                 } catch (Error &e) {
-                    std::cerr << "tout cassé : " << e.what() << std::endl;
+                    std::cerr << "Error : " << e.what() << std::endl;
                 }
             }
         }
@@ -71,7 +71,11 @@ class Factory {
                 if (e == nullptr) {
                     std::cout << "Failed to create entity " << name << std::endl;
                 }
-                e.get()->setId(_last_id);
+                try {
+                    e.get()->setId(_last_id);
+                } catch (Error &e) {
+                    std::cerr << "Error : " << e.what() << std::endl;
+                }
                 return e;
             }
         }
