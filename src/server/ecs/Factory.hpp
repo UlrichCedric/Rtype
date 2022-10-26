@@ -31,7 +31,7 @@ class Factory {
 
             std::istringstream stream(string);
             Entity e;
-            std::cout << "creating entity with id -1 : " << e.getId() << std::endl;
+            std::cout << "creating entity with id : " << e.getId() << " and name : " << name << std::endl;
 
             while (stream >> word) {
                 if (word.empty()) {
@@ -48,14 +48,15 @@ class Factory {
             _customs[name] = std::make_shared<Entity>(e);
         }
 
-        for (auto entity: _customs) {
+        for (auto mapNode: _customs) {
+            std::cout << mapNode.first << std::endl;
             for (int i = 0; i < comp_nb; ++i) {
-                if (!entity.second.get()->has(i)) {
+                if (!mapNode.second.get()->has(i)) {
                     continue;
                 }
                 //TODO change this awful static cast
-                auto comp = entity.second.get()->getComponent(static_cast<components>(i)).get();
-                std::cout << i << " : " << comp->getName() << std::endl;
+                auto comp = mapNode.second.get()->getComponent(static_cast<components>(i)).get();
+                std::cout << "id " << i << " : " << comp->getName() << std::endl;
             }
         }
     }
@@ -69,8 +70,8 @@ class Factory {
                     std::cout << "Failed to create entity " << name << std::endl;
                 }
                 try {
-                    e.get()->setId(_last_id);
-                } catch (Error &e) {
+                    e.get()->setId(++_last_id);
+                } catch (std::exception e) {
                     std::cerr << "Error : " << e.what() << std::endl;
                 }
                 return e;
