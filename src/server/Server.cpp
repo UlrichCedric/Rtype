@@ -20,7 +20,7 @@ void Server::handleTimer(void) {
     std::cout << "handleTimer" << std::endl;
     sendSprites();
     // Wait for next timeout.
-    _timer.expires_from_now(boost::posix_time::milliseconds(17));
+    _timer.expires_from_now(boost::posix_time::milliseconds(10));
     _timer.async_wait(boost::bind(&Server::handleTimer, this));
 }
 

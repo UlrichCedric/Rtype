@@ -47,10 +47,10 @@ namespace Game {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close();
-            } if (event.type == sf::Event::MouseMoved) {
+                _state = END;
+            } else if (event.type == sf::Event::MouseMoved) {
                 _button.IsHover(sf::Mouse::getPosition(window));
-		    } if (event.type == sf::Event::MouseButtonPressed) {
+		    } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (_button.IsClicked(sf::Mouse::getPosition(window))) {
                         _state = GAME;
@@ -120,7 +120,7 @@ namespace Game {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close();
+                _state = END;
                 return;
             }
             switch (event.type) {
@@ -140,9 +140,8 @@ namespace Game {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-            if (event.type == sf::Event::KeyReleased) {
+                _state = END;
+            } else if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Escape) {
                     _state = GAME;
                 }
@@ -197,14 +196,15 @@ namespace Game {
 
     void Windows::Loop(Client &client)
     {
-        client.asyncSendData(NONE);
-        client.asyncReceiveData();
+        // client.asyncReceiveData();
         while (window.isOpen()) {
             if (_key_pressed != NONE) {
-                client.asyncSendData(_key_pressed);
+                client.sendData(_key_pressed);
             }
-            client.receiveData();
             _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+            if (_state == END) {
+                client.setCanReceiveData(false);
+            }
             switch (_state) {
                 case MENU: handleMenu(); break;
                 case GAME: handleGame(); break;
