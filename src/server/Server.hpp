@@ -41,7 +41,7 @@ class Server {
     std::size_t setNewSpriteId(std::size_t new_id);
     void initEcs(void);
 
-    size_t getEntityIdByUuid(Action action);
+    std::size_t getEntityIdByUuid(Action action);
 
     boost::asio::ip::udp::socket _socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;

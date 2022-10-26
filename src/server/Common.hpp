@@ -40,8 +40,8 @@ typedef struct Action {
  * @brief Struct to update a sprite
  *
  */
-typedef struct SpriteData {
-    size_t id;
+typedef struct SpriteData_s {
+    std::size_t id;
     std::pair<float, float> coords;
 } SpriteData;
 
@@ -54,7 +54,7 @@ typedef struct InitSpriteData_s {
      * @brief id of the sprite
      *
      */
-    size_t id;
+    std::size_t id;
 
     /**
      * @brief Path of the texture

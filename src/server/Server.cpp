@@ -145,7 +145,7 @@ void Server::findPlayerSprite(Action action)
     }
 }
 
-size_t Server::getEntityIdByUuid(Action action)
+std::size_t Server::getEntityIdByUuid(Action action)
 {
     std::size_t id_sprite_player = 0;
     Uuid *u;
@@ -164,7 +164,7 @@ size_t Server::getEntityIdByUuid(Action action)
 
 void Server::handleInput(Action action)
 {
-    size_t id = getEntityIdByUuid(action);
+    std::size_t id = getEntityIdByUuid(action);
 
     if (action.input != NONE) {
         if (id == -1) {
@@ -174,19 +174,20 @@ void Server::handleInput(Action action)
             /* shoot projectile */
             return;
         }
-        Entity *ptr = static_cast<Entity *>(_f.get()->getEntityById(id).get());
-        Velocity *vel = static_cast<Velocity *>(ptr->getComponent("velocity").get());
 
-        if (vel == nullptr) {
-            return;
-        }
+        try {
+            auto entity = dynamic_pointer_cast<Entity>(_f.get()->getEntityById(id));
+            auto vel = dynamic_pointer_cast<Velocity>(entity->getComponent(VELOCITY));
 
-        switch (action.input) {
-            case (UP): vel->setYVelocity(1); break;
-            case (DOWN): vel->setYVelocity(-1); break;
-            case (LEFT): vel->setXVelocity(-1); break;
-            case (RIGHT): vel->setXVelocity(1); break;
-            default: break;
+            switch (action.input) {
+                case (UP): vel->setYVelocity(1); break;
+                case (DOWN): vel->setYVelocity(-1); break;
+                case (LEFT): vel->setXVelocity(-1); break;
+                case (RIGHT): vel->setXVelocity(1); break;
+                default: break;
+            }
+        } catch (Error &e) {
+            std::cerr << "Error : " << e.what() << std::endl;
         }
     }
 }
