@@ -31,7 +31,7 @@ class Factory {
 
             std::istringstream stream(string);
             Entity e;
-            std::cout << "creating entity with id : " << e.getId() << " and name : " << name << std::endl;
+            std::cout << "Creating entity named : " << name << " and with id : "  << e.getId() << std::endl;
 
             while (stream >> word) {
                 if (word.empty()) {
