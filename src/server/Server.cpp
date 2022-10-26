@@ -24,6 +24,7 @@ void Server::initEcs(void)
         static_cast<Drawable *>(e1.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/back.png");
         static_cast<Velocity *>(e1.get()->getComponent(VELOCITY).get())->setXVelocity(-1);
         static_cast<Scale *>(e1.get()->getComponent(SCALE).get())->setScale(5.0, 6.0);
+        // faire des fonctions en C quand t'as pas besoin d'objets
 
         e2 = _f.get()->createEntity("Background");
         static_cast<Drawable *>(e2.get()->getComponent(DRAWABLE).get())->setSprite("../../assets/paralax/planet.png");
@@ -53,6 +54,8 @@ void Server::initEcs(void)
         _entities.push_back(std::move(e3));
         _entities.push_back(std::move(e4));
         _entities.push_back(std::move(e5));
+
+
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }

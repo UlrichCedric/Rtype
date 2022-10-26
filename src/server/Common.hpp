@@ -39,9 +39,16 @@ typedef struct Action {
 */
 
 typedef struct SpriteData {
+    size_t id;
     std::pair<float, float> coords;
-    std::size_t id;
 } SpriteData;
+
+typedef struct InitSpriteData_s {
+    size_t id;
+    std::string path;
+    std::pair<float, float> coords;
+    std::pair<float, float> scale;
+} InitSpriteData;
 
 /*
     List of sprites that can move:
