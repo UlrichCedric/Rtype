@@ -197,17 +197,14 @@ namespace Game {
 
     void Windows::Loop(Client &client)
     {
-        client.sendData(NONE);
+        client.asyncSendData(NONE);
+        client.asyncReceiveData();
         while (window.isOpen()) {
             if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
+                client.asyncSendData(_key_pressed);
             }
-            boost::array<SpriteData, 16> recv_buf;
-            client.receiveData(recv_buf);
-            for (int i = 0; recv_buf[i].id != 0; i++) {
-                std::cout << "x: " << recv_buf[i].coords.first << " / y: " << recv_buf[i].coords.second << std::endl;
-                _player.setPos(recv_buf[i].coords.first, recv_buf[i].coords.second);
-            }
+            client.receiveData();
+            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
             switch (_state) {
                 case MENU: handleMenu(); break;
                 case GAME: handleGame(); break;

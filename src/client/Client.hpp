@@ -14,16 +14,19 @@
 class Client {
     public:
         Client(std::string ip, std::size_t port)
-        : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001), _socket(_io_context)
+        : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001), _socket(_io_context), _player_pos({0, 0})
         {
             _socket.open(boost::asio::ip::udp::v4());
             _uuid = boost::uuids::random_generator()();
         }
         void sendData(enum Input action);
-        void receiveData(boost::array<SpriteData, 16>& recv_buf);
+        void asyncSendData(enum Input action);
+        void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
+        void receiveData(void);
         void asyncReceiveData(void);
-        void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
+        void handleReceiveData(boost::array<SpriteData, 16> recv_buf, const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         boost::uuids::uuid getUuid(void);
+        std::pair<float, float> getPlayerPos(void);
     private:
         boost::asio::io_context _io_context;
         boost::asio::ip::udp::endpoint _receiver_endpoint;
@@ -32,4 +35,5 @@ class Client {
         std::size_t _port;
         boost::uuids::uuid _uuid;
         boost::array<SpriteData, 16> _recv_buf;
+        std::pair<float, float> _player_pos;
 };
