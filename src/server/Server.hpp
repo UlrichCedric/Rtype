@@ -38,8 +38,9 @@ class Server {
     bool isNewUuid(boost::uuids::uuid uuid);
     void findPlayerSprite(Action action);
     void moveSprite(SpriteData& sprite, enum Input input);
-    std::size_t setNewSpriteId(std::size_t new_id);
     void initEcs(void);
+    SpriteData getPositionUpdate(std::shared_ptr<Entity> &);
+    InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &);
 
     std::size_t getEntityIdByUuid(Action action);
 
@@ -47,11 +48,11 @@ class Server {
     boost::asio::ip::udp::endpoint _remote_endpoint;
     boost::array<Action, 1> _recv_buf;
     std::vector<std::pair<boost::uuids::uuid, std::size_t>> _players_uuid;
-    std::vector<SpriteData> _sprites;
+    // std::vector<SpriteData> _sprites; // Trying to replace this vector with getSpriteData functions
     boost::asio::deadline_timer _timer;
 
     // List of entities
-    std::list<std::shared_ptr<Entity>> _entities;
+    std::vector<std::shared_ptr<Entity>> _entities;
 
     // Factory
     std::unique_ptr<Factory> _f;

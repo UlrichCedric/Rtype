@@ -61,7 +61,7 @@ class Factory {
         }
     }
 
-    std::shared_ptr<Entity> createEntity(std::string name) {
+    std::shared_ptr<Entity> createEntity(std::string name, std::size_t id = 0) {
         for (auto custom: _customs) {
             if (custom.first == name) {
                 std::cout << "Creating entity " << name << std::endl;
@@ -70,7 +70,7 @@ class Factory {
                     std::cout << "Failed to create entity " << name << std::endl;
                 }
                 try {
-                    e.get()->setId(++_last_id);
+                    e.get()->setId(id == 0 ? _last_id++ : id);
                 } catch (std::exception e) {
                     std::cerr << "Error : " << e.what() << std::endl;
                 }
@@ -92,6 +92,8 @@ class Factory {
         }
         throw Error("Entity not found");
     }
+
+    std::size_t getAvailableId(void) { return _last_id; }
 
     ~Factory() {  }
 

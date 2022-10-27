@@ -9,7 +9,7 @@ class DrawSystem: public ASystem {
     public:
     DrawSystem(void) {  }
 
-    void run(std::list<std::shared_ptr<Entity>> &list) override {
+    void run(std::vector<std::shared_ptr<Entity>> &list) override {
         if (list.empty()) {
             return;
         }

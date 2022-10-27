@@ -34,6 +34,7 @@ class Drawable: public AComponent {
     int getEnum(void) { return DRAWABLE; };
     std::pair<int, int> getOffset(void) { return { _offsetX, _offsetY }; }
     std::pair<int, int> getSize(void) { return { _sizeX, _sizeY }; }
+    std::pair<int, int> getMaxOffset(void) { return { _maxSizeX, _maxSizeY }; }
     std::string getPath(void) { return _path; }
 
     void setSize(std::pair<int, int> size) {
@@ -55,7 +56,7 @@ class Drawable: public AComponent {
     int _offsetY;
     int _sizeX;
     int _sizeY;
-    int maxSizeX;
-    int maxSizeY;
+    int _maxSizeX;
+    int _maxSizeY;
     std::string _path;
 };
