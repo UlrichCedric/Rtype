@@ -11,8 +11,10 @@
  * @id : health
  */
 class Health: public AComponent {
+
     public:
     Health(int hp = 100): _hp(hp) {  }
+    Health(Health &h) { _hp = h._hp; }
     std::string getName(void) { return "health"; }
     int getEnum(void) { return HEALTH; };
     void setHp(int hp) { _hp = hp; }
@@ -20,6 +22,7 @@ class Health: public AComponent {
     void takeDamage(int damage = 0) { _hp -= damage; }
 
     ~Health() {  }
+
     private:
     int _hp;
 };

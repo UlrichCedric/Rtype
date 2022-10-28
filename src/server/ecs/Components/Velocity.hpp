@@ -4,8 +4,12 @@
 #include "../constants.hpp"
 
 class Velocity: public AComponent {
+
     public:
+
     Velocity(int x = 0, int y = 0): _x(x), _y(y) {  }
+    Velocity(Velocity &v): _x(v._x), _y(v._y) {  }
+
     std::string getName(void) { return "velocity"; }
     int getEnum(void) { return VELOCITY; };
     void setVelocity(int x, int y) { _x = x; _y = y; }
@@ -14,16 +18,18 @@ class Velocity: public AComponent {
     int getXVelocity(void) const { return _x; }
     int getYVelocity(void) const { return _y; }
     std::pair<int, int> getVelocity(void) const { return std::pair<int, int>(_x, _y); }
+
     ~Velocity() {  }
 
     private:
+
     int _x;
     int _y;
 };
 
-bool operator==(const Velocity& v1, const Velocity& v2) {
+inline bool operator==(const Velocity& v1, const Velocity& v2) {
     return v1.getXVelocity() == v2.getXVelocity() && v1.getYVelocity() == v2.getYVelocity();
 }
-bool operator!=(const Velocity& v1, const Velocity& v2) {
+inline bool operator!=(const Velocity& v1, const Velocity& v2) {
     return v1.getXVelocity() != v2.getXVelocity() || v1.getYVelocity() != v2.getYVelocity();
 }

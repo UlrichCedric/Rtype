@@ -14,6 +14,8 @@ class Position: public AComponent {
     public:
     Position(std::pair<int, int> pos): _x(pos.first), _y(pos.second) {  };
     Position(int x = 0, int y = 0): _x(x), _y(y) {  };
+    Position(Position &p): _x(p._x), _y(p._y) {  };
+
     std::string getName(void) { return "position"; }
     int getEnum(void) { return POSITION; };
     void setXPos(int x) { _x = x; };
@@ -38,9 +40,9 @@ class Position: public AComponent {
     int _y;
 };
 
-bool operator==(Position& p1, Position& p2) {
+inline bool operator==(Position& p1, Position& p2) {
     return p1.getXPos() == p2.getXPos() && p1.getYPos() == p2.getYPos();
 }
-bool operator!=(Position& p1, Position& p2) {
+inline bool operator!=(Position& p1, Position& p2) {
     return p1.getXPos() != p2.getXPos() || p1.getYPos() != p2.getYPos();
 }

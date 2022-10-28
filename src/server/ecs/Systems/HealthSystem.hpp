@@ -3,14 +3,16 @@
 #include "../ASystem.hpp"
 #include "../Components/Health.hpp"
 
+#include <memory>
+
 class HealthSystem: public ASystem {
     public:
-    HealthSystem(std::list<std::shared_ptr<Entity>> &list): ASystem(list) {  };
+    HealthSystem(void) {  };
 
-    void run(void) override {
-        for (auto element : _entities) {
-            if (element.get()->has("health")) {
-                Health *hp = element.get()->getComponent("health").get();
+    void run(std::vector<std::shared_ptr<Entity>> &list) override {
+        for (auto element : list) {
+            if (element.get()->has(HEALTH)) {
+                auto hp = std::dynamic_pointer_cast<Health>(element.get()->getComponent(HEALTH));
                 if (hp->getHp() <= 0) {
                     element.get()->removeComponent(DRAWABLE);
                     return;

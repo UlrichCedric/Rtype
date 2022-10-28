@@ -11,7 +11,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include <boost/bind/bind.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp> // <iostream> for uuid
 

@@ -7,10 +7,7 @@
 
 class ASystem : public ISystem {
     public:
-    ASystem(std::list<std::shared_ptr<Entity>> &list): _entities(list) {  };
-    void run(void) = 0;
-    ~ASystem() = default;
-
-    protected:
-    std::list<std::shared_ptr<Entity>> &_entities;
+    ASystem(void) {  };
+    virtual void run(std::vector<std::shared_ptr<Entity>> &) = 0;
+    ~ASystem(void) {  };
 };

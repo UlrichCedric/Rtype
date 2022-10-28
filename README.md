@@ -20,7 +20,7 @@ pip install conan
 **Linux:**
 
 ```sh
-chmod 777 Linux
+chmod +x Linux
 ./Linux
 ```
 
@@ -32,13 +32,13 @@ chmod 777 Linux
 
 ## Usage Example
 
-**In Terminal**
+**In first terminal**
 
 ```sh
 ./r-type_server
 ```
 
-**In another terminal**
+**In second terminal**
 
 ```sh
 ./r-type_client
@@ -71,12 +71,12 @@ chmod 777 Linux
 This project is under license from GNU. For more details, see the [LICENSE](LICENSE) file.
 
 
-Made with :heart: by <a href="https://github.com/{{UlrichCedric}" target="_blank">{{Ulrich Cedric}}</a>  
-Made with :heart: by <a href="https://github.com/{{EvanKoe}" target="_blank">{Evan Koehler}}</a>  
-Made with :heart: by <a href="https://github.com/{guillaume-paris}" target="_blank">{{Guillaume Paris}}</a>  
-Made with :heart: by <a href="https://github.com/{MariusNWK}" target="_blank">{{MariusNWK}}</a>  
-Made with :heart: by <a href="https://github.com/{mweber42}" target="_blank">{{mweber42}}</a>  
-          
+Made with :heart: by <a href="https://github.com/UlrichCedric" target="_blank">{{Ulrich Cedric}}</a>  
+Made with :heart: by <a href="https://github.com/EvanKoe" target="_blank">{{Evan Koehler}}</a>  
+Made with :heart: by <a href="https://github.com/guillaume-paris" target="_blank">{{Guillaume Paris}}</a>  
+Made with :heart: by <a href="https://github.com/MariusNWK" target="_blank">{{MariusNWK}}</a>  
+Made with :heart: by <a href="https://github.com/mweber42" target="_blank">{{mweber42}}</a>  
+  
 &#xa0;
 
 <a href="#top">Back to top</a>

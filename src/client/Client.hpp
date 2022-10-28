@@ -25,13 +25,7 @@ class Client {
             _canReceiveData = true;
         }
         void sendData(enum Input action);
-        void asyncSendData(enum Input action);
-        void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
-        void receiveData(void);
-        void asyncReceiveData(void);
-        void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
-        void handleThread(void);
-        void setCanReceiveData(bool canReceiveData);
+        void receiveData(boost::array<SpriteData, 16>& recv_buf);
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
     private:
