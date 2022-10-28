@@ -47,7 +47,7 @@ class Server {
 
     boost::asio::ip::udp::socket _socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;
-    boost::array<boost::any, 1> _recv_buf;
+    boost::array<Action, 1> _recv_buf;
     std::vector<std::pair<boost::uuids::uuid, std::size_t>> _players_uuid;
     // std::vector<SpriteData> _sprites; // Trying to replace this vector with getSpriteData functions
     boost::asio::deadline_timer _timer;
