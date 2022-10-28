@@ -11,9 +11,8 @@ int main(void)
 {
     Game::Config::initialize();
     Game::Windows win;
-    Client client("127.0.0.1", 10001);
-
     try {
+        Client client("127.0.0.1", 10001);
         win.init();
         win.Loop(client);
     } catch (ClientError &e) {

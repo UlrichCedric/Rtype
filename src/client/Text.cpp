@@ -8,7 +8,23 @@
 #include "Text.hpp"
 
 namespace Game {
-    Text::Text()
+    Text::Text(std::string path)
     {
+        _font.loadFromFile(Config::ExecutablePath + path);
+        _item.setFont(_font);
+        _data = sf::String("");
+        _item = sf::Text(_data, _font, 50);
+    }
+
+    void Text::SetText(std::string text)
+    {
+        _data = sf::String(text);
+        _item = sf::Text(_data, _font, 50);
+    }
+
+    void Text::setFont(std::string path)
+    {
+        _font.loadFromFile(Config::ExecutablePath + path);
+        _item.setFont(_font);
     }
 }
