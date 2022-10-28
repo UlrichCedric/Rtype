@@ -272,12 +272,16 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t b
 }
 
 void Server::handleSend(
-    boost::array<SpriteData, 16> /*data*/,
+    boost::array<boost::any, 16> /*data*/,
     const boost::system::error_code& /*error*/,
     std::size_t /*bytes_transferred*/
 ) {
-    if (_recv_buf.size() > 0) {
-        std::cout << "Data sent to " << _recv_buf[0].uuid << std::endl;
+    if (_recv_buf[0].type() == typeid(SpriteData)) {
+        std::cout << "Sent spriteData to " << _recv_buf[0].uuid << std::endl;
+    } else if (_recv_buf[0].type() == typeid(InitSpriteData)) {
+        std::cout << "Sent InitSpriteData to " << _recv_buf[0].uuid << std::endl;
+    } else {
+        std::cout << "Unknown data type" << std::endl;
     }
 }
 

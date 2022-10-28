@@ -9,6 +9,7 @@
 
 #include <boost/bind/bind.hpp>
 #include <boost/uuid/uuid.hpp>
+#include <boost/any.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "ecs/Entity.hpp"
 #include "ecs/Systems/DrawSystem.hpp"
@@ -32,7 +33,7 @@ class Server {
     void startReceive(void);
     void sendSprites(void);
     void handleReceive(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
-    void handleSend(boost::array<SpriteData, 16>,const boost::system::error_code&, std::size_t);
+    void handleSend(boost::array<boost::any, 16>,const boost::system::error_code&, std::size_t);
     void handleTimer(void);
     void handleInput(Action action);
     bool isNewUuid(boost::uuids::uuid uuid);
@@ -46,7 +47,7 @@ class Server {
 
     boost::asio::ip::udp::socket _socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;
-    boost::array<Action, 1> _recv_buf;
+    boost::array<boost::any, 1> _recv_buf;
     std::vector<std::pair<boost::uuids::uuid, std::size_t>> _players_uuid;
     // std::vector<SpriteData> _sprites; // Trying to replace this vector with getSpriteData functions
     boost::asio::deadline_timer _timer;
