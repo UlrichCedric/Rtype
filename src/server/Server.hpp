@@ -37,6 +37,7 @@ class Server {
     void handleReceive(const boost::system::error_code& error,
                        std::size_t /*bytes_transferred*/);
     void handleSend(boost::uuids::uuid uuidReceiver,
+                    const boost::array<boost::any, 16> send_buf,
                     const boost::system::error_code& /*error*/,
                     std::size_t /*bytes_transferred*/);
     void handleTimer(void);

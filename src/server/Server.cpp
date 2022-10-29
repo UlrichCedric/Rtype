@@ -107,7 +107,7 @@ void Server::handleInput(Action action)
 void Server::sendSprites(void)
 {
     SpriteData endArray = {{0, 0}, 0};
-    boost::array<SpriteData, 16> send_buf = {endArray};
+    boost::array<boost::any, 16> send_buf = {endArray};
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
             /*
@@ -123,14 +123,11 @@ void Server::sendSprites(void)
             send_buf[i] = _sprites[i];
         }
     }
-    if (typeid(send_buf[0]) == typeid(SpriteData)) {
-        std::cout << "same type" << std::endl;
-    }
     for (Player player : _players) {
         std::cout << "async send to " << player.uuid << std::endl;
         _socket.async_send_to(
             boost::asio::buffer(send_buf), player.endpoint,
-            boost::bind(&Server::handleSend, this, player.uuid,
+            boost::bind(&Server::handleSend, this, player.uuid, send_buf,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     }
@@ -154,19 +151,33 @@ void Server::handleReceive(const boost::system::error_code& error, std::size_t /
 }
 
 void Server::handleSend(boost::uuids::uuid uuidReceiver,
+    const boost::array<boost::any, 16> send_buf,
     const boost::system::error_code& /*error*/,
     std::size_t /*bytes_transferred*/)
 {
-    if (_recv_buf.size() > 0) {
-        std::cout << "Data sent to " << uuidReceiver << std::endl;
+    std::string type = "undefined";
+    SpriteData element;
+
+    boost::array<SpriteData, 16> new_send_buf;
+    for (size_t i = 0;; i++) {
+        element = boost::any_cast<SpriteData>(send_buf[i]);
+        new_send_buf[i] = element;
+        if (element.id == 0) {
+            break;
+        }
     }
-    // if (send_buf[0].type() == typeid(SpriteData)) {
-    //     std::cout << "Sent spriteData" << std::endl;
-    // } else if (send_buf[0].type() == typeid(InitSpriteData)) {
-    //     std::cout << "Sent InitSpriteData" << std::endl;
-    // } else {
-    //     std::cout << "Unknown data type" << std::endl;
-    // }
+    for (size_t i = 0; new_send_buf[i].id != 0; i++) {
+        element = new_send_buf[i];
+        std::cout << "x: " << element.coords.first << ", y: " << element.coords.second << std::endl;
+    }
+    if (typeid(new_send_buf[0]) == typeid(SpriteData)) {
+        type = "SpriteData";
+    } else if (typeid(send_buf[0]) == typeid(InitSpriteData)) {
+        type = "InitSpriteData";
+    }
+    if (_recv_buf.size() > 0) {
+        std::cout << type << " sent to " << uuidReceiver << std::endl;
+    }
 }
 
 // ECS
@@ -212,7 +223,6 @@ void Server::initEcs(void)
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    std::size_t i = 0;
     InitSpriteData emptyInitBuffer = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
     boost::array<InitSpriteData, 16> buffer = { emptyInitBuffer }; // Initialize send_buf to empty array
 
@@ -229,8 +239,11 @@ void Server::initEcs(void)
         _entities.push_back(std::move(e4));
         _entities.push_back(std::move(e5));
 
+        std::size_t i = 0;
+
         for (auto entity: _entities) {
-            buffer[i] = getInitSpriteData(entity);
+            std::cout << i << std::endl;
+            buffer[i++] = getInitSpriteData(entity);
         }
         // _socket.async_send_to(
         //     boost::asio::buffer(buffer),
