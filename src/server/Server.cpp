@@ -123,6 +123,9 @@ void Server::sendSprites(void)
             send_buf[i] = _sprites[i];
         }
     }
+    if (typeid(send_buf[0]) == typeid(SpriteData)) {
+        std::cout << "same type" << std::endl;
+    }
     for (Player player : _players) {
         std::cout << "async send to " << player.uuid << std::endl;
         _socket.async_send_to(
@@ -157,6 +160,13 @@ void Server::handleSend(boost::uuids::uuid uuidReceiver,
     if (_recv_buf.size() > 0) {
         std::cout << "Data sent to " << uuidReceiver << std::endl;
     }
+    // if (send_buf[0].type() == typeid(SpriteData)) {
+    //     std::cout << "Sent spriteData" << std::endl;
+    // } else if (send_buf[0].type() == typeid(InitSpriteData)) {
+    //     std::cout << "Sent InitSpriteData" << std::endl;
+    // } else {
+    //     std::cout << "Unknown data type" << std::endl;
+    // }
 }
 
 // ECS
@@ -222,23 +232,23 @@ void Server::initEcs(void)
         for (auto entity: _entities) {
             buffer[i] = getInitSpriteData(entity);
         }
-        _socket.async_send_to(
-            boost::asio::buffer(buffer),
-            _remote_endpoint,
-            boost::bind(
-                &Server::handleSend,
-                this,
-                buffer,
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred
-            )
-        );
+        // _socket.async_send_to(
+        //     boost::asio::buffer(buffer),
+        //     _remote_endpoint,
+        //     boost::bind(
+        //         &Server::handleSend,
+        //         this,
+        //         buffer,
+        //         boost::asio::placeholders::error,
+        //         boost::asio::placeholders::bytes_transferred
+        //     )
+        // );
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 }
 
-InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e) {
+InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
     }

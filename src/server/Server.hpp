@@ -56,7 +56,8 @@ class Server {
     // ECS de mort
 
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
-    void Server::initEcs(void);
+    InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
+    void initEcs(void);
 
     // Factory
     std::unique_ptr<Factory> _f;

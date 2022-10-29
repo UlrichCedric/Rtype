@@ -17,12 +17,12 @@ class Client {
         Client(std::string ip, std::size_t port)
         : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001), _socket(_io_context), _player_pos({0, 0})
         {
-            std::thread thread(&Client::handleThread, this);
-            // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
             _socket.open(boost::asio::ip::udp::v4());
-            thread.detach();
             _uuid = boost::uuids::random_generator()();
             _canReceiveData = true;
+            std::thread thread(&Client::handleThread, this);
+            // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
+            thread.detach();
         }
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
