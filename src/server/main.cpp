@@ -1,22 +1,21 @@
 /*
 ** EPITECH PROJECT, 2022
-** udp_server
+** B-CPP-500-NCY-5-1-rtype-marius.nowak [WSL : Ubuntu-22.04]
 ** File description:
-** boost::asio
+** main
 */
 
-#include "Server.hpp"
 #include <iostream>
+#include "ecs/Factory.hpp"
 
-int main(int ac, char **av) {
-    std::cout << "____ Server started ____" << std::endl;
+int main(void)
+{
+    std::list<std::shared_ptr<Entity>> _entities;
+    std::shared_ptr<Factory> f(new Factory());
 
-    try {
-        boost::asio::io_context io_context;
-        Server server(io_context);
-        io_context.run();
-    } catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
-    }
+    _entities.push_back(std::move(f.get()->createEntity("Background")));
+    _entities.push_back(std::move(f.get()->createEntity("Background")));
+    _entities.push_back(std::move(f.get()->createEntity("Background")));
+    _entities.push_back(std::move(f.get()->createEntity("Background")));
     return 0;
 }

@@ -19,7 +19,6 @@
 #include "Music.hpp"
 #include "Paralax.hpp"
 #include "Client.hpp"
-#include "Common.hpp"
 #include "Button.hpp"
 #include "Ennemy.hpp"
 #include "Health.hpp"

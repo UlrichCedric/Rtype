@@ -11,13 +11,10 @@
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp> // <iostream> for uuid
 
-/**
- * @brief Input events
- *
- */
 enum Input {
     UP,
     DOWN,
@@ -31,19 +28,31 @@ enum Input {
    *  input: The current input pressed by the user or NONE.
    *  uuid: the uuid of the player
 */
+
 typedef struct Action {
     enum Input input;
     boost::uuids::uuid uuid;
 } Action;
+
+/*
+    List of sprites that can move:
+        - Players
+        - Projectiles
+        - Ennemies
+*/
 
 /**
  * @brief Struct to update a sprite
  *
  */
 typedef struct SpriteData_s {
-    std::size_t id;
     std::pair<float, float> coords;
+    std::size_t id;
 } SpriteData;
+/**
+   *  coords: pair of coords of the sprite (x, y)
+   *  id: the id of the sprite
+*/
 
 /**
  * @brief Struct to init a sprite

@@ -10,7 +10,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "Common.hpp"
+#include "../Common.hpp"
 
 class Client {
     public:
