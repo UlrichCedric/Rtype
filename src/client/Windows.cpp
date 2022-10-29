@@ -10,7 +10,8 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = MENU;
+        _menu = Menu::Menu();
+        _state = Game::State::MENU;
         fps = 60;
         _score = 0;
         _text = Text("assets/police.ttf");
@@ -20,7 +21,7 @@ namespace Game {
         img.setTexture(Config::ExecutablePath + "assets/background.jpg");
         background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
         _music.isRepeatable(true);
-        _music.play();
+        // _music.play();
         _key_pressed = NONE;
     }
 
@@ -44,28 +45,28 @@ namespace Game {
 
     void Windows::Events()
     {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                _state = END;
-            } else if (event.type == sf::Event::MouseMoved) {
-                _button.IsHover(sf::Mouse::getPosition(window));
-		    } else if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (_button.IsClicked(sf::Mouse::getPosition(window))) {
-                        _state = GAME;
-                    }
-                }
-            }
-        }
+        // sf::Event event;
+        // while (window.pollEvent(event)) {
+        //     if (event.type == sf::Event::Closed) {
+        //         _state = Game::State::END;
+        //     } else if (event.type == sf::Event::MouseMoved) {
+        //         _button.IsHover(sf::Mouse::getPosition(window));
+		//     } else if (event.type == sf::Event::MouseButtonPressed) {
+        //         if (event.mouseButton.button == sf::Mouse::Left) {
+        //             if (_button.IsClicked(sf::Mouse::getPosition(window))) {
+        //                 _state = Game::State::GAME;
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     void Windows::Display_menu()
     {
-        window.clear();
-        window.draw(background.get_sprite());
-        window.draw(_button._image.get_sprite());
-        window.display();
+        // window.clear();
+        // window.draw(background.get_sprite());
+        // window.draw(_button._image.get_sprite());
+        // window.display();
     }
 
     void Windows::handleKeyPressed(sf::Event& event)
@@ -94,7 +95,7 @@ namespace Game {
     {
         switch (event.key.code) {
             case sf::Keyboard::Escape:
-                _state = PAUSE;
+                _state = Game::State::PAUSE;
                 break;
             case sf::Keyboard::Left:
                 _key_pressed == LEFT ? _key_pressed = NONE : false;
@@ -120,7 +121,7 @@ namespace Game {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                _state = END;
+                _state = Game::State::END;
                 return;
             }
             switch (event.type) {
@@ -140,19 +141,13 @@ namespace Game {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                _state = END;
+                _state = Game::State::END;
             } else if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Escape) {
-                    _state = GAME;
+                    _state = Game::State::GAME;
                 }
             }
         }
-    }
-
-    void Windows::handleMenu(void)
-    {
-        Events();
-        Display_menu();
     }
 
     void Windows::handleGame(void)
@@ -175,7 +170,7 @@ namespace Game {
         if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
             _player.setLife(_player._health.getHealth() - 10);
             if (_player._health.getHealth() <= 0) {
-                _state = MENU;
+                _state = Game::State::MENU;
                 _player.setLife(100);
             }
         }
@@ -194,19 +189,19 @@ namespace Game {
         window.close();
     }
 
-    void Windows::Loop(Client &client)
+    void Windows::Loop(/*Client &client*/)
     {
         // client.asyncReceiveData();
         while (window.isOpen()) {
-            if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
-            }
-            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-            if (_state == END) {
-                client.setCanReceiveData(false);
-            }
+            // if (_key_pressed != NONE) {
+            //     client.sendData(_key_pressed);
+            // }
+            // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+            // if (_state == END) {
+            //     client.setCanReceiveData(false);
+            // }
             switch (_state) {
-                case MENU: handleMenu(); break;
+                case MENU: _menu.handleMenu(window); break;
                 case GAME: handleGame(); break;
                 case PAUSE: handlePause(); break;
                 case END: handleEnd(); break;

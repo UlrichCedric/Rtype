@@ -15,7 +15,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Config.hpp"
-#include "Image.hpp"
+#include "utils/Image.hpp"
 
 namespace Game {
     class Health {
