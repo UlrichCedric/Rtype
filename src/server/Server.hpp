@@ -37,7 +37,7 @@ class Server {
     void handleReceive(const boost::system::error_code& error,
                        std::size_t /*bytes_transferred*/);
     void handleSend(boost::uuids::uuid uuidReceiver,
-                    const boost::array<boost::any, 16> send_buf,
+                    const boost::array<Data, 1> send_buf,
                     const boost::system::error_code& /*error*/,
                     std::size_t /*bytes_transferred*/);
     void handleTimer(void);
@@ -54,7 +54,7 @@ class Server {
     std::vector<SpriteData> _sprites;
     boost::asio::deadline_timer _timer;
 
-    // ECS de mort
+    // ECS
 
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);

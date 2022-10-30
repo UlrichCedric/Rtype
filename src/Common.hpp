@@ -90,3 +90,24 @@ typedef struct InitSpriteData_s {
      */
     std::pair<float, float> maxSize;
 } InitSpriteData;
+
+inline bool operator==(const InitSpriteData& e1, const InitSpriteData& e2)
+{
+    return (
+        e1.id == e2.id &&
+        e1.path == e2.path &&
+        e1.coords == e2.coords &&
+        e1.scale == e2.scale &&
+        e1.maxSize == e2.maxSize
+    );
+}
+
+enum Type {
+    InitSpriteDataType,
+    SpriteDataType,
+};
+
+typedef struct Data {
+    enum Type type;
+    boost::array<boost::any, 16> array;
+} Data;

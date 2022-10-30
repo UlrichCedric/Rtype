@@ -107,22 +107,24 @@ void Server::handleInput(Action action)
 void Server::sendSprites(void)
 {
     SpriteData endArray = {{0, 0}, 0};
-    boost::array<boost::any, 16> send_buf = {endArray};
+    boost::array<boost::any, 16> array_buf = {endArray};
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
             /*
                 Provisoire, c'est au cas où il y ait + que 16 sprites, pour éviter le crash
             */
             std::cout << "/!\\ Agrandir la boost::array SpriteData /!\\" << std::endl;
-            send_buf[i] = endArray;
+            array_buf[i] = endArray;
             break;
         }
         if (i == _sprites.size()) {
-            send_buf[i] = endArray;
+            array_buf[i] = endArray;
         } else {
-            send_buf[i] = _sprites[i];
+            array_buf[i] = _sprites[i];
         }
     }
+    Data data = {SpriteDataType, array_buf};
+    boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
         std::cout << "async send to " << player.uuid << std::endl;
         _socket.async_send_to(
@@ -151,29 +153,44 @@ void Server::handleReceive(const boost::system::error_code& error, std::size_t /
 }
 
 void Server::handleSend(boost::uuids::uuid uuidReceiver,
-    const boost::array<boost::any, 16> send_buf,
+    const boost::array<Data, 1> send_buf,
     const boost::system::error_code& /*error*/,
     std::size_t /*bytes_transferred*/)
 {
-    std::string type = "undefined";
-    SpriteData element;
+    if (send_buf.size() == 0) {
+        std::cerr << "Empty buffer sent" << std::endl;
+        return;
+    }
 
-    boost::array<SpriteData, 16> new_send_buf;
-    for (size_t i = 0;; i++) {
-        element = boost::any_cast<SpriteData>(send_buf[i]);
-        new_send_buf[i] = element;
-        if (element.id == 0) {
-            break;
-        }
-    }
-    for (size_t i = 0; new_send_buf[i].id != 0; i++) {
-        element = new_send_buf[i];
-        std::cout << "x: " << element.coords.first << ", y: " << element.coords.second << std::endl;
-    }
-    if (typeid(new_send_buf[0]) == typeid(SpriteData)) {
-        type = "SpriteData";
-    } else if (typeid(send_buf[0]) == typeid(InitSpriteData)) {
+    std::string type = "undefined";
+    boost::array<boost::any, 16> array_buf = send_buf[0].array;
+    if (send_buf[0].type == InitSpriteDataType) {
         type = "InitSpriteData";
+        InitSpriteData element;
+        boost::array<InitSpriteData, 16> array_sent;
+        InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+        for (size_t i = 0;; i++) {
+            element = boost::any_cast<InitSpriteData>(array_buf[i]);
+            array_sent[i] = element;
+            if (element == endArray) {
+                break;
+            }
+        }
+    } else if (send_buf[0].type == SpriteDataType) {
+        type = "SpriteData";
+        SpriteData element;
+        boost::array<SpriteData, 16> array_sent;
+        for (size_t i = 0;; i++) {
+            element = boost::any_cast<SpriteData>(array_buf[i]);
+            array_sent[i] = element;
+            if (element.id == 0) {
+                break;
+            }
+        }
+        for (size_t i = 0; array_sent[i].id != 0; i++) {
+            element = array_sent[i];
+            std::cout << "x: " << element.coords.first << ", y: " << element.coords.second << std::endl;
+        }
     }
     if (_recv_buf.size() > 0) {
         std::cout << type << " sent to " << uuidReceiver << std::endl;
@@ -223,8 +240,8 @@ void Server::initEcs(void)
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    InitSpriteData emptyInitBuffer = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
-    boost::array<InitSpriteData, 16> buffer = { emptyInitBuffer }; // Initialize send_buf to empty array
+    InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+    boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
 
     try {
         std::shared_ptr<Entity> e1 = createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
@@ -245,6 +262,7 @@ void Server::initEcs(void)
             std::cout << i << std::endl;
             buffer[i++] = getInitSpriteData(entity);
         }
+        buffer[i] = endArray;
         // _socket.async_send_to(
         //     boost::asio::buffer(buffer),
         //     _remote_endpoint,
