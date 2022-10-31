@@ -10,24 +10,25 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/thread/thread.hpp>
 
-#include "Common.hpp"
+#include "../Common.hpp"
 
 class Client {
     public:
         Client(std::string ip, std::size_t port)
         : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001), _socket(_io_context), _player_pos({0, 0})
         {
-            std::thread thread(&Client::handleThread, this);
-            // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
             _socket.open(boost::asio::ip::udp::v4());
-            thread.detach();
             _uuid = boost::uuids::random_generator()();
             _canReceiveData = true;
+            std::thread thread(&Client::handleThread, this);
+            // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
+            thread.detach();
         }
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
         void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void receiveData(void);
+        // void handleInitSpriteData(void);
         void asyncReceiveData(void);
         void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);

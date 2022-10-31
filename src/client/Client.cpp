@@ -31,16 +31,40 @@ void Client::handleSendData(const boost::system::error_code& error, std::size_t 
 
 void Client::receiveData(void)
 {
-    boost::array<SpriteData, 16> recv_buf;
-    std::cout << "receive Data" << std::endl;
-    boost::asio::ip::udp::endpoint sender_endpoint;
-    if (_canReceiveData) {
+    while (_canReceiveData) {
+        boost::array<Data, 1> recv_buf;
+        boost::asio::ip::udp::endpoint sender_endpoint;
+        std::string type = "undefined";
+        std::cout << "before receive" << std::endl;
         size_t len = _socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint);
-        for (int i = 0; recv_buf[i].id != 0; i++) {
-            _player_pos.first = recv_buf[i].coords.first;
-            _player_pos.second = recv_buf[i].coords.second;
+        std::cout << "before check size" << std::endl;
+        if (recv_buf.size() == 0) {
+            // continue;
+            return;
         }
-        receiveData();
+        std::cout << "before access data" << std::endl;
+        if (recv_buf[0].type == InitSpriteDataType) {
+            type = "InitSpriteData";
+            InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+            for (size_t i = 0;; i++) {
+                if (recv_buf[0].initSpriteDatas[i] == endArray) {
+                    break;
+                }
+            }
+        } else if (recv_buf[0].type == SpriteDataType) {
+            type = "SpriteData";
+            std::cout << "SpriteData" << std::endl;
+            for (size_t i = 0;; i++) {
+                if (recv_buf[0].spriteDatas[i].id == 0) {
+                    break;
+                }
+            }
+            for (int i = 0; recv_buf[0].initSpriteDatas[i].id != 0; i++) {
+                _player_pos.first = recv_buf[0].initSpriteDatas[i].coords.first;
+                _player_pos.second = recv_buf[0].initSpriteDatas[i].coords.second;
+            }
+        }
+        std::cout << type << " data received" << std::endl;
     }
 }
 
@@ -97,8 +121,6 @@ void Client::handleThread(void)
 {
     sendData(NONE);
     receiveData();
-    std::cout << "io_context.run()" << std::endl;
-    _io_context.run();
 }
 
 void Client::setCanReceiveData(bool canReceiveData)

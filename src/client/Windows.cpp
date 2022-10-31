@@ -198,6 +198,7 @@ namespace Game {
     {
         // client.asyncReceiveData();
         while (window.isOpen()) {
+            std::cout << "loop" << std::endl;
             if (_key_pressed != NONE) {
                 client.sendData(_key_pressed);
             }
