@@ -52,11 +52,9 @@ target_include_directories(r-type_client PUBLIC
 			)
 
 add_executable(r-type_server ${SRC_SERVER})
-target_link_libraries(r-type_server CONAN_PKG::asio
-									CONAN_PKG::boost
-									)
+target_link_libraries(r-type_server CONAN_PKG::boost)
+
 target_include_directories(r-type_server PUBLIC
-			${CONAN_INCLUDE_DIRS_ASIO}
 			${CONAN_INCLUDE_DIRS_BOOST}
 			)
 
