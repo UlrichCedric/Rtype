@@ -15,7 +15,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "utils/Image.hpp"
-#include "Text.hpp"
+#include "utils/Text.hpp"
 #include "Music.hpp"
 #include "Paralax.hpp"
 #include "Client.hpp"
@@ -56,8 +56,8 @@ namespace Game {
             std::string _ip;
             sf::Font font;
             int fps;
-            Image img;
-            Image background;
+            // Image img;
+            // Image background;
             Player _player;
             Music _music;
             Paralax paralax;

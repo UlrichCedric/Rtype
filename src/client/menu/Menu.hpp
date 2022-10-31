@@ -13,6 +13,7 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include "../utils/Image.hpp"
 #include "../utils/Button.hpp"
+#include "../utils/Text.hpp"
 #include "../Config.hpp"
 
 namespace Menu {
@@ -34,7 +35,12 @@ namespace Menu {
             State_menu _state;
             Button _startButton;
             Image background;
+
+            // Menu
             Image _title;
+            Text _text_bottom_right;
+            Text _text_top_right01;
+            Text _text_top_right02;
     };
 }
 

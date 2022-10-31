@@ -10,7 +10,6 @@
 namespace Game {
     Windows::Windows()
     {
-        _menu = Menu::Menu();
         _state = Game::State::MENU;
         fps = 60;
         _score = 0;
@@ -18,17 +17,17 @@ namespace Game {
         _text.SetText("Score : 0");
         _text.setPos(0, 0);
         _text.setFontSize(50);
-        img.setTexture(Config::ExecutablePath + "assets/background.jpg");
-        background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
+        // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
         _music.isRepeatable(true);
-        // _music.play();
+        _music.play();
         _key_pressed = NONE;
     }
 
     void Windows::Display_pause()
     {
         window.clear();
-        window.draw(background.get_sprite());
+        // window.draw(background.get_sprite());
         window.display();
     }
 
