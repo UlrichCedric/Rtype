@@ -24,6 +24,13 @@ set(SRC_CLIENT src/client/main.cpp
 	src/client/Config.cpp
 	src/client/Paralax.cpp
 	src/client/Client.cpp
+	src/client/Health.cpp
+	src/client/Event.cpp
+	src/client/Player.cpp
+	src/client/Ennemy.cpp
+	src/client/Pause.cpp
+	src/client/Shoot.cpp
+	src/client/Button.cpp
 )
 
 set(SRC_SERVER
