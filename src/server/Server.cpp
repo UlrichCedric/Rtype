@@ -123,6 +123,7 @@ void Server::sendSprites(void)
             array_buf[i] = _sprites[i];
         }
     }
+    boost::array<InitSpriteData, 16> empty_array;
     Data data = {SpriteDataType, array_buf};
     boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
@@ -236,17 +237,17 @@ void Server::initEcs(void)
             buffer[i++] = getInitSpriteData(entity);
         }
         buffer[i] = endArray;
-        // _socket.async_send_to(
-        //     boost::asio::buffer(buffer),
-        //     _remote_endpoint,
-        //     boost::bind(
-        //         &Server::handleSend,
-        //         this,
-        //         buffer,
-        //         boost::asio::placeholders::error,
-        //         boost::asio::placeholders::bytes_transferred
-        //     )
-        // );
+        // boost::array<SpriteData, 16> empty_array;
+        // Data data = {InitSpriteDataType, empty_array, buffer};
+        // boost::array<Data, 1> send_buf = {data};
+        // for (Player player : _players) {
+        //     std::cout << "async send to " << player.uuid << std::endl;
+        //     _socket.async_send_to(
+        //         boost::asio::buffer(send_buf), player.endpoint,
+        //         boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+        //             boost::asio::placeholders::error,
+        //             boost::asio::placeholders::bytes_transferred));
+        // }
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
