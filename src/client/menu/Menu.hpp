@@ -38,9 +38,13 @@ namespace Menu {
 
             // Menu
             Image _title;
-            Text _text_bottom_right;
             Text _text_top_right01;
             Text _text_top_right02;
+            Text _text_multiplayer;
+            Text _text_settings;
+            Text _text_bottom_right;
+            Image _rect_selection;
+            std::size_t _selection;
     };
 }
 
