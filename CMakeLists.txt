@@ -40,14 +40,13 @@ INCLUDE_DIRECTORIES(
 )
 
 add_executable(r-type_client ${SRC_CLIENT})
-target_link_libraries(r-type_client CONAN_PKG::asio
+target_link_libraries(r-type_client
 	CONAN_PKG::boost
 	CONAN_PKG::sfml
 )
 
 target_include_directories(r-type_client PUBLIC
 			${CONAN_INCLUDE_DIRS_SFML}
-			${CONAN_INCLUDE_DIRS_ASIO}
 			${CONAN_INCLUDE_DIRS_BOOST}
 			)
 
