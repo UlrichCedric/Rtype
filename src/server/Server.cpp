@@ -107,7 +107,7 @@ void Server::handleInput(Action action)
 void Server::sendSprites(void)
 {
     SpriteData endArray = {{0, 0}, 0};
-    boost::array<boost::any, 16> array_buf = {endArray};
+    boost::array<SpriteData, 16> array_buf = {endArray};
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
             /*
@@ -163,38 +163,12 @@ void Server::handleSend(boost::uuids::uuid uuidReceiver,
     }
 
     std::string type = "undefined";
-    boost::array<boost::any, 16> array_buf = send_buf[0].array;
     if (send_buf[0].type == InitSpriteDataType) {
         type = "InitSpriteData";
-        InitSpriteData element;
-        boost::array<InitSpriteData, 16> array_sent;
-        InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
-        for (size_t i = 0;; i++) {
-            element = boost::any_cast<InitSpriteData>(array_buf[i]);
-            array_sent[i] = element;
-            if (element == endArray) {
-                break;
-            }
-        }
     } else if (send_buf[0].type == SpriteDataType) {
         type = "SpriteData";
-        SpriteData element;
-        boost::array<SpriteData, 16> array_sent;
-        for (size_t i = 0;; i++) {
-            element = boost::any_cast<SpriteData>(array_buf[i]);
-            array_sent[i] = element;
-            if (element.id == 0) {
-                break;
-            }
-        }
-        for (size_t i = 0; array_sent[i].id != 0; i++) {
-            element = array_sent[i];
-            std::cout << "x: " << element.coords.first << ", y: " << element.coords.second << std::endl;
-        }
     }
-    if (_recv_buf.size() > 0) {
-        std::cout << type << " sent to " << uuidReceiver << std::endl;
-    }
+    std::cout << type << " sent to " << uuidReceiver << std::endl;
 }
 
 // ECS
@@ -259,7 +233,6 @@ void Server::initEcs(void)
         std::size_t i = 0;
 
         for (auto entity: _entities) {
-            std::cout << i << std::endl;
             buffer[i++] = getInitSpriteData(entity);
         }
         buffer[i] = endArray;
