@@ -19,9 +19,11 @@ namespace Game {
         _text.setFontSize(50);
         // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
         // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        _music.setPath("assets/Main.ogg");
         _music.isRepeatable(true);
-        _music.play();
+        // _music.play();
         _key_pressed = NONE;
+        paralax.setSprites(Game::paralax::GAME_PARALAX);
     }
 
     void Windows::Display_pause()
@@ -153,8 +155,8 @@ namespace Game {
     {
         Events_game();
         window.clear();
-        paralax.update();
-        paralax.draw(window);
+        paralax.update(Game::paralax::GAME_PARALAX);
+        paralax.draw(window, Game::paralax::GAME_PARALAX);
         window.draw(_text._item);
         _player.draw(window);
         _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
@@ -208,6 +210,6 @@ namespace Game {
             }
             _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
         }
-        _music.stop();
+        // _music.stop();
     }
 }

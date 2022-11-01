@@ -10,45 +10,101 @@
 Menu::Menu::Menu()
 {
     _state = State_menu::MENU;
-    _selection = 0;
-    _title.setTexture(Game::Config::ExecutablePath + "assets/menu/R-TYPE_title.png");
-    _title.setPos(15, 430);
-    // Load Fonts
-    _text_bottom_right = Text("assets/menu/font/r-type.ttf");
-    _text_multiplayer = Text("assets/menu/font/r-type.ttf");
-    _text_settings = Text("assets/menu/font/r-type.ttf");
-    _text_top_right01 = Text("assets/menu/font/r-type.ttf");
-    _text_top_right02 = Text("assets/menu/font/r-type.ttf");
-    //_text_top_right01
-    _text_top_right01.SetText("BLAST OFF AND STRIKE");
-    _text_top_right01.setFontSize(20);
-    _text_top_right01.setPos(830, 15);
-    //_text_top_right02
-    _text_top_right02.SetText("THE EVIL BYDO EMPIRE!");
-    _text_top_right02.setFontSize(20);
-    _text_top_right02.setPos(830, 45);
-    //_text_multiplayer
-    _text_multiplayer.SetText("MULTIPLAYER");
-    _text_multiplayer.setFontSize(30);
-    _text_multiplayer.setFontColor(sf::Color::Black);
-    _text_multiplayer.setFontStyle(sf::Text::Bold);
-    _text_multiplayer.setPos(920, 180);
-    //_text_settings
-    _text_settings.SetText("SETTINGS");
-    _text_settings.setFontSize(30);
-    _text_settings.setPos(995, 270);
-    //_text_bottom_right
-    _text_bottom_right.SetText("Epitech project 2022");
-    _text_bottom_right.setFontSize(20);
-    _text_bottom_right.setPos(835, 670);
-    //_rect_selection
-    _rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/white_rect.jpg");
-    _rect_selection.setRect(0, 0, 365, 56);
-    _rect_selection.setPos(905, 169);
+    _paralax_menu_background.setSprites(Game::paralax::MENU_PARALAX);
+    _music.setPath("assets/menu/songs/music_menu.ogg");
+    _music.isRepeatable(true);
+    _music.setVolume(20);
+    _music.play();
+    
+    initMenu();
+    initLobby();
+    initSettings();
 }
 
 Menu::Menu::~Menu()
 {
+}
+
+void Menu::Menu::handleEventsMenu(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
+            if (_menu_select == SETTINGS_SELECTION) {
+                _menu_select = MULTIPLAYER_SELECTION;
+                _menu_rect_selection.setRect(0, 0, 360, 56);
+                _menu_rect_selection.setPos(910, 170);
+                _menu_text_multiplayer.setFontStyle(sf::Text::Bold);
+                _menu_text_multiplayer.setFontColor(sf::Color::Black);
+                _menu_text_settings.setFontStyle(sf::Text::Regular);
+                _menu_text_settings.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+            if (_menu_select == MULTIPLAYER_SELECTION) {
+                _menu_select = SETTINGS_SELECTION;
+                _menu_rect_selection.setRect(0, 0, 267, 56);
+                _menu_rect_selection.setPos(985, 260);
+                _menu_text_settings.setFontStyle(sf::Text::Bold);
+                _menu_text_settings.setFontColor(sf::Color::Black);
+                _menu_text_multiplayer.setFontStyle(sf::Text::Regular);
+                _menu_text_multiplayer.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Return) {
+            if (_menu_select == MULTIPLAYER_SELECTION) {
+                _state = State_menu::LOBBY;
+            }
+            else if (_menu_select == SETTINGS_SELECTION) {
+                _state = State_menu::SETTINGS;
+            }
+        }
+    }
+}
+
+void Menu::Menu::handleEventsLobby(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            _state = State_menu::MENU;
+        }
+    }
+}
+
+void Menu::Menu::handleEventsSettings(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            _state = State_menu::MENU;
+        }
+        else if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
+            if (_settings_select == SONDS_VOLUME_TITLE) {
+                _settings_select = MUSIC_VOLUME_TITLE;
+                _settings_rect_selection.setPos(130, 175);
+                _settings_music_volume.setFontStyle(sf::Text::Bold);
+                _settings_music_volume.setFontColor(sf::Color::Black);
+                _settings_sonds_volume.setFontStyle(sf::Text::Regular);
+                _settings_sonds_volume.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+            if (_settings_select == MUSIC_VOLUME_TITLE) {
+                _settings_select = SONDS_VOLUME_TITLE;
+                _settings_rect_selection.setPos(130, 315);
+                _settings_sonds_volume.setFontStyle(sf::Text::Bold);
+                _settings_sonds_volume.setFontColor(sf::Color::Black);
+                _settings_music_volume.setFontStyle(sf::Text::Regular);
+                _settings_music_volume.setFontColor(sf::Color::White);
+            }
+        }
+        // else if (event.key.code == sf::Keyboard::Return) {
+        //     if (_menu_select == MULTIPLAYER_SELECTION) {
+        //         _state = State_menu::LOBBY;
+        //     }
+        //     else if (_menu_select == SETTINGS_SELECTION) {
+        //         _state = State_menu::SETTINGS;
+        //     }
+        // }
+    }
 }
 
 void Menu::Menu::handleEvents(sf::RenderWindow &window)
@@ -58,26 +114,12 @@ void Menu::Menu::handleEvents(sf::RenderWindow &window)
         if (event.type == sf::Event::Closed) {
             window.close();
         }
-        // if (event.type == sf::Event::KeyPressed) {
-        //     if (event.key.code == sf::Keyboard::Up) {
-        //         if (_selection == 1) {
-        //             _selection = 0;
-        //             _rect_selection.setRect(0, 0, 327, 56);
-        //             _rect_selection.setPos(900, 175);
-        //             _text_multiplayer.setFontStyle(sf::Text::Bold);
-        //             _text_multiplayer.setFontColor(sf::Color::Black);
-        //         }
-        //     }
-        //     else if (event.key.code == sf::Keyboard::Down) {
-        //         if (_selection == 0) {
-        //             _selection = 1;
-        //             _rect_selection.setRect(0, 0, 267, 56);
-        //             _rect_selection.setPos(995, 2650);
-        //             _text_settings.setFontStyle(sf::Text::Bold);
-        //             _text_settings.setFontColor(sf::Color::Black);
-        //         }
-        //     }
-        // }
+        switch (_state) {
+            case MENU: handleEventsMenu(event); break;
+            case LOBBY: handleEventsLobby(event); break;
+            case SETTINGS: handleEventsSettings(event); break;
+        default: break;
+        }
     }
 }
 
@@ -85,10 +127,12 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window)
 {
     this->handleEvents(window);
     window.clear();
+    _paralax_menu_background.update(Game::MENU_PARALAX);
+    _paralax_menu_background.draw(window, Game::MENU_PARALAX);
     switch (_state) {
         case MENU: displayMenu(window); break;
-        case LOBBY: break;
-        case SETTINGS: break;
+        case LOBBY: displayLobby(window); break;
+        case SETTINGS: displaySettings(window); break;
         case GAME: break;
         default: break;
     }
@@ -97,11 +141,30 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window)
 
 void Menu::Menu::displayMenu(sf::RenderWindow &window)
 {
-    window.draw(_title.get_sprite());
-    window.draw(_rect_selection.get_sprite());
-    window.draw(_text_top_right01._item);
-    window.draw(_text_top_right02._item);
-    window.draw(_text_multiplayer._item);
-    window.draw(_text_settings._item);
-    window.draw(_text_bottom_right._item);
+    window.draw(_menu_title.get_sprite());
+    window.draw(_menu_rect_selection.get_sprite());
+    window.draw(_menu_text_top_right01._item);
+    window.draw(_menu_text_top_right02._item);
+    window.draw(_menu_text_multiplayer._item);
+    window.draw(_menu_text_settings._item);
+    window.draw(_menu_text_bottom_right._item);
+}
+
+void Menu::Menu::displayLobby(sf::RenderWindow &window)
+{
+
+}
+
+void Menu::Menu::displaySettings(sf::RenderWindow &window)
+{
+    //setings title
+    window.draw(_settings_title._item);
+    //display rect selection
+    window.draw(_settings_rect_selection.get_sprite());
+    //volume bar
+    window.draw(_settings_music_volume._item);
+    window.draw(_settings_music_volume_bar);
+    //sounds bar
+    window.draw(_settings_sonds_volume._item);
+    window.draw(_settings_sonds_volume_bar);
 }
