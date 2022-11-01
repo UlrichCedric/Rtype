@@ -110,5 +110,5 @@ enum Type {
 typedef struct Data {
     enum Type type;
     boost::array<SpriteData, 16> spriteDatas;
-    // boost::array<InitSpriteData, 16> initSpriteDatas;
+    boost::array<InitSpriteData, 16> initSpriteDatas;
 } Data;

@@ -24,6 +24,7 @@ class Client {
             // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
             thread.detach();
         }
+        ~Client() {}
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
         void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
@@ -42,7 +43,7 @@ class Client {
         std::string _ip;
         std::size_t _port;
         boost::uuids::uuid _uuid;
-        boost::array<SpriteData, 16> _recv_buf;
+        union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
         std::pair<float, float> _player_pos;
         bool _canReceiveData;
 };

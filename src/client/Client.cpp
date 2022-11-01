@@ -33,36 +33,27 @@ void Client::receiveData(void)
 {
     while (_canReceiveData) {
         std::cout << "receiveData loop" << std::endl;
-        boost::array<Data, 1> recv_buf;
         boost::asio::ip::udp::endpoint sender_endpoint;
         std::string type = "undefined";
-        size_t len = _socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint);
-        if (recv_buf.size() == 0) {
+        size_t len = _socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
+        if (_recv_buf.size() == 0) {
             continue;
         }
-        if (recv_buf[0].type == InitSpriteDataType) {
+        if (_recv_buf[0].type == InitSpriteDataType) {
             std::cout << "InitSpriteData" << std::endl;
             type = "InitSpriteData";
-            // InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
-            // for (size_t i = 0;; i++) {
-            //     if (recv_buf[0].initSpriteDatas[i] == endArray) {
-            //         break;
-            //     }
-            // }
-            /*
-                ça fonctionne quand data n'a que boost::array<SpriteData, 16> dans sa structure,
-                mais pas quand data a aussi boost::array<InitSpriteData, 16> o_O
-                J'arrive pas à identifier le problème, je pense c'est un problème de mémoire
-                car je suis dans un thread mais je vois pas pourquoi quand je rajoute
-                InitSpriteData ça casse, et en quoi ça diffère que quand y a pas
-                InitSpriteData.
-            */
-        } else if (recv_buf[0].type == SpriteDataType) {
+            InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+            for (size_t i = 0;; i++) {
+                if (_recv_buf[0].initSpriteDatas[i] == endArray) {
+                    break;
+                }
+            }
+        } else if (_recv_buf[0].type == SpriteDataType) {
             std::cout << "SpriteData" << std::endl;
             type = "SpriteData";
-            for (int i = 0; recv_buf[0].spriteDatas[i].id != 0; i++) {
-                _player_pos.first = recv_buf[0].spriteDatas[i].coords.first;
-                _player_pos.second = recv_buf[0].spriteDatas[i].coords.second;
+            for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
+                _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
+                _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
             }
         }
         std::cout << type << " data received" << std::endl;
@@ -100,11 +91,11 @@ void Client::asyncReceiveData(void)
 void Client::handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
 {
     std::cout << "handleReceiveData" << std::endl;
-    for (int i = 0; _recv_buf[i].id != 0; i++) {
-        std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
-        _player_pos.first = _recv_buf[i].coords.first;
-        _player_pos.second = _recv_buf[i].coords.second;
-    }
+    // for (int i = 0; _recv_buf[i].id != 0; i++) {
+    //     std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
+    //     _player_pos.first = _recv_buf[i].coords.first;
+    //     _player_pos.second = _recv_buf[i].coords.second;
+    // }
     asyncReceiveData();
 }
 
