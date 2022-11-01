@@ -237,17 +237,17 @@ void Server::initEcs(void)
             buffer[i++] = getInitSpriteData(entity);
         }
         buffer[i] = endArray;
-        // boost::array<SpriteData, 16> empty_array;
-        // Data data = {InitSpriteDataType, empty_array, buffer};
-        // boost::array<Data, 1> send_buf = {data};
-        // for (Player player : _players) {
-        //     std::cout << "async send to " << player.uuid << std::endl;
-        //     _socket.async_send_to(
-        //         boost::asio::buffer(send_buf), player.endpoint,
-        //         boost::bind(&Server::handleSend, this, player.uuid, send_buf,
-        //             boost::asio::placeholders::error,
-        //             boost::asio::placeholders::bytes_transferred));
-        // }
+        boost::array<SpriteData, 16> empty_array;
+        Data data = {InitSpriteDataType, empty_array, buffer};
+        boost::array<Data, 1> send_buf = {data};
+        for (Player player : _players) {
+            std::cout << "async send to " << player.uuid << std::endl;
+            _socket.async_send_to(
+                boost::asio::buffer(send_buf), player.endpoint,
+                boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+                    boost::asio::placeholders::error,
+                    boost::asio::placeholders::bytes_transferred));
+        }
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
@@ -274,4 +274,38 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     } catch (std::exception &e) {
         throw Error(e.what());
     }
+}
+
+/**
+ * @brief returns the ID of a sprite from its UUID
+ *
+ * @param action containing the UUID of the sprite
+ * @return std::size_t the ID of the sprite you're looking for
+ */
+std::size_t Server::getEntityIdByUuid(Action action)
+{
+    std::shared_ptr<Uuid> u;
+
+    for (auto entity: _entities) {
+        /*
+            If this entity doesn't have any UUID, just continue to the next one
+        */
+        if (!entity.get()->has(UUID)) {
+            continue;
+        }
+        try {
+            u = std::dynamic_pointer_cast<Uuid>(entity.get()->getComponent(UUID));
+        } catch (std::exception &e) {
+            /*
+                For any reason, if the first verification failed, and this entity
+                still doesn't have any UUID, just continue to the next one
+            */
+            continue;
+        }
+
+        if (u->getUuid() == boost::uuids::to_string(action.uuid)) {
+            return entity.get()->getId();
+        }
+    }
+    throw Error("Entity not found");
 }

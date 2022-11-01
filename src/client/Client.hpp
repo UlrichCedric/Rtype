@@ -29,7 +29,8 @@ class Client {
         void asyncSendData(enum Input action);
         void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void receiveData(void);
-        // void handleInitSpriteData(void);
+        void handleInitSpriteData(void);
+        void handleSpriteData(void);
         void asyncReceiveData(void);
         void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);
