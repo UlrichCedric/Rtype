@@ -32,39 +32,38 @@ void Client::handleSendData(const boost::system::error_code& error, std::size_t 
 void Client::receiveData(void)
 {
     while (_canReceiveData) {
-        boost::array<Data, 1> recv_buf;
         boost::asio::ip::udp::endpoint sender_endpoint;
         std::string type = "undefined";
-        std::cout << "before receive" << std::endl;
-        size_t len = _socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint);
-        std::cout << "before check size" << std::endl;
-        if (recv_buf.size() == 0) {
-            // continue;
-            return;
+        size_t len = _socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
+        if (_recv_buf.size() == 0) {
+            continue;
         }
-        std::cout << "before access data" << std::endl;
-        if (recv_buf[0].type == InitSpriteDataType) {
+        if (_recv_buf[0].type == InitSpriteDataType) {
             type = "InitSpriteData";
-            InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
-            for (size_t i = 0;; i++) {
-                if (recv_buf[0].initSpriteDatas[i] == endArray) {
-                    break;
-                }
-            }
-        } else if (recv_buf[0].type == SpriteDataType) {
+            handleInitSpriteData();
+        } else if (_recv_buf[0].type == SpriteDataType) {
             type = "SpriteData";
-            std::cout << "SpriteData" << std::endl;
-            for (size_t i = 0;; i++) {
-                if (recv_buf[0].spriteDatas[i].id == 0) {
-                    break;
-                }
-            }
-            for (int i = 0; recv_buf[0].initSpriteDatas[i].id != 0; i++) {
-                _player_pos.first = recv_buf[0].initSpriteDatas[i].coords.first;
-                _player_pos.second = recv_buf[0].initSpriteDatas[i].coords.second;
-            }
+            handleSpriteData();
         }
         std::cout << type << " data received" << std::endl;
+    }
+}
+
+void Client::handleInitSpriteData(void)
+{
+    InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+    for (size_t i = 0;; i++) {
+        if (_recv_buf[0].initSpriteDatas[i] == endArray) {
+            break;
+        }
+    }
+}
+
+void Client::handleSpriteData(void)
+{
+    for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
+        _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
+        _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
     }
 }
 
@@ -99,11 +98,11 @@ void Client::asyncReceiveData(void)
 void Client::handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
 {
     std::cout << "handleReceiveData" << std::endl;
-    for (int i = 0; _recv_buf[i].id != 0; i++) {
-        std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
-        _player_pos.first = _recv_buf[i].coords.first;
-        _player_pos.second = _recv_buf[i].coords.second;
-    }
+    // for (int i = 0; _recv_buf[i].id != 0; i++) {
+    //     std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
+    //     _player_pos.first = _recv_buf[i].coords.first;
+    //     _player_pos.second = _recv_buf[i].coords.second;
+    // }
     asyncReceiveData();
 }
 
