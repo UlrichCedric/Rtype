@@ -59,7 +59,7 @@ class Server {
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     void initEcs(void);
-    std::size_t Server::getEntityIdByUuid(Action action);
+    std::size_t getEntityIdByUuid(Action action);
 
     // Factory
     std::unique_ptr<Factory> _f;
