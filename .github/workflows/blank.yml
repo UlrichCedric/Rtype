@@ -59,7 +59,9 @@ jobs:
       - name: Install Conan
         uses: turtlebrowser/get-conan@main
       - name: Update profile
-        run: conan profile new default --detect
+        run: |
+          brew install openal-soft
+          conan profile new default --detect
       - name: Build
         run: ./Linux
 
