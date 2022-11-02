@@ -12,9 +12,9 @@
  */
 class Drawable: public AComponent {
     public:
-    Drawable(): _offsetX(0), _offsetY(0), _sizeX(50), _sizeY(50), _path("EMPTY") {  }
+    Drawable(): _offsetX(0.0), _offsetY(0.0), _sizeX(50.0), _sizeY(50.0), _path("EMPTY") {  }
 
-    Drawable(std::string path, std::pair<int, int> offset, std::pair<int, int> size) {
+    Drawable(std::string path, std::pair<float, float> offset, std::pair<float, float> size) {
         _sizeX = size.first;
         _sizeY = size.second;
         _offsetX = offset.first;
@@ -32,17 +32,17 @@ class Drawable: public AComponent {
 
     std::string getName(void) { return "drawable"; }
     int getEnum(void) { return DRAWABLE; };
-    std::pair<int, int> getOffset(void) { return { _offsetX, _offsetY }; }
-    std::pair<int, int> getSize(void) { return { _sizeX, _sizeY }; }
-    std::pair<int, int> getMaxOffset(void) { return { _maxSizeX, _maxSizeY }; }
+    std::pair<float, float> getOffset(void) { return { _offsetX, _offsetY }; }
+    std::pair<float, float> getSize(void) { return { _sizeX, _sizeY }; }
+    std::pair<float, float> getMaxOffset(void) { return { _maxSizeX, _maxSizeY }; }
     std::string getPath(void) { return _path; }
 
-    void setSize(std::pair<int, int> size) {
+    void setSize(std::pair<float, float> size) {
         _sizeX = size.first;
         _sizeY = size.second;
     }
 
-    void setOffset(std::pair<int, int> offset) {
+    void setOffset(std::pair<float, float> offset) {
         _offsetX = offset.first;
         _offsetY = offset.second;
     }
@@ -52,11 +52,11 @@ class Drawable: public AComponent {
     ~Drawable() {  };
 
     private:
-    int _offsetX;
-    int _offsetY;
-    int _sizeX;
-    int _sizeY;
-    int _maxSizeX;
-    int _maxSizeY;
+    float _offsetX;
+    float _offsetY;
+    float _sizeX;
+    float _sizeY;
+    float _maxSizeX;
+    float _maxSizeY;
     std::string _path;
 };

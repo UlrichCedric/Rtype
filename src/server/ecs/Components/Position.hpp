@@ -12,32 +12,32 @@
  */
 class Position: public AComponent {
     public:
-    Position(std::pair<int, int> pos): _x(pos.first), _y(pos.second) {  };
-    Position(int x = 0, int y = 0): _x(x), _y(y) {  };
+    Position(std::pair<float, float> pos): _x(pos.first), _y(pos.second) {  };
+    Position(float x = 0, float y = 0): _x(x), _y(y) {  };
     Position(Position &p): _x(p._x), _y(p._y) {  };
 
     std::string getName(void) { return "position"; }
     int getEnum(void) { return POSITION; };
-    void setXPos(int x) { _x = x; };
-    void setYPos(int y) { _y = y; };
-    void setPos(int x, int y) {
+    void setXPos(float x) { _x = x; };
+    void setYPos(float y) { _y = y; };
+    void setPos(float x, float y) {
         _x = x;
         _y = y;
     };
 
-    void setPos(std::pair<int, int> pos) {
+    void setPos(std::pair<float, float> pos) {
         _x = pos.first;
         _y = pos.second;
     };
 
-    std::pair<int, int> getPos(void) { return std::make_pair(_x, _y); }
-    int getXPos(void) { return _x; };
-    int getYPos(void) { return _y; };
+    std::pair<float, float> getPos(void) { return std::make_pair(_x, _y); }
+    float getXPos(void) { return _x; };
+    float getYPos(void) { return _y; };
     ~Position() {  };
 
     private:
-    int _x;
-    int _y;
+    float _x;
+    float _y;
 };
 
 inline bool operator==(Position& p1, Position& p2) {

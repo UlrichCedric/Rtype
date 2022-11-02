@@ -26,7 +26,7 @@ class DrawSystem: public ASystem {
 
             try {
                 Position *pos = static_cast<Position *>(e->getComponent("position").get());
-                std::pair<int, int> p = pos->getPos();
+                std::pair<float, float> p = pos->getPos();
                 Velocity *vel = static_cast<Velocity *>(e->getComponent("velocity").get());
                 std::pair<int, int> v = vel->getVelocity();
 

@@ -106,7 +106,7 @@ void Server::handleInput(Action action)
 
 void Server::sendSprites(void)
 {
-    SpriteData endArray = {{0, 0}, 0};
+    SpriteData endArray = {{0.0, 0.0}, 0};
     boost::array<SpriteData, 16> array_buf = {endArray};
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
@@ -144,7 +144,7 @@ void Server::handleReceive(const boost::system::error_code& error, std::size_t /
             std::cout << "New player !" << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
-            SpriteData player = {{800, 400}, new_player_info.idSprite};
+            SpriteData player = {{800.0, 400.0}, new_player_info.idSprite};
             _sprites.push_back(player);
         }
         handleInput(_recv_buf[0]);
@@ -215,7 +215,7 @@ void Server::initEcs(void)
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
     boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
 
     try {

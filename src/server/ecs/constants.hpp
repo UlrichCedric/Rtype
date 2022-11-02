@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <functional>
+#include <array>
 
 const int comp_nb = 9;
 
