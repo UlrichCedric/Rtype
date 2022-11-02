@@ -14,6 +14,7 @@
 #include "../utils/Image.hpp"
 #include "../utils/Button.hpp"
 #include "../utils/Text.hpp"
+#include "../utils/Sound.hpp"
 #include "../Config.hpp"
 #include "../Music.hpp"
 #include "../Paralax.hpp"
@@ -54,6 +55,10 @@ namespace Menu {
         private:
             State_menu _state;
             Game::Music _music;
+            Sound _validate_sound;
+            Sound _navigation_sound;
+            float _music_volume;
+            float _sounds_volume;
 
             //stars parallax
             Game::Paralax _paralax_menu_background;
@@ -72,7 +77,7 @@ namespace Menu {
             // Lobby
 
             // Settings
-            enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SONDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};
+            enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};
             _selection_possibility_settings _settings_select;
             Text _settings_title;
             Text _settings_music_volume;
@@ -80,8 +85,8 @@ namespace Menu {
             Image _settings_rect_selection;
             sf::RectangleShape _settings_music_volume_bar;
             sf::RectangleShape _settings_music_volume_progression_bar;
-            sf::RectangleShape _settings_sonds_volume_bar;
-            sf::RectangleShape _settings_sonds_volume_progression_bar;
+            sf::RectangleShape _settings_sounds_volume_bar;
+            sf::RectangleShape _settings_sounds_volume_progression_bar;
 
     };
 }

@@ -85,14 +85,18 @@ void Menu::Menu::initSettings()
     _settings_music_volume_bar.setOutlineThickness(2);
     _settings_music_volume_bar.setFillColor(sf::Color::Black);
     _settings_music_volume_bar.setPosition(160, 230);
-    _settings_music_volume_progression_bar.setSize(sf::Vector2f(443, 50));
+    _settings_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
+    _settings_music_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_music_volume_progression_bar.setPosition(163, 233);
     //sonds volume bar
-    _settings_sonds_volume_bar.setSize(sf::Vector2f(875, 50));
-    _settings_sonds_volume_bar.setOutlineColor(sf::Color::White);
-    _settings_sonds_volume_bar.setOutlineThickness(2);
-    _settings_sonds_volume_bar.setFillColor(sf::Color::Black);
-    _settings_sonds_volume_bar.setPosition(160, 370);
-    _settings_sonds_volume_progression_bar.setSize(sf::Vector2f(120, 50));
+    _settings_sounds_volume_bar.setSize(sf::Vector2f(875, 50));
+    _settings_sounds_volume_bar.setOutlineColor(sf::Color::White);
+    _settings_sounds_volume_bar.setOutlineThickness(2);
+    _settings_sounds_volume_bar.setFillColor(sf::Color::Black);
+    _settings_sounds_volume_bar.setPosition(160, 370);
+    _settings_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
+    _settings_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_sounds_volume_progression_bar.setPosition(163, 373);
 
 }
 
