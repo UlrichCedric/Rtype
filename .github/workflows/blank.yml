@@ -57,7 +57,7 @@ jobs:
           brew update
       - uses: actions/checkout@v3
       - name: Install Conan
-        uses: turtlebrowser/get-conan@main
+        run: pip install conan
       - name: Update profile
         run: |
           conan profile new default --detect
