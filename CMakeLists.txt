@@ -34,8 +34,7 @@ set(SRC_CLIENT src/client/main.cpp
 )
 
 set(SRC_SERVER
-	src/server/main.cpp
-	src/server/Server.cpp
+	src/server/udp_server.cpp
 )
 
 INCLUDE_DIRECTORIES(
