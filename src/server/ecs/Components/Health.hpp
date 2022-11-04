@@ -14,14 +14,14 @@ class Health: public AComponent {
 
     public:
     Health(int hp = 100): _hp(hp) {  }
-    Health(Health &h) { _hp = h._hp; }
-    std::string getName(void) { return "health"; }
-    int getEnum(void) { return HEALTH; };
+    Health(Health &h): _hp(h._hp) {  }
+    std::string getName(void) override { return "health"; }
+    int getEnum(void) override { return HEALTH; };
     void setHp(int hp) { _hp = hp; }
     int getHp(void) { return _hp; }
     void takeDamage(int damage = 0) { _hp -= damage; }
 
-    ~Health() {  }
+    ~Health() override = default;
 
     private:
     int _hp;

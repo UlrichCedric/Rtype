@@ -16,7 +16,7 @@ namespace Game {
             void setPos(float x, float y) { _ennemy.setPos(x, y); };
             void respawn() { _ennemy.setPos(1400, 500); };
             void run();
-            void draw(sf::RenderWindow &window) {window.draw(_ennemy.get_sprite());};
+            void draw(sf::RenderWindow &window) { window.draw(_ennemy.get_sprite()); };
             Image _ennemy;
     };
 }

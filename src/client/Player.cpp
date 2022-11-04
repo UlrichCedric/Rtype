@@ -8,8 +8,7 @@
 #include "Player.hpp"
 
 namespace Game {
-    Player::Player() 
-    {
+    Player::Player(void) {
         _player.setTexture(Config::ExecutablePath + "assets/player.png");
         _player.setScale(3.0, 3.0);
         _player.setPos(100, 100);
@@ -28,11 +27,10 @@ namespace Game {
         _health.draw(window);
     }
 
-    void Player::setLife(int life) 
-    {
+    void Player::setLife(int life) {
         _life = life;
         _health.update(_pos.x, _pos.y, _life);
     }
 
-    Player::~Player() {}
+    Player::~Player() = default;
 }

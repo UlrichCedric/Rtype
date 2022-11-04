@@ -7,6 +7,33 @@
 
 #include "Server.hpp"
 
+void Server::parseWaves(void) {
+    std::ifstream file("enemies.conf");
+    std::string string = "";
+    std::size_t i = 0;
+
+    while(std::getline(file, string)) {
+        if (string.empty()) {
+            break;
+        }
+        std::size_t number = 10;
+        try {
+            number = std::stoi(string.substr(0, string.find(':', 0)));
+        } catch (std::exception &e) {
+            std::cerr << "Error parsing your enemy config file: invalid number" << std::endl;
+            exit(84);
+        }
+        std::string name = string.substr(string.find(':', 0), string.length() - 1);
+        _waveConf[i++] = std::make_pair<std::size_t, std::string>(number, name);
+    }
+
+    std::cout << "Testing parsing on enemies.conf:" << std::endl;
+    for (auto [key, value]: _waveConf) {
+        std::cout << "For key [" << key << "] = " << value.first << ", " << value.second << std::endl;
+    }
+    std::cout << "Testing finished" << std::endl;
+}
+
 void Server::startReceive(void)
 {
     _socket.async_receive_from(
@@ -153,11 +180,12 @@ void Server::handleReceive(const boost::system::error_code& error, std::size_t /
     startReceive();
 }
 
-void Server::handleSend(boost::uuids::uuid uuidReceiver,
+void Server::handleSend(
+    boost::uuids::uuid uuidReceiver,
     const boost::array<Data, 1> send_buf,
     const boost::system::error_code& /*error*/,
-    std::size_t /*bytes_transferred*/)
-{
+    std::size_t /*bytes_transferred*/
+) {
     if (send_buf.size() == 0) {
         std::cerr << "Empty buffer sent" << std::endl;
         return;
@@ -253,6 +281,26 @@ void Server::initEcs(void)
     }
 }
 
+SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
+    if (!e.get()->has(DRAWABLE)) {
+        throw Error("Couldn't find sprite");
+    }
+
+    try {
+        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
+        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        SpriteData s = {
+            e.get()->getId(),
+            pos.get()->getPos(),
+            health.get()->getHp()
+        };
+
+        return s;
+    } catch (std::exception &e) {
+        throw Error(e.what());
+    }
+}
+
 InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
@@ -262,12 +310,14 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
         auto draw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
         auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
         auto scale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
+        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
         InitSpriteData s = {
-            e.get()->getId(),       // get the id of the sprite
+            e.get()->getId(),              // get the id of the sprite
             draw.get()->getPath(),         // get the path of the texture
             pos.get()->getPos(),           // get the position of the sprite
             scale.get()->getScale(),       // get the scale of the sprite
-            draw.get()->getMaxOffset()     // get the max coordinates of the rect
+            draw.get()->getMaxOffset(),    // get the max coordinates of the rect
+            health.get()->getHp(),         // get the health
         };
 
         return s;

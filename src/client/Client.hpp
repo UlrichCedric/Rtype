@@ -11,6 +11,7 @@
 #include <boost/thread/thread.hpp>
 
 #include "../Common.hpp"
+#include "Image.hpp"
 
 class Client {
     public:
@@ -24,7 +25,6 @@ class Client {
             // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
             thread.detach();
         }
-        ~Client() {}
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
         void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
@@ -35,8 +35,18 @@ class Client {
         void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);
         void setCanReceiveData(bool canReceiveData);
+
+        ~Client() {  };
+
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
+
+        /**
+         * @brief our image list
+         *
+         */
+        std::vector<Game::Image> _images;
+
     private:
         boost::asio::io_context _io_context;
         boost::asio::ip::udp::endpoint _receiver_endpoint;

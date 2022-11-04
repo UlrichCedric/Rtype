@@ -46,10 +46,11 @@ typedef struct Action {
  * @brief Struct to update a sprite
  *
  */
-typedef struct SpriteData_s {
-    std::pair<float, float> coords;
+struct SpriteData {
     std::size_t id;
-} SpriteData;
+    std::pair<float, float> coords;
+    int health;
+};
 /**
    *  coords: pair of coords of the sprite (x, y)
    *  id: the id of the sprite
@@ -59,7 +60,7 @@ typedef struct SpriteData_s {
  * @brief Struct to init a sprite
  *
  */
-typedef struct InitSpriteData_s {
+struct InitSpriteData {
     /**
      * @brief id of the sprite
      *
@@ -89,9 +90,15 @@ typedef struct InitSpriteData_s {
      *
      */
     std::pair<float, float> maxSize;
-} InitSpriteData;
 
-inline bool operator==(const InitSpriteData& e1, const InitSpriteData& e2)
+    /**
+     * @brief Health of the entity
+     *
+     */
+    int health;
+};
+
+inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bool
 {
     return (
         e1.id == e2.id &&
@@ -105,10 +112,11 @@ inline bool operator==(const InitSpriteData& e1, const InitSpriteData& e2)
 enum Type {
     InitSpriteDataType,
     SpriteDataType,
+    Loose
 };
 
-typedef struct Data {
+struct Data {
     enum Type type;
     boost::array<SpriteData, 16> spriteDatas;
     boost::array<InitSpriteData, 16> initSpriteDatas;
-} Data;
+};

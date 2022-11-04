@@ -32,6 +32,7 @@ namespace Game {
         PAUSE,
         END,
     };
+
     class Windows {
         public:
             Windows();
@@ -44,13 +45,14 @@ namespace Game {
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
             void handleMenu(void);
-            void handleGame(void);
+            void handleGame(Client &);
             void handlePause(void);
             void handleEnd(void);
             void init();
-            ~Windows() {};
+            ~Windows() = default;
+
         private:
-            sf::RenderWindow window;
+            sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
             int fps;

@@ -14,18 +14,20 @@
 namespace Game {
     class Player {
         public:
-            Player();
-            ~Player();
+            Player(void);
+
             void setPos(float x, float y);
             void draw(sf::RenderWindow &window);
             void setLife(int life);
             void bullet_reset() { _shoot.setPos(_player.getPos().x + 33 , _player.getPos().y + 8);};
             sf::Vector2f getPos() {_pos = _player.getPos(); return _pos;};
+
+            ~Player(void);
+
             Image _player;
             Health _health;
             sf::Vector2f _pos;
             int _life = 100;
             Shoot _shoot;
-
     };
 }

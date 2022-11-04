@@ -52,18 +52,43 @@ void Client::receiveData(void)
 void Client::handleInitSpriteData(void)
 {
     InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
+
     for (size_t i = 0;; i++) {
         if (_recv_buf[0].initSpriteDatas[i] == endArray) {
             break;
         }
+        _images.push_back(Game::Image(
+            _recv_buf[0].initSpriteDatas[i].id,
+            _recv_buf[0].initSpriteDatas[i].path,
+            _recv_buf[0].initSpriteDatas[i].coords,
+            _recv_buf[0].initSpriteDatas[i].scale,
+            _recv_buf[0].initSpriteDatas[i].maxSize,
+            _recv_buf[0].initSpriteDatas[i].health
+        ));
     }
 }
 
 void Client::handleSpriteData(void)
 {
+    // for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
+    //     _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
+    //     _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
+    // }
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
-        _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
+        for (auto img: _images) {
+            if (img.getId() == _recv_buf[0].spriteDatas[i].id) {
+                img.setPos(_recv_buf[0].initSpriteDatas[i].coords);
+                try {
+                    img.setHp(
+                        _recv_buf[0].initSpriteDatas[i].health,
+                        _recv_buf[0].initSpriteDatas[i].coords
+                    );
+                } catch (Error &e) {
+                    std::cerr << "Error: " << e.what() << std::endl;
+                }
+                break;
+            }
+        }
     }
 }
 

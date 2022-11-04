@@ -4,45 +4,88 @@
 ** File description:
 ** Image
 */
-#pragma once
+
+#ifndef _IMAGE_
+#define _IMAGE_
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include <exception>
 #include <iostream>
+
+#include "Health.hpp"
 #include "../Errors.hpp"
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
 #include "Config.hpp"
 
-#define WIDTH 1280
-#define HEIGHT 720
+
 namespace Game {
+    // class Health;
+
+    static const constexpr int WIDTH = 1280;
+    static const constexpr int HEIGHT = 720;
+
     class Image {
         public:
-            Image() {};
-            void setTexture(std::string  path);
+            Image() = default;
+            Image(const Image &) = default;
+            Image(
+                std::size_t id,
+                std::string path,
+                std::pair<float, float> pos,
+                std::pair<float, float> scale,
+                std::pair<float, float> rect,
+                int health
+            );
+
+            void setTexture(std::string path);
             std::string &get_path() { return _path; }
             void set_path(std::string path) { _path = path; }
             sf::Sprite &get_sprite() { return _sprite; }
-            void setPos(float posX = 0, float posY = 0) { _sprite.setPosition(posX, posY); };
+            void setPos(float posX = 0, float posY = 0) { _sprite.setPosition(posX, posY); }
+            void setPos(std::pair<float, float> pos) { _sprite.setPosition(pos.first, pos.second); }
+
+            void setHp(int hp, std::pair<float, float> coords) {
+                if (!_isHealth) {
+                    throw Error("Couldn't find image health");
+                }
+                _health.update(coords.first, coords.second, hp);
+            }
+
             void setScale(float scaleX = 1, float scaleY = 1) { _sprite.setScale(scaleX, scaleY); };
+            void setScale(std::pair<float, float> scale) { _sprite.setScale(scale.first, scale.second); };
+
             sf::Vector2f getPos() { return _sprite.getPosition(); };
             sf::Color getColor() { return _sprite.getColor(); };
             void setColor(sf::Color color) { _sprite.setColor(color); };
             void setRotation(float angle) { _sprite.setRotation(angle); };
             void setRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
             void MoveRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
-            ~Image() {};
+            std::size_t getId(void) { return _id; }
+            void draw(sf::RenderWindow &win) { win.draw(_sprite); }
+            ~Image() = default;
+
         private:
+            size_t _id;
             std::string _path;
             sf::Texture _texture;
             sf::Sprite _sprite;
             sf::IntRect _rect;
-            int _rectL;
-            int _rectR;
-            int _posx;
-            int _posy;
-            size_t id;
+            float _rectX;
+            float _rectY;
+
+            /**
+             * @brief if true then display lifebar
+             *
+             */
+            bool _isHealth;
+            Health _health;
+            bool _isAlive;
+            int _scene;
     };
-};
+}
+
+#endif
