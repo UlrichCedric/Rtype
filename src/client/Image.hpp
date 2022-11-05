@@ -5,8 +5,7 @@
 ** Image
 */
 
-#ifndef _IMAGE_
-#define _IMAGE_
+#pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -15,19 +14,18 @@
 #include <SFML/Audio.hpp>
 
 #include <exception>
-#include <iostream>
 
 #include "Health.hpp"
 #include "../Errors.hpp"
 #include "Config.hpp"
 
+static const constexpr int WIDTH = 1280;
+static const constexpr int HEIGHT = 720;
+
+// class Game::Health;
+class Health;
 
 namespace Game {
-    // class Health;
-
-    static const constexpr int WIDTH = 1280;
-    static const constexpr int HEIGHT = 720;
-
     class Image {
         public:
             Image() = default;
@@ -82,10 +80,8 @@ namespace Game {
              *
              */
             bool _isHealth;
-            Health _health;
+            Game::Health _health;
             bool _isAlive;
             int _scene;
     };
 }
-
-#endif

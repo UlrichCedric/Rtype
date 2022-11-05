@@ -7,8 +7,7 @@
 
 #include "Health.hpp"
 
-namespace Game
-{
+namespace Game {
     Health::Health(sf::Vector2f Barre, float x, float y, int max_life)
     {
         _vieMax = max_life;

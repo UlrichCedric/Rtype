@@ -24,7 +24,7 @@ void Server::parseWaves(void) {
             exit(84);
         }
         std::string name = string.substr(string.find(':', 0), string.length() - 1);
-        _waveConf[i++] = std::make_pair<std::size_t, std::string>(number, name);
+        _waveConf[i++] = std::pair<std::size_t, std::string>(number, name);
     }
 
     std::cout << "Testing parsing on enemies.conf:" << std::endl;
@@ -133,8 +133,8 @@ void Server::handleInput(Action action)
 
 void Server::sendSprites(void)
 {
-    SpriteData endArray = {{0.0, 0.0}, 0};
-    boost::array<SpriteData, 16> array_buf = {endArray};
+    SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
+    boost::array<SpriteData, 16> array_buf = { endArray };
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
             /*
@@ -171,7 +171,7 @@ void Server::handleReceive(const boost::system::error_code& error, std::size_t /
             std::cout << "New player !" << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
-            SpriteData player = {{800.0, 400.0}, new_player_info.idSprite};
+            SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
             _sprites.push_back(player);
         }
         handleInput(_recv_buf[0]);
