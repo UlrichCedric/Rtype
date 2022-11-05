@@ -5,9 +5,9 @@
 ** boost::asio
 */
 
-#include "Server.cpp"
+#include "Server.hpp"
 
-int main() {
+int main(void) {
     try {
         boost::asio::io_context io_context;
         Server server(io_context);

@@ -28,26 +28,34 @@ struct Player {
 
 class Server {
     public:
-    Server(boost::asio::io_context& io_context)
-        : _socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 10001)),
-        _timer(io_context) {
-        handleTimer();
-        startReceive();
+    Server(boost::asio::io_context &io_context):
+        _socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 10001)),
+        _timer(io_context)
+    {
         try {
             parseWaves();
         } catch (Error &e) {
-            std::cerr << e.what() << std::endl;
+            std::cout << e.what() << std::endl;
         }
+        handleTimer();
+        startReceive();
     }
 
     private:
     void parseWaves(void);
     void startReceive(void);
     void sendSprites(void);
+
+    /**
+     * @brief handle received
+     *
+     * @param const boost::system::error_code & error (if any)
+     * @param std::size_t transfered bytes
+     */
     void handleReceive(const boost::system::error_code &, std::size_t);
 
     /**
-     * @brief
+     * @brief brief description of the fonction
      *
      * @param boost::uuids::uuid uuid of the client
      * @param const boost::array<Data, 1> data sent to the client

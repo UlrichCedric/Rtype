@@ -44,7 +44,6 @@ void Server::startReceive(void)
 }
 
 void Server::handleTimer(void) {
-    std::cout << "handleTimer" << std::endl;
     sendSprites();
     // Wait for next timeout.
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
@@ -163,7 +162,7 @@ void Server::sendSprites(void)
     }
 }
 
-void Server::handleReceive(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
+void Server::handleReceive(const boost::system::error_code &error, std::size_t)
 {
     if (!error) {
         std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
