@@ -13,7 +13,7 @@ Menu::Menu::Menu()
     _music_volume = 20.0f;
     _sounds_volume = 20.0f;
     _paralax_menu_background.setSprites(Game::paralax::MENU_PARALAX);
-    _music.setPath("assets/menu/sounds/music_menu.ogg");
+    _music.setPath("assets/menu/sounds/music_menu.wav");
     _validate_sound.setPath("assets/menu/sounds/validate_sound.wav");
     _navigation_sound.setPath("assets/menu/sounds/navigate_sound.wav");
     _validate_sound.isRepeatable(false);
