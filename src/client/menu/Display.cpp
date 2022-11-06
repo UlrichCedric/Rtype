@@ -20,7 +20,22 @@ void Menu::Menu::displayMenu(sf::RenderWindow &window)
 
 void Menu::Menu::displayLobby(sf::RenderWindow &window)
 {
-
+    //display rect selection for create a lobby and refresh list
+    if (_lobby_select != BOX_LIST_LOBBY) {
+        window.draw(_lobby_rect_selection.get_sprite());
+    }
+    window.draw(_lobby_title._item);
+    window.draw(_lobby_create._item);
+    window.draw(_lobby_refresh_icon.get_sprite());
+    window.draw(_lobby_box_list);
+    _game1_lobby.display(window);
+    _game2_lobby.display(window);
+    _game3_lobby.display(window);
+    _game4_lobby.display(window);
+    _game5_lobby.display(window);
+    //display rect selection game lobby
+    if (_lobby_select != CREATE_A_LOBBY && _lobby_select != REFRESH_ICON)
+        window.draw(_lobby_box_selection);
 }
 
 void Menu::Menu::displaySettings(sf::RenderWindow &window)

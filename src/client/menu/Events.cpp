@@ -53,6 +53,91 @@ void Menu::Menu::handleEventsLobby(sf::Event &event)
         if (event.key.code == sf::Keyboard::Escape) {
             _state = State_menu::MENU;
         }
+        else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+            if (_lobby_select == CREATE_A_LOBBY) {
+                _lobby_select = REFRESH_ICON;
+                _lobby_rect_selection.setRect(0, 0, 36, 36);
+                _lobby_rect_selection.setPos(1018, 153);
+                _lobby_refresh_icon.setColor(sf::Color::Black);
+                _lobby_create.setFontColor(sf::Color::White);
+                _lobby_create.setFontStyle(sf::Text::Regular);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Left) {
+            if (_lobby_select == REFRESH_ICON) {
+                _lobby_select = CREATE_A_LOBBY;
+                _lobby_rect_selection.setRect(0, 0, 385, 45);
+                _lobby_rect_selection.setPos(210, 145);
+                _lobby_create.setFontColor(sf::Color::Black);
+                _lobby_create.setFontStyle(sf::Text::Bold);
+                _lobby_refresh_icon.setColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
+            if (_lobby_select == BOX_LIST_LOBBY) {
+                switch(index_of_game_lobby_selected) {
+                    case (0):
+                        _lobby_select = CREATE_A_LOBBY;
+                        _lobby_rect_selection.setRect(0, 0, 385, 45);
+                        _lobby_rect_selection.setPos(210, 145);
+                        _lobby_create.setFontColor(sf::Color::Black);
+                        _lobby_create.setFontStyle(sf::Text::Bold);
+                        break;
+                    case (1):
+                        _lobby_box_selection.setPosition(215, 205);
+                        index_of_game_lobby_selected = 0;
+                        break;
+                    case (2):
+                        _lobby_box_selection.setPosition(215, 295);
+                        index_of_game_lobby_selected = 1;
+                        break;
+                    case (3):
+                        _lobby_box_selection.setPosition(215, 385);
+                        index_of_game_lobby_selected = 2;
+                        break;
+                    case (4): 
+                        _lobby_box_selection.setPosition(215, 475);
+                        index_of_game_lobby_selected = 3;
+                    break;
+                    default: break;
+                }
+            }
+        }
+        else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+            if (_lobby_select == REFRESH_ICON) {
+                _lobby_select = BOX_LIST_LOBBY;
+                index_of_game_lobby_selected = 0;
+                _lobby_refresh_icon.setColor(sf::Color::White);
+            }
+            else if (_lobby_select == CREATE_A_LOBBY) {
+                _lobby_select = BOX_LIST_LOBBY;
+                index_of_game_lobby_selected = 0;
+                _lobby_create.setFontColor(sf::Color::White);
+                _lobby_create.setFontStyle(sf::Text::Regular);
+            }
+            else if (_lobby_select == BOX_LIST_LOBBY) {
+                switch(index_of_game_lobby_selected) {
+                    case (0):
+                        _lobby_box_selection.setPosition(215, 295);
+                        index_of_game_lobby_selected = 1;
+                        break;
+                    case (1):
+                        _lobby_box_selection.setPosition(215, 385);
+                        index_of_game_lobby_selected = 2;
+                        break;
+                    case (2):
+                        _lobby_box_selection.setPosition(215, 475);
+                        index_of_game_lobby_selected = 3;
+                        break;
+                    case (3):
+                        _lobby_box_selection.setPosition(215, 565);
+                        index_of_game_lobby_selected = 4;
+                        break;
+                    case (4): break;
+                    default: break;
+                }
+            }
+        }
     }
 }
 

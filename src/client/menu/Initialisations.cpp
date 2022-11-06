@@ -48,7 +48,46 @@ void Menu::Menu::initMenu()
 
 void Menu::Menu::initLobby()
 {
+    _lobby_select = _selection_possibility_lobby::CREATE_A_LOBBY;
 
+    // Load Fonts
+    _lobby_title = Text("assets/menu/fonts/r-type.ttf");
+    _lobby_create = Text("assets/menu/fonts/r-type.ttf");
+    //_lobby_title
+    _lobby_title.SetText("Multiplayer");
+    _lobby_title.setFontSize(50);
+    _lobby_title.setFontStyle(sf::Text::Bold);
+    _lobby_title.setPos(80, 60);
+    //_lobby_create
+    _lobby_create.SetText("Create a lobby");
+    _lobby_create.setFontSize(25);
+    _lobby_create.setFontColor(sf::Color::Black);
+    _lobby_create.setFontStyle(sf::Text::Bold);
+    _lobby_create.setPos(220, 155);
+    //_lobby_refresh_icon
+    _lobby_refresh_icon.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/refresh_icon.png");
+    _lobby_refresh_icon.setPos(1020, 155);
+    //_lobby_box_list
+    _lobby_box_list.setSize(sf::Vector2f(850, 450));
+    _lobby_box_list.setOutlineColor(sf::Color::White);
+    _lobby_box_list.setOutlineThickness(2);
+    _lobby_box_list.setFillColor(sf::Color(0, 0, 0, 150));
+    _lobby_box_list.setPosition(210, 200);
+    //_lobby_rect_selection
+    _lobby_rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/white_rect.jpg");
+    _lobby_rect_selection.setRect(0, 0, 385, 45);
+    _lobby_rect_selection.setPos(210, 145);
+    //_lobby_box_selection
+    _lobby_box_selection.setSize(sf::Vector2f(840, 80));
+    _lobby_box_selection.setOutlineColor(sf::Color::White);
+    _lobby_box_selection.setOutlineThickness(10);
+    _lobby_box_selection.setFillColor(sf::Color::Transparent);
+    _lobby_box_selection.setPosition(215, 205);
+
+    _game_lobby_list.push_back(_game_lobby{"open", "lobby1", 0});
+    _game_lobby_list.push_back(_game_lobby{"open", "lobby2", 1});
+    _game_lobby_list.push_back(_game_lobby{"closed", "lobby3", 2});
+    fetchLobbyList();
 }
 
 void Menu::Menu::initSettings()
