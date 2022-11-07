@@ -14,18 +14,16 @@
 #include "../Errors.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "utils/Image.hpp"
-#include "utils/Text.hpp"
+#include "Image.hpp"
+#include "Text.hpp"
 #include "Music.hpp"
 #include "Paralax.hpp"
 #include "Client.hpp"
-#include "Common.hpp"
-#include "utils/Button.hpp"
+#include "Button.hpp"
 #include "Ennemy.hpp"
 #include "Health.hpp"
 #include "Shoot.hpp"
 #include "Player.hpp"
-#include "menu/Menu.hpp"
 
 namespace Game {
     enum State {
@@ -38,7 +36,7 @@ namespace Game {
     class Windows {
         public:
             Windows();
-            void Loop(/*Client& client*/);
+            void Loop(Client& client);
             void Display_menu();
             void Display_pause();
             void Events();
@@ -46,25 +44,26 @@ namespace Game {
             void Events_pause();
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
-            void handleGame(void);
+            void handleMenu(void);
+            void handleGame(Client &);
             void handlePause(void);
             void handleEnd(void);
             void init();
             ~Windows() = default;
 
         private:
-            Menu::Menu _menu;
-            sf::RenderWindow window;
+            sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
             int fps;
-            // Image img;
-            // Image background;
+            Image img;
+            Image background;
             Player _player;
             Music _music;
             Paralax paralax;
             enum Input _key_pressed;
             enum State _state;
+            Menu::Button _button;
             Ennemy _ennemy;
             Text _text;
             int _score;

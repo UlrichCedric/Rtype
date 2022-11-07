@@ -19,8 +19,7 @@
 namespace Game {
     class Music {
         public:
-            Music() {};
-            void setPath(std::string path);
+            Music();
             void play() { _music.play(); };
             void replay() { _music.stop(); _music.play(); };
             void stop() { _music.stop(); };
@@ -29,5 +28,6 @@ namespace Game {
             ~Music() {};
         private:
             sf::Music _music;
+            std::string path;
     };
 }

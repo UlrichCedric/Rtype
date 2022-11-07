@@ -9,11 +9,11 @@
 
 namespace Game {
 
-    void Music::setPath(std::string path)
+    Music::Music()
     {
-        std::string path_tmp = Config::ExecutablePath + path;
-        if (!_music.openFromFile(path_tmp))
-            std::cout << "Unable to open music file : " << path_tmp << std::endl;
+        path = Config::ExecutablePath + "assets/Main.ogg";
+        if (!_music.openFromFile(path))
+            std::cout << "Unable to open music file : " << path << std::endl;
         else {
             _music.setLoop(false);
         }

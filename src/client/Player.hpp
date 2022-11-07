@@ -6,7 +6,7 @@
 */
 
 #pragma once
-#include "utils/Image.hpp"
+#include "Image.hpp"
 #include "Config.hpp"
 #include "Health.hpp"
 #include "Shoot.hpp"
