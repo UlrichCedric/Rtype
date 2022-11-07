@@ -184,16 +184,15 @@ void Client::joinLobby(boost::uuids::uuid uuid)
 
 std::vector<Lobby> Client::getLobbies(void)
 {
-    boost::array<Lobby, 16> lobbies;
+    boost::array<Lobby, 16> recv_lobbies;
     boost::asio::ip::tcp::endpoint sender_endpoint;
     // size_t len = _tcp_socket.receive_from(boost::asio::buffer(lobbies, sizeof(boost::array<Lobby, 16>)), sender_endpoint);
     // if (len == 0) {
     //     return;
     // }
-    for (Lobby lobby : lobbies) {
-        std::cout << "-----Lobby uuid " << lobby.uuid << ":-----" << std::endl;
-        std::cout << "name: " << lobby.name << std::endl;
-        std::cout << "nb_players: " << lobby.nb_players << std::endl;
-        std::cout << "size: " << lobby.size << std::endl;
+    std::vector<Lobby> lobbies;
+    for (size_t i = 0; recv_lobbies[i].size != 0; i++) {
+        lobbies.push_back(recv_lobbies[i]);
     }
+    return lobbies;
 }
