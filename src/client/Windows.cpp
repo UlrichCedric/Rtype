@@ -149,54 +149,54 @@ namespace Game {
         }
     }
 
+    /**
+     * @brief main menu loop
+     *
+     */
     void Windows::handleMenu(void)
     {
         Events();
         Display_menu();
     }
 
+    /**
+     * @brief main game loop
+     *
+     * @param client
+     */
     void Windows::handleGame(Client &client)
     {
         Events_game();
         _window.clear();
-        // paralax.update();
-        // paralax.draw(_window);
         _window.draw(_text._item);
-        // _player.draw(_window);
-        // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-        // _player._shoot.draw(_window);
-        // _ennemy.run();
-        // _ennemy.draw(_window);
-        // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-        //     _ennemy.respawn();
-        //     _player.bullet_reset();
-        //     _score += 1;
-        // }
-        // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-        //     _player.setLife(_player._health.getHealth() - 10);
-        //     if (_player._health.getHealth() <= 0) {
-        //         _state = MENU;
-        //         _player.setLife(100);
-        //     }
-        // }
+
         for (auto img: client._images) {
-            img.draw(_window);
+            std::cout << img.get()->get_path() << std::endl;
+            try {
+                img.get()->draw(_window);
+            } catch (const std::exception &e) {
+                std::cout << e.what() << std::endl;
+            }
         }
         _window.display();
-        _score += 2;
+        _score++;
     }
 
+    /**
+     * @brief pause menu loop
+     *
+     */
     void Windows::handlePause(void)
     {
         Events_pause();
         Display_pause();
     }
 
-    void Windows::handleEnd(void)
-    {
-        _window.close();
-    }
-
+    /**
+     * @brief Main client loop
+     *
+     * @param client
+     */
     void Windows::Loop(Client &client)
     {
         // client.asyncReceiveData();
@@ -212,7 +212,7 @@ namespace Game {
                 case MENU: handleMenu(); break;
                 case GAME: handleGame(client); break;
                 case PAUSE: handlePause(); break;
-                case END: handleEnd(); break;
+                case END: _window.close(); break;
                 default: break;
             }
             _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));

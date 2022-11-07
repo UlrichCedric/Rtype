@@ -110,9 +110,9 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
 }
 
 enum Type {
-    InitSpriteDataType,
-    SpriteDataType,
-    Loose
+    INITSPRITEDATATYPE,
+    SPRITEDATATYPE,
+    LOOSE
 };
 
 struct Data {

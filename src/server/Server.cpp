@@ -7,6 +7,10 @@
 
 #include "Server.hpp"
 
+/**
+ * @brief parses the 'enemies.conf' file to get the different waves
+ *
+ */
 void Server::parseWaves(void) {
     std::ifstream file("enemies.conf");
     std::string string = "";
@@ -37,10 +41,15 @@ void Server::parseWaves(void) {
 void Server::startReceive(void)
 {
     _socket.async_receive_from(
-        boost::asio::buffer(_recv_buf), _remote_endpoint,
-        boost::bind(&Server::handleReceive, this,
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_recv_buf),
+        _remote_endpoint,
+        boost::bind(
+            &Server::handleReceive,
+            this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
 }
 
 void Server::handleTimer(void) {
@@ -50,6 +59,13 @@ void Server::handleTimer(void) {
     _timer.async_wait(boost::bind(&Server::handleTimer, this));
 }
 
+/**
+ * @brief Returns true if the given UUID is not already on the server
+ *
+ * @param uuid of the client
+ * @return true if the given client is a new one
+ * @return false if the client is already on the server
+ */
 bool Server::isNewUuid(boost::uuids::uuid uuid)
 {
     std::vector<boost::uuids::uuid> uuids;
@@ -57,12 +73,15 @@ bool Server::isNewUuid(boost::uuids::uuid uuid)
     for (Player player : _players) {
         uuids.push_back(player.uuid);
     }
-    if (std::find(uuids.begin(), uuids.end(), _recv_buf[0].uuid) != uuids.end()) {
-        return false;
-    }
-    return true;
+    return (std::find(uuids.begin(), uuids.end(), _recv_buf[0].uuid) == uuids.end());
 }
 
+/**
+ * @brief Returns the next available id
+ *
+ * @param new_id just send it a 0, it will work recursively
+ * @return std::size_t returns the new available id
+ */
 std::size_t Server::setNewSpriteId(std::size_t new_id)
 {
     if (new_id == 0) {
@@ -121,12 +140,14 @@ void Server::findPlayerSprite(Action action)
 
 void Server::handleInput(Action action)
 {
-    if (action.input != NONE) {
-        if (action.input == SPACE) {
-            /* shoot projectile */
-        } else {
-            findPlayerSprite(action);
-        }
+    if (action.input == NONE) {
+        return;
+    }
+    if (action.input == SPACE) {
+        /* shoot projectile */
+        std::cout << "shoot projectile" << std::endl;
+    } else {
+        findPlayerSprite(action);
     }
 }
 
@@ -134,6 +155,7 @@ void Server::sendSprites(void)
 {
     SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
     boost::array<SpriteData, 16> array_buf = { endArray };
+
     for (int i = 0; i <= _sprites.size(); i++) {
         if (i == 15) {
             /*
@@ -149,29 +171,44 @@ void Server::sendSprites(void)
             array_buf[i] = _sprites[i];
         }
     }
+
     boost::array<InitSpriteData, 16> empty_array;
-    Data data = {SpriteDataType, array_buf};
-    boost::array<Data, 1> send_buf = {data};
+    Data data = { SPRITEDATATYPE, array_buf, {} };
+    boost::array<Data, 1> send_buf = { data };
+
     for (Player player : _players) {
-        std::cout << "async send to " << player.uuid << std::endl;
         _socket.async_send_to(
-            boost::asio::buffer(send_buf), player.endpoint,
-            boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+            boost::asio::buffer(send_buf),
+            player.endpoint,
+            boost::bind(
+                &Server::handleSend,
+                this,
+                player.uuid,
+                send_buf,
                 boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
+                boost::asio::placeholders::bytes_transferred
+            )
+        );
     }
 }
 
+/**
+ * @brief When received a message from the client
+ *
+ * @param error if any
+ * @param std::size_t byte size
+ */
 void Server::handleReceive(const boost::system::error_code &error, std::size_t)
 {
     if (!error) {
         std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
         if (isNewUuid(_recv_buf[0].uuid)) {
-            std::cout << "New player !" << std::endl;
+            std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
             SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
-            _sprites.push_back(player);
+            std::cout << "before Init ECS" << std::endl;
+            initEcs(_recv_buf[0].uuid);
         }
         handleInput(_recv_buf[0]);
         // sendSprites();
@@ -191,16 +228,29 @@ void Server::handleSend(
     }
 
     std::string type = "undefined";
-    if (send_buf[0].type == InitSpriteDataType) {
+    if (send_buf[0].type == INITSPRITEDATATYPE) {
+        std::cout << "----------- handleSend initSpriteDatas ----------------" << std::endl;
         type = "InitSpriteData";
-    } else if (send_buf[0].type == SpriteDataType) {
+        InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
+        for (size_t i = 0; send_buf[0].initSpriteDatas[i].id != endArray.id ; i++) {
+            std::cout << "inside handleSend -> le ID de le image: " << send_buf[0].initSpriteDatas[i].id << std::endl;
+        }
+    } else if (send_buf[0].type == SPRITEDATATYPE) {
         type = "SpriteData";
     }
     std::cout << type << " sent to " << uuidReceiver << std::endl;
 }
 
-// ECS
-
+/**
+ * @brief create a new entity with the given parameters
+ *
+ * @param template of the new entity
+ * @param path of the texture
+ * @param velocity if any
+ * @param position of the new sprite
+ * @param scale of the new sprite
+ * @return std::shared_ptr<Entity> new sprite
+ */
 std::shared_ptr<Entity> Server::createEntity(
     std::string templ,
     std::string path,
@@ -236,50 +286,80 @@ std::shared_ptr<Entity> Server::createEntity(
     return e;
 }
 
-void Server::initEcs(void)
+/**
+ * @brief creates the necessary sprites to launch the game
+ *
+ * @param uuid of the new client
+ */
+void Server::initEcs(boost::uuids::uuid uuid)
 {
+    std::cout << "-----InitECS-----" << std::endl;
     _f = std::make_unique<Factory>();
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
-    boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
 
     try {
-        std::shared_ptr<Entity> e1 = createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e2 = createEntity("Background", "../../assets/paralax/planet.png", { -2.0, 0.0 }, { 10.0, 10.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e3 = createEntity("Background", "../../assets/paralax/planet.png", { -4.0, 0.0 }, { 10.0, 500.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e4 = createEntity("Background", "../../assets/paralax/stars.png", { -3.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e5 = createEntity("Background", "../../assets/paralax/stars.png", { -4.0, 0.0 }, { 0.0, 250.0 }, { 5.0, 6.0 });
-
-        _entities.push_back(std::move(e1));
-        _entities.push_back(std::move(e2));
-        _entities.push_back(std::move(e3));
-        _entities.push_back(std::move(e4));
-        _entities.push_back(std::move(e5));
+        _entities.push_back(createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 }));
+        _entities.push_back(createEntity("Background", "../../assets/paralax/planet.png", { -2.0, 0.0 }, { 10.0, 10.0 }, { 3.0, 4.0 }));
+        _entities.push_back(createEntity("Background", "../../assets/paralax/planet.png", { -4.0, 0.0 }, { 10.0, 500.0 }, { 3.0, 4.0 }));
+        _entities.push_back(createEntity("Background", "../../assets/paralax/stars.png", { -3.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 }));
+        _entities.push_back(createEntity("Background", "../../assets/paralax/stars.png", { -4.0, 0.0 }, { 0.0, 250.0 }, { 5.0, 6.0 }));
 
         std::size_t i = 0;
+        boost::array<InitSpriteData, 16> array_buf = { endArray };
 
         for (auto entity: _entities) {
-            buffer[i++] = getInitSpriteData(entity);
+            std::cout << "i: " << i << std::endl;
+            if (i == 15) {
+                std::cerr << "Error: upgrade boost::array size" << std::endl;
+                break;
+            }
+            array_buf.at(i) = getInitSpriteData(entity);
+            std::cout << "getInitSpriteData received path : " << array_buf[i].path << std::endl;
+            i += 1;
         }
-        buffer[i] = endArray;
-        boost::array<SpriteData, 16> empty_array;
-        Data data = {InitSpriteDataType, empty_array, buffer};
-        boost::array<Data, 1> send_buf = {data};
+
+        std::cout << "before array_buf LOOP inside INITECS" << std::endl;
+        for (size_t i = 0; array_buf[i].id != endArray.id ; i++) {
+            std::cout << "inside initECS -> le ID de le image: " << array_buf[i].id << std::endl;
+        }
+
+        Data d = { INITSPRITEDATATYPE, {  }, array_buf };
+        boost::array<Data, 1> send_buf = { d };
+
+        std::cout << "before loop players" << std::endl;
         for (Player player : _players) {
-            std::cout << "async send to " << player.uuid << std::endl;
+            std::cout << "inside loop -> player with uuid: " << player.uuid << std::endl;
+            if (player.uuid != uuid) {
+                continue;
+            }
             _socket.async_send_to(
-                boost::asio::buffer(send_buf), player.endpoint,
-                boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+                boost::asio::buffer(send_buf),
+                player.endpoint,
+                boost::bind(
+                    &Server::handleSend,
+                    this,
+                    uuid,
+                    send_buf,
                     boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+                    boost::asio::placeholders::bytes_transferred
+                )
+            );
         }
+        std::cout << "after loop players" << std::endl;
     } catch (std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Error initECS: " << e.what() << std::endl;
     }
 }
 
+/**
+ * @brief returns the SpriteData based on the given entity
+ *
+ * @param e the entity to get the SpriteData from
+ * @return SpriteData from the given entity
+ */
 SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
@@ -287,11 +367,15 @@ SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
 
     try {
         auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        std::shared_ptr<Health> health;
+
+        if (e.get()->has(HEALTH)) {
+            health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        }
         SpriteData s = {
             e.get()->getId(),
             pos.get()->getPos(),
-            health.get()->getHp()
+            e.get()->has(HEALTH) ? health.get()->getHp() : -1
         };
 
         return s;
@@ -300,6 +384,12 @@ SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
     }
 }
 
+/**
+ * @brief returns the InitSpriteData based on the given entity
+ *
+ * @param e the entity to get the InitSpriteData from
+ * @return InitSpriteData from the given entity
+ */
 InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
@@ -309,19 +399,24 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
         auto draw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
         auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
         auto scale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        std::shared_ptr<Health> health;
+        if (e.get()->has(HEALTH)) {
+            health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        }
         InitSpriteData s = {
-            e.get()->getId(),              // get the id of the sprite
-            draw.get()->getPath(),         // get the path of the texture
-            pos.get()->getPos(),           // get the position of the sprite
-            scale.get()->getScale(),       // get the scale of the sprite
-            draw.get()->getMaxOffset(),    // get the max coordinates of the rect
-            health.get()->getHp(),         // get the health
+            .id = e.get()->getId(),                                     // get the id of the sprite
+            .path = draw.get()->getPath(),                              // get the path of the texture
+            .coords = pos.get()->getPos(),                              // get the position of the sprite
+            .scale = scale.get()->getScale(),                           // get the scale of the sprite
+            .maxSize = draw.get()->getMaxOffset(),                      // get the max coordinates of the rect
+            .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
         };
+
+        std::cout << "path of new created object : " << s.path << std::endl;
 
         return s;
     } catch (std::exception &e) {
-        throw Error(e.what());
+        std::cerr << "Error - getInitSpriteData: " << e.what() << std::endl;
     }
 }
 
