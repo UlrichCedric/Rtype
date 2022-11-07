@@ -120,3 +120,18 @@ struct Data {
     boost::array<SpriteData, 16> spriteDatas;
     boost::array<InitSpriteData, 16> initSpriteDatas;
 };
+
+enum Status {
+    OPEN,
+    CLOSE
+};
+
+typedef struct Lobby {
+    bool create;
+    bool join;
+    std::string name;
+    std::size_t nb_players;
+    std::size_t size;
+    boost::uuids::uuid uuid;
+    enum Status status;
+} Lobby;
