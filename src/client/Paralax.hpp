@@ -6,16 +6,22 @@
 */
 
 #pragma once
-#include "Image.hpp"
+#include "utils/Image.hpp"
 #include "Config.hpp"
 
 namespace Game {
+    enum paralax {
+        MENU_PARALAX,
+        GAME_PARALAX,
+    };
+
     class Paralax {
         public:
-            Paralax();
+            Paralax(){};
             ~Paralax();
-            void update();
-            void draw(sf::RenderWindow &window);
+            void setSprites(paralax which_paralax);
+            void update(paralax which_paralax);
+            void draw(sf::RenderWindow &window, paralax which_paralax);
         private:
             Image back;
             Image stars;

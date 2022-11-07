@@ -18,6 +18,7 @@
 
 #include "../Errors.hpp"
 #include "Config.hpp"
+#include "utils/Image.hpp"
 
 namespace Game {
     class Health {

@@ -13,9 +13,9 @@ int main(void)
     Game::Windows win;
 
     try {
-        Client client("127.0.0.1", 10001);
+        // Client client("127.0.0.1", 10001);
         win.init();
-        win.Loop(client);
+        win.Loop(/*client*/);
     } catch (ClientError &e) {
         std::cerr << e.what() << std::endl;
         return 84;

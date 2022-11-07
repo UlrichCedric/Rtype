@@ -10,25 +10,27 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = MENU;
+        _state = Game::State::MENU;
         fps = 60;
         _score = 0;
         _text = Text("assets/police.ttf");
         _text.SetText("Score : 0");
         _text.setPos(0, 0);
         _text.setFontSize(50);
-        img.setTexture(Config::ExecutablePath + "assets/background.jpg");
-        background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
+        // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        _music.setPath("assets/Main.ogg");
         _music.isRepeatable(true);
-        _music.play();
+        // _music.play();
         _key_pressed = NONE;
+        paralax.setSprites(Game::paralax::GAME_PARALAX);
     }
 
     void Windows::Display_pause()
     {
-        _window.clear();
-        _window.draw(background.get_sprite());
-        _window.display();
+        window.clear();
+        // window.draw(background.get_sprite());
+        window.display();
     }
 
     void Windows::init()
@@ -44,28 +46,28 @@ namespace Game {
 
     void Windows::Events()
     {
-        sf::Event event;
-        while (_window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                _state = END;
-            } else if (event.type == sf::Event::MouseMoved) {
-                _button.IsHover(sf::Mouse::getPosition(_window));
-		    } else if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (_button.IsClicked(sf::Mouse::getPosition(_window))) {
-                        _state = GAME;
-                    }
-                }
-            }
-        }
+        // sf::Event event;
+        // while (window.pollEvent(event)) {
+        //     if (event.type == sf::Event::Closed) {
+        //         _state = Game::State::END;
+        //     } else if (event.type == sf::Event::MouseMoved) {
+        //         _button.IsHover(sf::Mouse::getPosition(window));
+		//     } else if (event.type == sf::Event::MouseButtonPressed) {
+        //         if (event.mouseButton.button == sf::Mouse::Left) {
+        //             if (_button.IsClicked(sf::Mouse::getPosition(window))) {
+        //                 _state = Game::State::GAME;
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     void Windows::Display_menu()
     {
-        _window.clear();
-        _window.draw(background.get_sprite());
-        _window.draw(_button._image.get_sprite());
-        _window.display();
+        // window.clear();
+        // window.draw(background.get_sprite());
+        // window.draw(_button._image.get_sprite());
+        // window.display();
     }
 
     void Windows::handleKeyPressed(sf::Event& event)
@@ -94,7 +96,7 @@ namespace Game {
     {
         switch (event.key.code) {
             case sf::Keyboard::Escape:
-                _state = PAUSE;
+                _state = Game::State::PAUSE;
                 break;
             case sf::Keyboard::Left:
                 _key_pressed == LEFT ? _key_pressed = NONE : false;
@@ -120,7 +122,7 @@ namespace Game {
         sf::Event event;
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                _state = END;
+                _state = Game::State::END;
                 return;
             }
             switch (event.type) {
@@ -140,10 +142,10 @@ namespace Game {
         sf::Event event;
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                _state = END;
+                _state = Game::State::END;
             } else if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Escape) {
-                    _state = GAME;
+                    _state = Game::State::GAME;
                 }
             }
         }
@@ -155,32 +157,29 @@ namespace Game {
         Display_menu();
     }
 
-    void Windows::handleGame(Client &client)
+    void Windows::handleGame(void)
     {
         Events_game();
-        _window.clear();
-        // paralax.update();
-        // paralax.draw(_window);
-        _window.draw(_text._item);
-        // _player.draw(_window);
-        // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-        // _player._shoot.draw(_window);
-        // _ennemy.run();
-        // _ennemy.draw(_window);
-        // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-        //     _ennemy.respawn();
-        //     _player.bullet_reset();
-        //     _score += 1;
-        // }
-        // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-        //     _player.setLife(_player._health.getHealth() - 10);
-        //     if (_player._health.getHealth() <= 0) {
-        //         _state = MENU;
-        //         _player.setLife(100);
-        //     }
-        // }
-        for (auto img: client._images) {
-            img.draw(_window);
+        window.clear();
+        paralax.update(Game::paralax::GAME_PARALAX);
+        paralax.draw(window, Game::paralax::GAME_PARALAX);
+        window.draw(_text._item);
+        _player.draw(window);
+        _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
+        _player._shoot.draw(window);
+        _ennemy.run();
+        _ennemy.draw(window);
+        if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
+            _ennemy.respawn();
+            _player.bullet_reset();
+            _score += 1;
+        }
+        if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
+            _player.setLife(_player._health.getHealth() - 10);
+            if (_player._health.getHealth() <= 0) {
+                _state = Game::State::MENU;
+                _player.setLife(100);
+            }
         }
         _window.display();
         _score += 2;
@@ -197,26 +196,26 @@ namespace Game {
         _window.close();
     }
 
-    void Windows::Loop(Client &client)
+    void Windows::Loop(/*Client &client*/)
     {
         // client.asyncReceiveData();
-        while (_window.isOpen()) {
-            if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
-            }
-            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-            if (_state == END) {
-                client.setCanReceiveData(false);
-            }
+        while (window.isOpen()) {
+            // if (_key_pressed != NONE) {
+            //     client.sendData(_key_pressed);
+            // }
+            // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+            // if (_state == END) {
+            //     client.setCanReceiveData(false);
+            // }
             switch (_state) {
-                case MENU: handleMenu(); break;
-                case GAME: handleGame(client); break;
+                case MENU: _menu.handleMenu(window); break;
+                case GAME: handleGame(); break;
                 case PAUSE: handlePause(); break;
                 case END: handleEnd(); break;
                 default: break;
             }
             _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
         }
-        _music.stop();
+        // _music.stop();
     }
 }

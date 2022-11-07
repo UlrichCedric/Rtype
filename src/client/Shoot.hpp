@@ -6,7 +6,7 @@
 */
 
 #pragma once
-#include "Image.hpp"
+#include "utils/Image.hpp"
 
 namespace Game {
     class Shoot {
