@@ -10,7 +10,7 @@
 namespace Menu {
     Button::Button()
     {
-        _image.setTexture(Game::Config::ExecutablePath + "assets/Menu/button.png");
+        _image.setTexture(Game::Config::ExecutablePath + "assets/button.jpg");
         _image.setPos((WIDTH - 400) / 2, (HEIGHT - 200) / 2);
         _image.setScale(0.5, 0.5);
         _color = _image.getColor();

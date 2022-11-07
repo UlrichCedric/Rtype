@@ -17,10 +17,10 @@ namespace Game {
         _text.SetText("Score : 0");
         _text.setPos(0, 0);
         _text.setFontSize(50);
-        img.setTexture(Config::ExecutablePath + "assets/background.jpg");
-        background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
-        _music.isRepeatable(true);
-        _music.play();
+        // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
+        // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        // _music.isRepeatable(true);
+        // _music.play();
         _key_pressed = NONE;
     }
 
@@ -33,13 +33,13 @@ namespace Game {
 
     void Windows::init()
     {
-        try {
-            _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-            _window.setFramerateLimit(fps);
-        } catch (std::exception &e) {
-            throw WindowCreationError();
-        }
-        return;
+        // try {
+        //     _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
+        //     _window.setFramerateLimit(fps);
+        // } catch (std::exception &e) {
+        //     throw WindowCreationError();
+        // }
+        // return;
     }
 
     void Windows::Events()
@@ -63,8 +63,8 @@ namespace Game {
     void Windows::Display_menu()
     {
         _window.clear();
-        _window.draw(background.get_sprite());
-        _window.draw(_button._image.get_sprite());
+        // _window.draw(background.get_sprite());
+        // _window.draw(_button._image.get_sprite());
         _window.display();
     }
 
@@ -201,15 +201,15 @@ namespace Game {
     {
         // client.asyncReceiveData();
         while (_window.isOpen()) {
-            if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
-            }
-            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-            if (_state == END) {
-                client.setCanReceiveData(false);
-            }
+            // if (_key_pressed != NONE) {
+            //     client.sendData(_key_pressed);
+            // }
+            // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+            // if (_state == END) {
+            //     client.setCanReceiveData(false);
+            // }
             switch (_state) {
-                case MENU: handleMenu(); break;
+                case MENU: _menu.handleMenu(_window); break;
                 case GAME: handleGame(client); break;
                 case PAUSE: handlePause(); break;
                 case END: handleEnd(); break;
@@ -217,6 +217,6 @@ namespace Game {
             }
             _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
         }
-        _music.stop();
+        // _music.stop();
     }
 }

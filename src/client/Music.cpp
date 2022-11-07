@@ -11,7 +11,7 @@ namespace Game {
 
     Music::Music()
     {
-        path = Config::ExecutablePath + "assets/Main.ogg";
+        path = Config::ExecutablePath + "assets/Main.wav";
         if (!_music.openFromFile(path))
             std::cout << "Unable to open music file : " << path << std::endl;
         else {

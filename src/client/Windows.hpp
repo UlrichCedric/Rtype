@@ -24,6 +24,7 @@
 #include "Health.hpp"
 #include "Shoot.hpp"
 #include "Player.hpp"
+#include "menu/Menu.hpp"
 
 namespace Game {
     enum State {
@@ -59,7 +60,7 @@ namespace Game {
             Image img;
             Image background;
             Player _player;
-            Music _music;
+            // Music _music;
             Paralax paralax;
             enum Input _key_pressed;
             enum State _state;
@@ -67,5 +68,6 @@ namespace Game {
             Ennemy _ennemy;
             Text _text;
             int _score;
+            Menu::Menu _menu;
     };
 }
