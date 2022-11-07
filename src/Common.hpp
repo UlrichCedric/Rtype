@@ -109,18 +109,6 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
     );
 }
 
-enum Type {
-    InitSpriteDataType,
-    SpriteDataType,
-    Loose
-};
-
-struct Data {
-    enum Type type;
-    boost::array<SpriteData, 16> spriteDatas;
-    boost::array<InitSpriteData, 16> initSpriteDatas;
-};
-
 enum Status {
     OPEN,
     CLOSE
@@ -135,3 +123,17 @@ typedef struct Lobby {
     boost::uuids::uuid uuid;
     enum Status status;
 } Lobby;
+
+enum Type {
+    InitSpriteDataType,
+    SpriteDataType,
+    LobbyType,
+    Loose
+};
+
+struct Data {
+    enum Type type;
+    boost::array<SpriteData, 16> spriteDatas;
+    boost::array<InitSpriteData, 16> initSpriteDatas;
+    boost::array<Lobby, 16> lobbies;
+};
