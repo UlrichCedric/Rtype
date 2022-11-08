@@ -21,11 +21,17 @@ namespace Game {
         public:
             Text() {};
             Text(std::string path);
+            /// @brief  set the position of the text
             void setPos(int x, int y) {_item.setPosition(x, y);};
+            /// @brief  set the the text
             void SetText(std::string text);
+            /// @brief  set the the font
             void setFont(std::string path);
+            /// @brief  set the the size of the text
             void setFontSize(int size) {_item.setCharacterSize(size);};
+            /// @brief  set the the color of the text
             void setFontColor(sf::Color color) {_item.setFillColor(color);};
+            /// @brief  set the the style of the text
             void setFontStyle(sf::Text::Style style) {_item.setStyle(style);};
             ~Text() {};
             sf::Font _font;
