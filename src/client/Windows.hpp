@@ -36,7 +36,7 @@ namespace Game {
     class Windows {
         public:
             Windows(void);
-            void Loop(void);
+            void Loop(Client &);
             void Display_menu(void);
             void Display_pause(void);
             void Events(void);
@@ -45,10 +45,10 @@ namespace Game {
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
             void handleMenu(void);
-            void handleGame(void);
+            void handleGame(Client &);
             void handlePause(void);
             void handleEnd(void);
-            void init(Client &);
+            void init(void);
             ~Windows(void) = default;
 
         private:
@@ -56,17 +56,16 @@ namespace Game {
             std::string _ip;
             sf::Font font;
             int _fps;
-            Image img;
-            Image background;
+            Image _img;
+            Image _background;
             Player _player;
             Music _music;
-            Paralax paralax;
+            Paralax _paralax;
             enum Input _key_pressed;
             enum State _state;
             Menu::Button _button;
             Ennemy _ennemy;
             Text _text;
             int _score;
-            Client _client;
     };
 }

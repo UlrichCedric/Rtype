@@ -44,7 +44,9 @@ namespace Game {
             void set_path(std::string path) { _path = path; }
             sf::Sprite &get_sprite() { return _sprite; }
             void setPos(float posX = 0, float posY = 0) { _sprite.setPosition(posX, posY); }
-            void setPos(std::pair<float, float> pos) { _sprite.setPosition(pos.first, pos.second); }
+            void setPos(std::pair<float, float> pos) {
+                _sprite.setPosition(pos.first, pos.second);
+            }
 
             void setHp(int hp, std::pair<float, float> coords) {
                 if (!_isHealth) {
@@ -60,7 +62,10 @@ namespace Game {
             sf::Color getColor() { return _sprite.getColor(); };
             void setColor(sf::Color color) { _sprite.setColor(color); };
             void setRotation(float angle) { _sprite.setRotation(angle); };
-            void setRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
+            void setRect(int left, int top, int width, int height) {
+                _sprite.setTextureRect(sf::IntRect(left, top, width, height));
+                std::cout << "rectangle x: " << width << " y: " << height << std::endl;
+            };
             void MoveRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
             std::size_t getId(void) { return _id; }
             void draw(sf::RenderWindow &win) { win.draw(_sprite); }

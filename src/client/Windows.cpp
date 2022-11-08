@@ -7,33 +7,33 @@
 
 #include "Windows.hpp"
 
+#include <filesystem>
+
 namespace Game {
-    Windows::Windows():
-        _state(MENU),
-        _fps(60),
-        _score(0),
-        _key_pressed(NONE)
-    {
+    Windows::Windows() {
         _text = Text("assets/police.ttf");
         _text.SetText("Score : 0");
         _text.setPos(0, 0);
         _text.setFontSize(50);
-        img.setTexture(Config::ExecutablePath + "assets/background.jpg");
-        background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
+        // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
+        // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
         _music.isRepeatable(true);
+        _state = GAME;
+        _score = 0;
+        _fps = 60;
+        _key_pressed = NONE;
         _music.play();
     }
 
     void Windows::Display_pause()
     {
         _window.clear();
-        _window.draw(background.get_sprite());
+        _window.draw(_background.get_sprite());
         _window.display();
     }
 
-    void Windows::init(Client &client)
+    void Windows::init(void)
     {
-        _client = client;
         try {
             _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
             _window.setFramerateLimit(_fps);
@@ -64,7 +64,7 @@ namespace Game {
     void Windows::Display_menu()
     {
         _window.clear();
-        _window.draw(background.get_sprite());
+        _window.draw(_background.get_sprite());
         _window.draw(_button._image.get_sprite());
         _window.display();
     }
@@ -165,16 +165,15 @@ namespace Game {
      *
      * @param client
      */
-    void Windows::handleGame(void)
+    void Windows::handleGame(Client &client)
     {
         Events_game();
         _window.clear();
         _window.draw(_text._item);
 
-        for (auto img: _client._images) {
-            std::cout << img.get()->get_path() << std::endl;
+        for (auto img: client._images) {
             try {
-                img.get()->draw(_window);
+                img->draw(_window);
             } catch (const std::exception &e) {
                 std::cout << e.what() << std::endl;
             }
@@ -198,19 +197,19 @@ namespace Game {
      *
      * @param client
      */
-    void Windows::Loop(void)
+    void Windows::Loop(Client &client)
     {
         while (_window.isOpen()) {
             if (_key_pressed != NONE) {
-                _client.sendData(_key_pressed);
+                client.sendData(_key_pressed);
             }
-            _player.setPos(_client.getPlayerPos().first, _client.getPlayerPos().second);
+            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
             if (_state == END) {
-                _client.setCanReceiveData(false);
+                client.setCanReceiveData(false);
             }
             switch (_state) {
                 case MENU: handleMenu(); break;
-                case GAME: handleGame(); break;
+                case GAME: handleGame(client); break;
                 case PAUSE: handlePause(); break;
                 case END: _window.close(); break;
                 default: break;

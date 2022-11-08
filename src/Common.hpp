@@ -85,7 +85,7 @@ struct InitSpriteData {
      * @brief Max size of the rect
      *
      */
-    std::pair<float, float> maxSize;
+    std::pair<float, float> rectSize;
 
     /**
      * @brief Health of the entity
@@ -101,7 +101,7 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
         e1.path == e2.path &&
         e1.coords == e2.coords &&
         e1.scale == e2.scale &&
-        e1.maxSize == e2.maxSize
+        e1.rectSize == e2.rectSize
     );
 }
 

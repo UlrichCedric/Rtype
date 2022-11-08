@@ -14,8 +14,8 @@ int main(void)
 
     try {
         Client client("127.0.0.1", 10001);
-        win.init(client);
-        win.Loop();
+        win.init();
+        win.Loop(client);
     } catch (ClientError &e) {
         std::cerr << e.what() << std::endl;
         return 84;

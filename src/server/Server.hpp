@@ -85,7 +85,7 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
 

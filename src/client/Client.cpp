@@ -79,19 +79,20 @@ void Client::receiveData(void)
 void Client::handleInitSpriteData(void)
 {
     for (size_t i = 0; _recv_buf[0].initSpriteDatas[i].id != 0; i++) {
-        std::cout << "le path de le image: " << _recv_buf[0].initSpriteDatas[i].path << std::endl;
-        if (std::ifstream(_recv_buf[0].initSpriteDatas[i].path).good()) {
+
+        if (access(_recv_buf[0].initSpriteDatas[i].path, F_OK) != 0) {
             std::cerr << "Path " << _recv_buf[0].initSpriteDatas[i].path << " does not exist" << std::endl;
         }
+
         std::shared_ptr<Game::Image> img = std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
             _recv_buf[0].initSpriteDatas[i].path,
             _recv_buf[0].initSpriteDatas[i].coords,
             _recv_buf[0].initSpriteDatas[i].scale,
-            _recv_buf[0].initSpriteDatas[i].maxSize,
+            _recv_buf[0].initSpriteDatas[i].rectSize,
             _recv_buf[0].initSpriteDatas[i].health
         );
-        _images.push_back(std::move(img));
+        _images.push_back(img);
     }
 }
 

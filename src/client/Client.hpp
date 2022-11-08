@@ -18,10 +18,12 @@
 
 class Client {
     public:
-        Client(std::string ip, std::size_t port):
+        Client(const std::string ip, const std::size_t port):
             _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
             _socket(_io_context),
-            _player_pos({0, 0})
+            _player_pos({0, 0}),
+            _ip(ip),
+            _port(port)
         {
             _socket.open(boost::asio::ip::udp::v4());
             _uuid = boost::uuids::random_generator()();

@@ -258,7 +258,8 @@ std::shared_ptr<Entity> Server::createEntity(
     std::string path,
     std::pair<float, float> velocity,
     std::pair<float, float> position = { -1.0, -1.0 },
-    std::pair<float, float> scale = { 1.0, 1.0 }
+    std::pair<float, float> scale = { 1.0, 1.0 },
+    std::pair<float, float> rect = { -1.0, -1.0 }
 ) {
     std::shared_ptr<Entity> e = _f.get()->createEntity(templ);
     std::cout << "id de la nouvelle entity " << e.get()->getId() << std::endl;
@@ -267,6 +268,7 @@ std::shared_ptr<Entity> Server::createEntity(
         auto eDraw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
         if (eDraw != nullptr && !path.empty()) {
             eDraw->setSprite(path);
+            eDraw->setRectSize(rect);
         }
         auto eVel = std::dynamic_pointer_cast<Velocity>(e.get()->getComponent(VELOCITY));
         if (eVel != nullptr) {
@@ -303,7 +305,7 @@ void Server::initEcs(boost::uuids::uuid uuid)
     InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
 
     try {
-        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 26.0 }));
 
         std::size_t i = 0;
         boost::array<InitSpriteData, 16> array_buf = { endArray };
@@ -404,7 +406,7 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
             .id = e.get()->getId(),                                     // get the id of the sprite
             .coords = pos.get()->getPos(),                              // get the position of the sprite
             .scale = scale.get()->getScale(),                           // get the scale of the sprite
-            .maxSize = draw.get()->getMaxOffset(),                      // get the max coordinates of the rect
+            .rectSize = draw.get()->getRectSize(),                      // get the max coordinates of the rect
             .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
         };
         strcpy(s.path, draw.get()->getPath().c_str());
