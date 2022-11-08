@@ -11,6 +11,7 @@
 #include <boost/thread/thread.hpp>
 
 #include <memory>
+#include <unistd.h>
 
 #include "../Common.hpp"
 #include "Image.hpp"

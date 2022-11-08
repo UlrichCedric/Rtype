@@ -51,10 +51,6 @@ struct SpriteData {
     std::pair<float, float> coords;
     int health;
 };
-/**
-   *  coords: pair of coords of the sprite (x, y)
-   *  id: the id of the sprite
-*/
 
 /**
  * @brief Struct to init a sprite
@@ -71,7 +67,7 @@ struct InitSpriteData {
      * @brief Path of the texture
      *
      */
-    std::string path;
+    char path[128];
 
     /**
      * @brief Spawn coordinates

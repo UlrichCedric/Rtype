@@ -17,6 +17,7 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
+#include <string.h>
 
 #include "../Common.hpp"
 

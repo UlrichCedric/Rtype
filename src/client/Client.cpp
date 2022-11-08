@@ -61,7 +61,7 @@ void Client::receiveData(void)
         }
         if (_recv_buf[0].type == INITSPRITEDATATYPE) {
             std::cout << "[1] Received initSpriteData" << std::endl;
-            std::cout << _recv_buf[0].initSpriteDatas[0].path << std::endl;
+            std::cout << "received path: " << _recv_buf[0].initSpriteDatas[0].path << std::endl;
             std::cout << "[2] Received initSpriteData" << std::endl;
             handleInitSpriteData();
         } else if (_recv_buf[0].type == SPRITEDATATYPE) {
@@ -82,6 +82,9 @@ void Client::handleInitSpriteData(void)
 
     for (size_t i = 0; _recv_buf[0].initSpriteDatas[i].id != endArray.id ; i++) {
         std::cout << "le path de le image: " << _recv_buf[0].initSpriteDatas[i].path << std::endl;
+        if (access(_recv_buf[0].initSpriteDatas[i].path, R_OK) != 0) {
+            std::cerr << "Path " << _recv_buf[0].initSpriteDatas[i].path << " does not exist" << std::endl;
+        }
         std::shared_ptr<Game::Image> img = std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
             _recv_buf[0].initSpriteDatas[i].path,

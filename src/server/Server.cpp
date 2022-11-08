@@ -222,7 +222,7 @@ void Server::handleSend(
     const boost::system::error_code& /*error*/,
     std::size_t /*bytes_transferred*/
 ) {
-    if (send_buf[0].initSpriteDatas[0].id == 0) {
+    if (send_buf[0].type == INITSPRITEDATATYPE && send_buf[0].initSpriteDatas[0].id == 0) {
         std::cout << "sent path: " << send_buf[0].initSpriteDatas[0].path << std::endl;
         std::cerr << "Empty buffer sent" << std::endl;
         return;
@@ -303,11 +303,7 @@ void Server::initEcs(boost::uuids::uuid uuid)
     InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
 
     try {
-        _entities.push_back(createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 }));
-        _entities.push_back(createEntity("Background", "../../assets/paralax/planet.png", { -2.0, 0.0 }, { 10.0, 10.0 }, { 3.0, 4.0 }));
-        _entities.push_back(createEntity("Background", "../../assets/paralax/planet.png", { -4.0, 0.0 }, { 10.0, 500.0 }, { 3.0, 4.0 }));
-        _entities.push_back(createEntity("Background", "../../assets/paralax/stars.png", { -3.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 }));
-        _entities.push_back(createEntity("Background", "../../assets/paralax/stars.png", { -4.0, 0.0 }, { 0.0, 250.0 }, { 5.0, 6.0 }));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }));
 
         std::size_t i = 0;
         boost::array<InitSpriteData, 16> array_buf = { endArray };
@@ -406,12 +402,12 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
         }
         InitSpriteData s = {
             .id = e.get()->getId(),                                     // get the id of the sprite
-            .path = draw.get()->getPath(),                              // get the path of the texture
             .coords = pos.get()->getPos(),                              // get the position of the sprite
             .scale = scale.get()->getScale(),                           // get the scale of the sprite
             .maxSize = draw.get()->getMaxOffset(),                      // get the max coordinates of the rect
             .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
         };
+        strcpy(s.path, draw.get()->getPath().c_str());
 
         return s;
     } catch (std::exception &e) {
