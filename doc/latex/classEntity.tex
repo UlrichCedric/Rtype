@@ -1,0 +1,52 @@
+\hypertarget{classEntity}{}\doxysection{Entity Class Reference}
+\label{classEntity}\index{Entity@{Entity}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEntity_a8e7681e1453b57627f211d1877e0a767}\label{classEntity_a8e7681e1453b57627f211d1877e0a767}} 
+{\bfseries Entity} (size\+\_\+t id=0)
+\item 
+\mbox{\Hypertarget{classEntity_a86a3bd9f10ad1d6815ad9dc726b5103e}\label{classEntity_a86a3bd9f10ad1d6815ad9dc726b5103e}} 
+{\bfseries Entity} (\mbox{\hyperlink{classEntity}{Entity}} \&e)
+\item 
+\mbox{\Hypertarget{classEntity_a3a7e386b550a20656132be703f11baf6}\label{classEntity_a3a7e386b550a20656132be703f11baf6}} 
+size\+\_\+t {\bfseries get\+Id} (void)
+\item 
+\mbox{\Hypertarget{classEntity_a39ebcd877e732c06e2acb88aa1bf9b1d}\label{classEntity_a39ebcd877e732c06e2acb88aa1bf9b1d}} 
+void {\bfseries set\+Id} (std\+::size\+\_\+t id)
+\item 
+\mbox{\Hypertarget{classEntity_a4dc56f7a2a9feb671c3f3a00a3d233f5}\label{classEntity_a4dc56f7a2a9feb671c3f3a00a3d233f5}} 
+bool {\bfseries has} (std\+::string name)
+\item 
+\mbox{\Hypertarget{classEntity_a1a937b2f68c8d3e841ec540191185e9c}\label{classEntity_a1a937b2f68c8d3e841ec540191185e9c}} 
+bool {\bfseries has} (int co)
+\item 
+\mbox{\Hypertarget{classEntity_af756272171abdddf0ec8af78e7ff5d0f}\label{classEntity_af756272171abdddf0ec8af78e7ff5d0f}} 
+void {\bfseries add\+Component} (int cmp)
+\item 
+\mbox{\Hypertarget{classEntity_a60de9560299905a4b9d763dd1f430bbb}\label{classEntity_a60de9560299905a4b9d763dd1f430bbb}} 
+void {\bfseries add\+Component} (std\+::string name)
+\item 
+\mbox{\Hypertarget{classEntity_ae6d5bc0ecc8203b32f3ffca36bfba236}\label{classEntity_ae6d5bc0ecc8203b32f3ffca36bfba236}} 
+void {\bfseries remove\+Component} (int cmp)
+\item 
+\mbox{\Hypertarget{classEntity_a92de5882cad317a0c2b9ae6919506dcf}\label{classEntity_a92de5882cad317a0c2b9ae6919506dcf}} 
+void {\bfseries remove\+Component} (std\+::string name)
+\item 
+\mbox{\Hypertarget{classEntity_a667a379c5f362de377b003069c79aa6c}\label{classEntity_a667a379c5f362de377b003069c79aa6c}} 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classIComponent}{IComponent}} $>$ {\bfseries get\+Component} (std\+::string name)
+\item 
+\mbox{\Hypertarget{classEntity_a682a7a04530cdda9af319fc06287ecb9}\label{classEntity_a682a7a04530cdda9af319fc06287ecb9}} 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classIComponent}{IComponent}} $>$ {\bfseries get\+Component} (components c)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEntity_a3aad7d03564a5b2451d317138ef66df8}\label{classEntity_a3aad7d03564a5b2451d317138ef66df8}} 
+std\+::list$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classIComponent}{IComponent}} $>$ $>$ {\bfseries \+\_\+comps}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/server/ecs/Entity.\+hpp\end{DoxyCompactItemize}
