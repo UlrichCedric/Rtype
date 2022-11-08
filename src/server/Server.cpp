@@ -222,18 +222,20 @@ void Server::handleSend(
     const boost::system::error_code& /*error*/,
     std::size_t /*bytes_transferred*/
 ) {
-    if (send_buf.size() == 0) {
+    if (send_buf[0].initSpriteDatas[0].id == 0) {
+        std::cout << "sent path: " << send_buf[0].initSpriteDatas[0].path << std::endl;
         std::cerr << "Empty buffer sent" << std::endl;
         return;
     }
 
     std::string type = "undefined";
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
+
     if (send_buf[0].type == INITSPRITEDATATYPE) {
-        std::cout << "----------- handleSend initSpriteDatas ----------------" << std::endl;
+        std::cout << "---------------- handleSend initSpriteDatas ----------------" << std::endl;
         type = "InitSpriteData";
-        InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
         for (size_t i = 0; send_buf[0].initSpriteDatas[i].id != endArray.id ; i++) {
-            std::cout << "inside handleSend -> le ID de le image: " << send_buf[0].initSpriteDatas[i].id << std::endl;
+            std::cout << "inside handleSend -> path: " << send_buf[0].initSpriteDatas[i].path << std::endl;
         }
     } else if (send_buf[0].type == SPRITEDATATYPE) {
         type = "SpriteData";
@@ -259,6 +261,7 @@ std::shared_ptr<Entity> Server::createEntity(
     std::pair<float, float> scale = { 1.0, 1.0 }
 ) {
     std::shared_ptr<Entity> e = _f.get()->createEntity(templ);
+    std::cout << "id de la nouvelle entity " << e.get()->getId() << std::endl;
 
     try {
         auto eDraw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
@@ -293,7 +296,6 @@ std::shared_ptr<Entity> Server::createEntity(
  */
 void Server::initEcs(boost::uuids::uuid uuid)
 {
-    std::cout << "-----InitECS-----" << std::endl;
     _f = std::make_unique<Factory>();
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
@@ -311,33 +313,33 @@ void Server::initEcs(boost::uuids::uuid uuid)
         boost::array<InitSpriteData, 16> array_buf = { endArray };
 
         for (auto entity: _entities) {
-            std::cout << "i: " << i << std::endl;
             if (i == 15) {
                 std::cerr << "Error: upgrade boost::array size" << std::endl;
                 break;
             }
             array_buf.at(i) = getInitSpriteData(entity);
-            std::cout << "getInitSpriteData received path : " << array_buf[i].path << std::endl;
-            i += 1;
+            i++;
         }
 
-        std::cout << "before array_buf LOOP inside INITECS" << std::endl;
-        for (size_t i = 0; array_buf[i].id != endArray.id ; i++) {
-            std::cout << "inside initECS -> le ID de le image: " << array_buf[i].id << std::endl;
+        if (array_buf[0].id == endArray.id) {
+            std::cout << "Error InitECS : Empty array_buf" << std::endl;
+            return ;
         }
 
         Data d = { INITSPRITEDATATYPE, {  }, array_buf };
         boost::array<Data, 1> send_buf = { d };
 
-        std::cout << "before loop players" << std::endl;
-        for (Player player : _players) {
-            std::cout << "inside loop -> player with uuid: " << player.uuid << std::endl;
-            if (player.uuid != uuid) {
+        for (auto p: _players) {
+            // if wrong player, go to next player
+            if (p.uuid != uuid) {
                 continue;
             }
+
+            // if right player, send buffer
+            std::cout << send_buf[0].initSpriteDatas[0].path << std::endl;
             _socket.async_send_to(
                 boost::asio::buffer(send_buf),
-                player.endpoint,
+                p.endpoint,
                 boost::bind(
                     &Server::handleSend,
                     this,
@@ -348,7 +350,6 @@ void Server::initEcs(boost::uuids::uuid uuid)
                 )
             );
         }
-        std::cout << "after loop players" << std::endl;
     } catch (std::exception &e) {
         std::cerr << "Error initECS: " << e.what() << std::endl;
     }
@@ -411,8 +412,6 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
             .maxSize = draw.get()->getMaxOffset(),                      // get the max coordinates of the rect
             .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
         };
-
-        std::cout << "path of new created object : " << s.path << std::endl;
 
         return s;
     } catch (std::exception &e) {

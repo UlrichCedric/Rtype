@@ -17,7 +17,7 @@
 class Factory {
     public:
 
-    Factory(): _last_id(0) {
+    Factory(): _last_id(1) {
         std::ifstream file("src/server/ecs/entities.conf");
         std::string string;
         std::string word;
@@ -96,6 +96,6 @@ class Factory {
 
     private:
 
-    std::size_t _last_id;
+    std::size_t _last_id = 1;
     std::unordered_map<std::string, std::shared_ptr<Entity>> _customs;
 };
