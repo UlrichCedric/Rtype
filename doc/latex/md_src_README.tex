@@ -1,0 +1,155 @@
+\href{https://img.shields.io/badge/MADE\%20WITH-BOOST::ASIO-brightgreen}{\texttt{ }}\hypertarget{md_src_README_autotoc_md13}{}\doxysection{Serveur}\label{md_src_README_autotoc_md13}
+① Le serveur est créé et envoie des données sur l\textquotesingle{}endpoint initialisée
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{handleTimer}
+\DoxyCodeLine{}
+\DoxyCodeLine{• Fonction qui fait office de boucle principale du serveur.}
+\DoxyCodeLine{• Elle est appelée en boucle rythmée par une clock.}
+\DoxyCodeLine{• handleTimer appelle handleTimer toutes les X millisecondes}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Inside handleTimer}
+\DoxyCodeLine{}
+\DoxyCodeLine{La fonction sendSprites est appelée}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sendSprites}
+\DoxyCodeLine{}
+\DoxyCodeLine{Envoie la liste des SpriteData au client}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structSpriteData}{SpriteData}} \{}
+\DoxyCodeLine{    std::pair<float, float> coords;}
+\DoxyCodeLine{    std::size\_t id;}
+\DoxyCodeLine{\} \mbox{\hyperlink{structSpriteData}{SpriteData}};}
+
+\end{DoxyCode}
+\hypertarget{md_src_README_autotoc_md14}{}\doxysection{Client}\label{md_src_README_autotoc_md14}
+➁ Un client est créé et envoie des données sur le serveur
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Lorsqu'un client est créé, il crée avec lui un uuid.}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Lorsque le joueur intéragit avec le jeu, l'input est envoyé au serveur avec son uuid}
+\DoxyCodeLine{(il envoie une Action)}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structAction}{Action}} \{}
+\DoxyCodeLine{    \textcolor{keyword}{enum} Input input;}
+\DoxyCodeLine{    boost::uuids::uuid uuid;}
+\DoxyCodeLine{\} \mbox{\hyperlink{structAction}{Action}};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{enum} Input \{}
+\DoxyCodeLine{    UP,}
+\DoxyCodeLine{    DOWN,}
+\DoxyCodeLine{    LEFT,}
+\DoxyCodeLine{    RIGHT,}
+\DoxyCodeLine{    SPACE,}
+\DoxyCodeLine{    NONE}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Côté serveur, la fonction startReceive permet de recevoir de la data en continu}
+\DoxyCodeLine{en asynchrone grâce à la fonction async\_receive\_from.}
+\DoxyCodeLine{Cette fonction rappelle startReceive lorsqu'elle reçoit une donnée.}
+\DoxyCodeLine{Ce qui permet donc au serveur d'être prêt à recevoir de la donnée en continu.}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{startRecieve()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    async\_receive\_from(data, handleReceive);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{handleReceive()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    /* gère la data reçue */}
+\DoxyCodeLine{    startReceive();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+❸ Mise à jour coordonnées sprite du player OU nouveau client
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Si l'uuid reçu est inconnu du serveur, des coordonnées pour son sprite ainsi qu'un id lui}
+\DoxyCodeLine{sont attribués, son endpoint et son uuid sont stockées.}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structPlayer}{Player}} \{}
+\DoxyCodeLine{    boost::asio::ip::udp::endpoint endpoint;}
+\DoxyCodeLine{    boost::uuids::uuid uuid;}
+\DoxyCodeLine{    std::size\_t idSprite;}
+\DoxyCodeLine{\} \mbox{\hyperlink{structPlayer}{Player}};}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Si l'uuid est déjà connu, les coordonnées du sprite du player sont mis à jour.}
+\DoxyCodeLine{Ils seront envoyés automatiquement dans la fonction sendSprites de la boucle handleTimer.}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::vector<SpriteData> \_sprites;}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{RAPPEL:}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\mbox{\hyperlink{structSpriteData}{SpriteData}} \{}
+\DoxyCodeLine{    std::pair<float, float> coords;}
+\DoxyCodeLine{    std::size\_t id;}
+\DoxyCodeLine{\} \mbox{\hyperlink{structSpriteData}{SpriteData}};}
+
+\end{DoxyCode}
+ 
