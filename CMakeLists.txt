@@ -25,6 +25,7 @@ set(SRC_CLIENT src/client/main.cpp
 	src/client/utils/Config.cpp
 	src/client/utils/Paralax.cpp
 	src/client/game/Client.cpp
+	src/client/game/InGame.cpp
 	src/client/game/Event.cpp
 	src/client/game/Player.cpp
 	src/client/game/Ennemy.cpp
@@ -49,7 +50,7 @@ INCLUDE_DIRECTORIES(
         "${CMAKE_CURRENT_SOURCE_DIR}/src/client/game/"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/client/utils/"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/client/pause/"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/pause/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/menu/"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/server/"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/Systems"

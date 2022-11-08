@@ -18,13 +18,14 @@
 #include "utils/Text.hpp"
 #include "utils/Music.hpp"
 #include "utils/Paralax.hpp"
-#include "Client.hpp"
-#include "Button.hpp"
-#include "Ennemy.hpp"
-#include "Health.hpp"
-#include "Shoot.hpp"
-#include "Player.hpp"
+#include "game/Client.hpp"
+#include "utils/Button.hpp"
+#include "game/Ennemy.hpp"
+#include "game/Health.hpp"
+#include "game/Shoot.hpp"
+#include "game/Player.hpp"
 #include "menu/Menu.hpp"
+#include "game/InGame.hpp"
 
 namespace Game {
     enum State {
@@ -37,7 +38,7 @@ namespace Game {
     class Windows {
         public:
             Windows();
-            void Loop();
+            void GameLoop();
             void Display_menu();
             void Display_pause();
             void Events();
@@ -68,6 +69,9 @@ namespace Game {
             Ennemy _ennemy;
             Text _text;
             int _score;
+            //Menu
             Menu::Menu _menu;
+            //InGame
+            InGame _game;
     };
 }

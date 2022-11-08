@@ -197,7 +197,7 @@ namespace Game {
         _window.close();
     }
 
-    void Windows::Loop()
+    void Windows::GameLoop()
     {
         // client.asyncReceiveData();
         while (_window.isOpen()) {
@@ -211,7 +211,6 @@ namespace Game {
             switch (_state) {
                 case MENU: _menu.handleMenu(_window); break;
                 case GAME: handleGame(); break;
-                case PAUSE: handlePause(); break;
                 case END: handleEnd(); break;
                 default: break;
             }

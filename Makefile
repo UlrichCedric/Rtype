@@ -13,6 +13,8 @@ SRCS = \
 	$(wildcard src/client/*.cpp) \
    	$(wildcard src/client/menu/*.cpp) \
    	$(wildcard src/client/utils/*.cpp)         \
+   	$(wildcard src/client/game/*.cpp)         \
+   	$(wildcard src/client/pause/*.cpp)         \
 
 OBJS = $(SRCS:.cpp=.o)
 
