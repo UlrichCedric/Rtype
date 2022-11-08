@@ -7,6 +7,8 @@
 
 #include "Server.hpp"
 
+//TODO it displays but does not move
+
 /**
  * @brief parses the 'enemies.conf' file to get the different waves
  *
