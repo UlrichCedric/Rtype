@@ -8,11 +8,12 @@
 #include "Windows.hpp"
 
 namespace Game {
-    Windows::Windows()
+    Windows::Windows():
+        _state(MENU),
+        _fps(60),
+        _score(0),
+        _key_pressed(NONE)
     {
-        _state = MENU;
-        fps = 60;
-        _score = 0;
         _text = Text("assets/police.ttf");
         _text.SetText("Score : 0");
         _text.setPos(0, 0);
@@ -21,7 +22,6 @@ namespace Game {
         background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
         _music.isRepeatable(true);
         _music.play();
-        _key_pressed = NONE;
     }
 
     void Windows::Display_pause()
@@ -31,11 +31,12 @@ namespace Game {
         _window.display();
     }
 
-    void Windows::init()
+    void Windows::init(Client &client)
     {
+        _client = client;
         try {
             _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-            _window.setFramerateLimit(fps);
+            _window.setFramerateLimit(_fps);
         } catch (std::exception &e) {
             throw WindowCreationError();
         }
@@ -50,7 +51,7 @@ namespace Game {
                 _state = END;
             } else if (event.type == sf::Event::MouseMoved) {
                 _button.IsHover(sf::Mouse::getPosition(_window));
-		    } else if (event.type == sf::Event::MouseButtonPressed) {
+            } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (_button.IsClicked(sf::Mouse::getPosition(_window))) {
                         _state = GAME;
@@ -115,7 +116,7 @@ namespace Game {
         }
     }
 
-    void Windows::Events_game()
+    void Windows::Events_game(void)
     {
         sf::Event event;
         while (_window.pollEvent(event)) {
@@ -135,7 +136,7 @@ namespace Game {
         }
     }
 
-    void Windows::Events_pause()
+    void Windows::Events_pause(void)
     {
         sf::Event event;
         while (_window.pollEvent(event)) {
@@ -164,13 +165,13 @@ namespace Game {
      *
      * @param client
      */
-    void Windows::handleGame(Client &client)
+    void Windows::handleGame(void)
     {
         Events_game();
         _window.clear();
         _window.draw(_text._item);
 
-        for (auto img: client._images) {
+        for (auto img: _client._images) {
             std::cout << img.get()->get_path() << std::endl;
             try {
                 img.get()->draw(_window);
@@ -197,25 +198,27 @@ namespace Game {
      *
      * @param client
      */
-    void Windows::Loop(Client &client)
+    void Windows::Loop(void)
     {
-        // client.asyncReceiveData();
         while (_window.isOpen()) {
             if (_key_pressed != NONE) {
-                client.sendData(_key_pressed);
+                _client.sendData(_key_pressed);
             }
-            _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+            _player.setPos(_client.getPlayerPos().first, _client.getPlayerPos().second);
             if (_state == END) {
-                client.setCanReceiveData(false);
+                _client.setCanReceiveData(false);
             }
             switch (_state) {
                 case MENU: handleMenu(); break;
-                case GAME: handleGame(client); break;
+                case GAME: handleGame(); break;
                 case PAUSE: handlePause(); break;
                 case END: _window.close(); break;
                 default: break;
             }
-            _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
+
+            // If that crashes, just remove the _text.SetText() line and uncomment the next one
+            // _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
+            _text.SetText("Score : " + std::to_string(_score));
         }
         _music.stop();
     }

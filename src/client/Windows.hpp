@@ -35,27 +35,27 @@ namespace Game {
 
     class Windows {
         public:
-            Windows();
-            void Loop(Client& client);
-            void Display_menu();
-            void Display_pause();
-            void Events();
-            void Events_game();
-            void Events_pause();
+            Windows(void);
+            void Loop(void);
+            void Display_menu(void);
+            void Display_pause(void);
+            void Events(void);
+            void Events_game(void);
+            void Events_pause(void);
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
             void handleMenu(void);
-            void handleGame(Client &);
+            void handleGame(void);
             void handlePause(void);
             void handleEnd(void);
-            void init();
-            ~Windows() = default;
+            void init(Client &);
+            ~Windows(void) = default;
 
         private:
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
-            int fps;
+            int _fps;
             Image img;
             Image background;
             Player _player;
@@ -67,5 +67,6 @@ namespace Game {
             Ennemy _ennemy;
             Text _text;
             int _score;
+            Client _client;
     };
 }
