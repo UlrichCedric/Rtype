@@ -5,7 +5,7 @@
 ** Event
 */
 
-#include "../server/ecs/Entity.hpp"
+#include "../../server/ecs/Entity.hpp"
 #include "Event.hpp"
 
 Game::Event::Event()

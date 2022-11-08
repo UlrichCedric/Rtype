@@ -15,7 +15,7 @@
 
 #include <exception>
 
-#include "Health.hpp"
+#include "../game/Health.hpp"
 #include "../Errors.hpp"
 #include "Config.hpp"
 

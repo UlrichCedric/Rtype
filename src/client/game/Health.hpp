@@ -16,8 +16,8 @@
 #include <exception>
 #include <iostream>
 
-#include "../Errors.hpp"
-#include "Config.hpp"
+#include "../../Errors.hpp"
+#include "../utils/Config.hpp"
 
 namespace Game {
     class Health {

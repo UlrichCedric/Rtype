@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "../Image.hpp"
-#include "../Text.hpp"
+#include "../utils/Image.hpp"
+#include "../utils/Text.hpp"
 
 
 class GameLobby {

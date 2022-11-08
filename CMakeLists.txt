@@ -18,19 +18,19 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set(SRC_CLIENT src/client/main.cpp
 	src/client/Windows.cpp
-	src/client/Health.cpp
-	src/client/Image.cpp
-	src/client/Music.cpp
-	src/client/Text.cpp
-	src/client/Config.cpp
-	src/client/Paralax.cpp
-	src/client/Client.cpp
-	src/client/Event.cpp
-	src/client/Player.cpp
-	src/client/Ennemy.cpp
-	src/client/Pause.cpp
-	src/client/Shoot.cpp
-	src/client/Button.cpp
+	src/client/game/Health.cpp
+	src/client/utils/Image.cpp
+	src/client/utils/Music.cpp
+	src/client/utils/Text.cpp
+	src/client/utils/Config.cpp
+	src/client/utils/Paralax.cpp
+	src/client/game/Client.cpp
+	src/client/game/Event.cpp
+	src/client/game/Player.cpp
+	src/client/game/Ennemy.cpp
+	src/client/pause/Pause.cpp
+	src/client/game/Shoot.cpp
+	src/client/utils/Button.cpp
 	src/client/menu/Display.cpp
 	src/client/menu/Events.cpp
 	src/client/menu/GameLobby.cpp
@@ -46,6 +46,10 @@ set(SRC_SERVER
 
 INCLUDE_DIRECTORIES(
         "${CMAKE_CURRENT_SOURCE_DIR}/src/client/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/game/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/utils/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/pause/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/client/pause/"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/server/"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/server/ecs/Systems"
