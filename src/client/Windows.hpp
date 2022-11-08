@@ -28,13 +28,6 @@
 #include "game/InGame.hpp"
 
 namespace Game {
-    enum State {
-        MENU,
-        GAME,
-        PAUSE,
-        END,
-    };
-
     class Windows {
         public:
             Windows();
@@ -58,20 +51,11 @@ namespace Game {
             std::string _ip;
             sf::Font font;
             int fps;
-            Image img;
-            Image background;
-            Player _player;
-            // Music _music;
-            Paralax paralax;
-            enum Input _key_pressed;
             enum State _state;
-            Menu::Button _button;
-            Ennemy _ennemy;
-            Text _text;
-            int _score;
+            
             //Menu
             Menu::Menu _menu;
             //InGame
-            InGame _game;
+            InGame _in_game;
     };
 }
