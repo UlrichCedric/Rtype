@@ -37,7 +37,7 @@ namespace Game {
     class Windows {
         public:
             Windows();
-            void Loop(Client& client);
+            void Loop();
             void Display_menu();
             void Display_pause();
             void Events();
@@ -46,7 +46,7 @@ namespace Game {
             void handleKeyPressed(sf::Event& event);
             void handleKeyReleased(sf::Event& event);
             void handleMenu(void);
-            void handleGame(Client &);
+            void handleGame();
             void handlePause(void);
             void handleEnd(void);
             void init();

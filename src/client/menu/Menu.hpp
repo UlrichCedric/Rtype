@@ -55,7 +55,7 @@ namespace Menu {
 
         private:
             State_menu _state;
-            Game::Music _music;
+            Sound _music;
             Sound _validate_sound;
             Sound _navigation_sound;
             float _music_volume;

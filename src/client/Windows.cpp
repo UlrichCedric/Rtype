@@ -33,13 +33,13 @@ namespace Game {
 
     void Windows::init()
     {
-        // try {
-        //     _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-        //     _window.setFramerateLimit(fps);
-        // } catch (std::exception &e) {
-        //     throw WindowCreationError();
-        // }
-        // return;
+        try {
+            _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
+            _window.setFramerateLimit(fps);
+        } catch (std::exception &e) {
+            throw WindowCreationError();
+        }
+        return;
     }
 
     void Windows::Events()
@@ -155,7 +155,7 @@ namespace Game {
         Display_menu();
     }
 
-    void Windows::handleGame(Client &client)
+    void Windows::handleGame()
     {
         Events_game();
         _window.clear();
@@ -179,9 +179,9 @@ namespace Game {
         //         _player.setLife(100);
         //     }
         // }
-        for (auto img: client._images) {
-            img.draw(_window);
-        }
+        // for (auto img: client._images) {
+        //     img.draw(_window);
+        // }
         _window.display();
         _score += 2;
     }
@@ -197,7 +197,7 @@ namespace Game {
         _window.close();
     }
 
-    void Windows::Loop(Client &client)
+    void Windows::Loop()
     {
         // client.asyncReceiveData();
         while (_window.isOpen()) {
@@ -210,7 +210,7 @@ namespace Game {
             // }
             switch (_state) {
                 case MENU: _menu.handleMenu(_window); break;
-                case GAME: handleGame(client); break;
+                case GAME: handleGame(); break;
                 case PAUSE: handlePause(); break;
                 case END: handleEnd(); break;
                 default: break;
