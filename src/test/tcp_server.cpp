@@ -93,11 +93,11 @@ class tcp_server {
                 }
             } else {
                 std::cout << "data received from client" << std::endl;
-                // if (_recv_buf[0].type == LobbyType) {
-                //     for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                //         std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].uuid << std::endl;
-                //     }
-                // }
+                if (_recv_buf[0].type == LobbyType) {
+                    for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
+                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].uuid << std::endl;
+                    }
+                }
                 async_read_(new_socket);
             }
         }

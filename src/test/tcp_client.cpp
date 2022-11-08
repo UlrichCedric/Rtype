@@ -37,7 +37,7 @@ class tcp_client {
                 std::cout << "send failed: " << error.message() << std::endl;
             }
             while (true) {
-                boost::asio::read(socket, boost::asio::buffer(_recv_buf));
+                boost::asio::read(socket, boost::asio::buffer(_recv_buf), error);
                 if (!error) {
                     if (_recv_buf[0].type == LobbyType) {
                         for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
@@ -46,6 +46,7 @@ class tcp_client {
                     }
                 } else {
                     std::cout << "receive failed: " << error.message() << std::endl;
+                    break;
                 }
             }
         }
