@@ -114,13 +114,16 @@ enum Status {
     CLOSE
 };
 
+boost::uuids::uuid EMPTY_UUID = {};
+
 typedef struct Lobby {
+    boost::uuids::uuid player_uuid;
     bool create;
     bool join;
     std::string name;
     std::size_t nb_players;
     std::size_t size;
-    boost::uuids::uuid uuid;
+    boost::uuids::uuid lobby_uuid;
     enum Status status;
 } Lobby;
 

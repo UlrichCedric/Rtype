@@ -13,15 +13,15 @@
 
 class tcp_client {
     public:
-        tcp_client()
+        tcp_client(): _my_uuid(boost::uuids::random_generator()())
         {
             boost::asio::io_service io_service;
             boost::asio::ip::tcp::socket socket(io_service);
             socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
-            Lobby lobby1 = {true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby lobby2 = {true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby lobby3 = {true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby endArray = {false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
+            Lobby lobby1 = {_my_uuid, true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby lobby2 = {_my_uuid, true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby lobby3 = {_my_uuid, true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby endArray = {_my_uuid, false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
             boost::array<Lobby, 16> array_buf;
             array_buf[0] = lobby1;
             array_buf[1] = lobby2;
@@ -41,7 +41,7 @@ class tcp_client {
                 if (!error) {
                     if (_recv_buf[0].type == LobbyType) {
                         for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                            std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].uuid << std::endl;
+                            std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid << std::endl;
                         }
                     }
                 } else {
@@ -53,6 +53,7 @@ class tcp_client {
         ~tcp_client() {}
     private:
         union { boost::array <Data, 1> _recv_buf; };
+        boost::uuids::uuid _my_uuid;
 };
 
 int main()

@@ -38,52 +38,54 @@ class tcp_server {
                 }
                 std::cout << "New client accepted" << std::endl;
                 std::shared_ptr<boost::asio::ip::tcp::socket> new_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(std::move(new_socket));
-                _sockets.push_back(new_socket_ptr);
+                std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>> pair = {{}, new_socket_ptr};
+                _sockets.push_back(pair);
 
                 async_read_(new_socket_ptr);
                 accept_clients();
             });
         }
 
-        void handle_new_client_(void)
-        {
-
-        }
-
         void read_(void)
         {
-            for (auto socket_ptr : _sockets) {
-                boost::asio::read(*(socket_ptr.get()) , boost::asio::buffer(_recv_buf));
+            for (auto pair : _sockets) {
+                boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_recv_buf));
                 if (_recv_buf[0].type == LobbyType) {
                     for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].uuid << std::endl;
+                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid << std::endl;
                     }
                 }
             }
             std::cout << "Read ended" << std::endl;
         }
 
-        void async_read_(std::shared_ptr<boost::asio::ip::tcp::socket> new_socket)
+        void async_read_(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
         {
             std::cout << "Ready to async read" << std::endl;
-            boost::asio::async_read(*(new_socket.get()), boost::asio::buffer(_recv_buf),
-            boost::bind(&tcp_server::handle_read_, this, new_socket,
+            boost::asio::async_read(*(socket.get()), boost::asio::buffer(_recv_buf),
+            boost::bind(&tcp_server::handle_read_, this, socket,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
         }
 
-        void handle_read_(std::shared_ptr<boost::asio::ip::tcp::socket> new_socket,
+        std::size_t find_index_from_socket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
+        {
+            std::size_t j = -1;
+            for (std::size_t i = 0; i < _sockets.size(); i++) {
+                if (_sockets[i].second == socket) {
+                    j = i;
+                }
+            }
+            return j;
+        }
+
+        void handle_read_(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
             boost::system::error_code const& error, size_t bytes_transferred)
         {
             if ((boost::asio::error::eof == error) ||
                 (boost::asio::error::connection_reset == error)) {
                 std::cout << "player disconnected" << std::endl;
-                std::size_t j = -1;
-                for (std::size_t i = 0; i < _sockets.size(); i++) {
-                    if (_sockets[i] == new_socket) {
-                        j = i;
-                    }
-                }
+                std::size_t j = find_index_from_socket(socket);
                 if (j != -1) {
                     _sockets.erase(_sockets.begin() + j);
                     std::cout << "socket deleted" << std::endl;
@@ -94,20 +96,31 @@ class tcp_server {
             } else {
                 std::cout << "data received from client" << std::endl;
                 if (_recv_buf[0].type == LobbyType) {
+                    std::size_t j = find_index_from_socket(socket);
+                    if (j != -1) {
+                        _sockets[j].first = _recv_buf[0].lobbies[0].player_uuid;
+                    }
                     for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].uuid << std::endl;
+                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid
+                        << "from user " << _recv_buf[0].lobbies[i].player_uuid << std::endl;
                     }
                 }
-                async_read_(new_socket);
+                std::cout << "List of players uuid paired with socket: " << std::endl;
+                std::size_t socket_index = 0;
+                for (auto pair : _sockets) {
+                    std::cout << socket_index << ": " << pair.first << std::endl;
+                    socket_index += 1;
+                }
+                async_read_(socket);
             }
         }
 
         void send_(void)
         {
-            Lobby lobby1 = {true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby lobby2 = {true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby lobby3 = {true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-            Lobby endArray = {false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
+            Lobby lobby1 = {boost::uuids::random_generator()(), true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby lobby2 = {boost::uuids::random_generator()(), true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby lobby3 = {boost::uuids::random_generator()(), true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
+            Lobby endArray = {boost::uuids::random_generator()(), false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
             boost::array<Lobby, 16> array_buf;
             array_buf[0] = lobby1;
             array_buf[1] = lobby2;
@@ -115,8 +128,8 @@ class tcp_server {
             array_buf[3] = endArray;
             Data data = {LobbyType, {}, {}, array_buf};
             boost::array<Data, 1> send_buf = {data};
-            for (auto socket_ptr : _sockets) {
-                boost::asio::write(*(socket_ptr.get()), boost::asio::buffer(send_buf));
+            for (auto pair : _sockets) {
+                boost::asio::write(*(pair.second.get()), boost::asio::buffer(send_buf));
                 std::cout << "data sent to client" << std::endl;
             }
             _timer.expires_from_now(boost::posix_time::milliseconds(500));
@@ -125,7 +138,7 @@ class tcp_server {
     private:
         union { boost::array <Data, 1> _recv_buf; };
         boost::asio::ip::tcp::acceptor _acceptor;
-        std::vector<std::shared_ptr<boost::asio::ip::tcp::socket>> _sockets;
+        std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
         boost::asio::deadline_timer _timer;
 };
 
