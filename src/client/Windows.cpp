@@ -11,14 +11,14 @@ namespace Game {
     Windows::Windows()
     {
         _state = MENU;
-        fps = 60;
+        _fps = 60;
     }
 
     void Windows::init()
     {
         try {
             _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-            _window.setFramerateLimit(fps);
+            _window.setFramerateLimit(_fps);
         } catch (std::exception &e) {
             throw WindowCreationError();
         }
@@ -43,7 +43,7 @@ namespace Game {
         // }
     // }
 
-    void Windows::GameLoop(Client &client)
+    void Windows::GameLoop ()//Client &client)
     {
         while (_window.isOpen()) {
             switch (_state) {
@@ -52,6 +52,9 @@ namespace Game {
                 case END: _window.close(); break;
                 default: break;
             }
+            if (_menu.getState() == Menu::State_menu::CLOSE)
+                _window.close();
+            _fps = _menu.getFps();
         }
     }
 }

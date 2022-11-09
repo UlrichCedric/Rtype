@@ -21,6 +21,16 @@ void Menu::Menu::handleEventsMenu(sf::Event &event)
                 _menu_text_settings.setFontStyle(sf::Text::Regular);
                 _menu_text_settings.setFontColor(sf::Color::White);
             }
+            else if (_menu_select == QUIT_SELECTION) {
+                 _navigation_sound.play();
+                _menu_select = SETTINGS_SELECTION;
+                _menu_rect_selection.setRect(0, 0, 267, 56);
+                _menu_rect_selection.setPos(985, 260);
+                _menu_text_settings.setFontStyle(sf::Text::Bold);
+                _menu_text_settings.setFontColor(sf::Color::Black);
+                _menu_text_quit.setFontStyle(sf::Text::Regular);
+                _menu_text_quit.setFontColor(sf::Color::White);
+            }
         }
         else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
             if (_menu_select == MULTIPLAYER_SELECTION) {
@@ -33,6 +43,16 @@ void Menu::Menu::handleEventsMenu(sf::Event &event)
                 _menu_text_multiplayer.setFontStyle(sf::Text::Regular);
                 _menu_text_multiplayer.setFontColor(sf::Color::White);
             }
+            else if (_menu_select == SETTINGS_SELECTION) {
+                _navigation_sound.play();
+                _menu_select = QUIT_SELECTION;
+                _menu_rect_selection.setRect(0, 0, 267, 56);
+                _menu_rect_selection.setPos(985, 350);
+                _menu_text_quit.setFontStyle(sf::Text::Bold);
+                _menu_text_quit.setFontColor(sf::Color::Black);
+                _menu_text_settings.setFontStyle(sf::Text::Regular);
+                _menu_text_settings.setFontColor(sf::Color::White);
+            }
         }
         else if (event.key.code == sf::Keyboard::Return) {
             if (_menu_select == MULTIPLAYER_SELECTION) {
@@ -42,6 +62,10 @@ void Menu::Menu::handleEventsMenu(sf::Event &event)
             else if (_menu_select == SETTINGS_SELECTION) {
                 _validate_sound.play();
                 _state = State_menu::SETTINGS;
+            }
+            else if (_menu_select == QUIT_SELECTION) {
+                _validate_sound.play();
+                _state = State_menu::CLOSE;
             }
         }
     }

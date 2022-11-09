@@ -33,14 +33,14 @@ namespace Game {
             Windows();
             ~Windows() = default;
             // void Events();
-            void GameLoop(Client &client);
+            void GameLoop();//Client &client);
             void init();
 
         private:
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
-            int fps;
+            int _fps;
             enum State _state;
             
             //Menu
