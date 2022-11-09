@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <boost/uuid/uuid_generators.hpp>
 #include <boost/thread/thread.hpp>
 
 #include "../Common.hpp"
@@ -19,12 +18,17 @@ class Client {
         : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
             _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0})
         {
-            _udp_socket.open(boost::asio::ip::udp::v4());
-            _uuid = boost::uuids::random_generator()();
-            _canReceiveData = true;
-            std::thread thread(&Client::handleThread, this);
-            // peut être intéressant pour tcp : boost::thread t = boost::thread(&Client::handleThread, boost::ref(socket));
-            thread.detach();
+            /*
+                TCP:
+                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+
+                UDP:
+                _udp_socket.open(boost::asio::ip::udp::v4());
+                _uuid = boost::uuids::random_generator()();
+                _canReceiveData = true;
+                std::thread thread(&Client::handleThread, this);
+                thread.detach();
+            */
         }
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
@@ -38,6 +42,8 @@ class Client {
         void setCanReceiveData(bool canReceiveData);
         void createLobby(std::string name, std::size_t size);
         void joinLobby(boost::uuids::uuid uuid);
+        void writeData(void);
+        void readData(void);
         std::vector<Lobby> getLobbies(void);
 
         ~Client() {  };

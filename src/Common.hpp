@@ -15,6 +15,7 @@
 #include <boost/bind/bind.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp> // <iostream> for uuid
+#include <boost/uuid/uuid_generators.hpp>
 
 enum Input {
     UP,

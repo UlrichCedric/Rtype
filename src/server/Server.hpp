@@ -30,44 +30,34 @@ class Server {
     public:
     Server(boost::asio::io_context &io_context):
         _udp_socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 10001)),
-        _timer(io_context)
+        _acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)),
+        _timer(io_context), _empty_uuid({})
     {
         try {
             parseWaves();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
-        handleTimer();
-        startReceive();
+        /*
+            TCP:
+            acceptClients();
+            send();
+
+            UDP:
+            handleTimer();
+            startReceive();
+        */
+    }
+
+    ~Server()
+    {
+        std::cout << "Shut down the server" << std::endl;
     }
 
     private:
     void parseWaves(void);
-    void startReceive(void);
     void sendSprites(void);
 
-    /**
-     * @brief handle received
-     *
-     * @param const boost::system::error_code & error (if any)
-     * @param std::size_t transfered bytes
-     */
-    void handleReceive(const boost::system::error_code &, std::size_t);
-
-    /**
-     * @brief brief description of the fonction
-     *
-     * @param boost::uuids::uuid uuid of the client
-     * @param const boost::array<Data, 1> data sent to the client
-     * @param const boost::system::error_code& error code
-     * @param std::size_t number of bytes received
-     */
-    void handleSend(
-        boost::uuids::uuid,
-        const boost::array<Data, 1>,
-        const boost::system::error_code &,
-        std::size_t
-    );
     void handleTimer(void);
     void handleInput(Action action);
     bool isNewUuid(boost::uuids::uuid uuid);
@@ -75,10 +65,39 @@ class Server {
     void moveSprite(SpriteData& sprite, enum Input input);
     std::size_t setNewSpriteId(std::size_t new_id);
 
+    // UDP
+
     boost::asio::ip::udp::socket _udp_socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;
-    boost::array<Action, 1> _recv_buf;
     std::vector<Player> _players;
+
+    void startReceive(void);
+    void handleReceive(const boost::system::error_code &, std::size_t);
+    void handleSend(
+        boost::uuids::uuid,
+        const boost::array<Data, 1>,
+        const boost::system::error_code &,
+        std::size_t
+    );
+
+    // TCP
+
+    boost::asio::ip::tcp::acceptor _acceptor;
+    std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
+    boost::uuids::uuid _empty_uuid;
+    boost::array<Data, 1> _lobby_buf; // probablement transformable en boost::array<Lobby, 16>
+
+    void acceptClients(void);
+    void read(void);
+    void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    std::size_t findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    void handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
+        boost::system::error_code const& error, size_t bytes_transferred);
+    void send(void);
+
+    // Data, buffer, timer
+
+    boost::array<Action, 1> _recv_buf;
     std::vector<SpriteData> _sprites;
     boost::asio::deadline_timer _timer;
 

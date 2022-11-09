@@ -20,8 +20,8 @@ class tcp_server {
             _acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)),
             _empty_uuid({})
         {
-            accept_clients();
-            send_();
+            acceptClients();
+            send();
         }
 
         ~tcp_server()
@@ -29,7 +29,7 @@ class tcp_server {
             std::cout << "Shut down the server" << std::endl;
         }
 
-        void accept_clients(void)
+        void acceptClients(void)
         {
             _acceptor.async_accept(
                 [this] (std::error_code ec, boost::asio::ip::tcp::socket&& new_socket) {
@@ -42,34 +42,34 @@ class tcp_server {
                 std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>> pair = {{}, new_socket_ptr};
                 _sockets.push_back(pair);
 
-                async_read_(new_socket_ptr);
-                accept_clients();
+                asyncRead(new_socket_ptr);
+                acceptClients();
             });
         }
 
-        void read_(void)
+        void read(void)
         {
             for (auto pair : _sockets) {
-                boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_recv_buf));
-                if (_recv_buf[0].type == LobbyType) {
-                    for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid << std::endl;
+                boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
+                if (_lobby_buf[0].type == LobbyType) {
+                    for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
+                        std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
                     }
                 }
             }
             std::cout << "Read ended" << std::endl;
         }
 
-        void async_read_(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
+        void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
         {
             std::cout << "Ready to async read" << std::endl;
-            boost::asio::async_read(*(socket.get()), boost::asio::buffer(_recv_buf),
-            boost::bind(&tcp_server::handle_read_, this, socket,
+            boost::asio::async_read(*(socket.get()), boost::asio::buffer(_lobby_buf),
+            boost::bind(&tcp_server::handleRead, this, socket,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
         }
 
-        std::size_t find_index_from_socket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
+        std::size_t findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
         {
             std::size_t j = -1;
             for (std::size_t i = 0; i < _sockets.size(); i++) {
@@ -80,13 +80,13 @@ class tcp_server {
             return j;
         }
 
-        void handle_read_(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
+        void handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
             boost::system::error_code const& error, size_t bytes_transferred)
         {
             if ((boost::asio::error::eof == error) ||
                 (boost::asio::error::connection_reset == error)) {
                 std::cout << "player disconnected" << std::endl;
-                std::size_t j = find_index_from_socket(socket);
+                std::size_t j = findIndexFromSocket(socket);
                 if (j != -1) {
                     _sockets.erase(_sockets.begin() + j);
                     std::cout << "socket deleted" << std::endl;
@@ -96,14 +96,14 @@ class tcp_server {
                 }
             } else {
                 std::cout << "data received from client" << std::endl;
-                if (_recv_buf[0].type == LobbyType) {
-                    std::size_t j = find_index_from_socket(socket);
+                if (_lobby_buf[0].type == LobbyType) {
+                    std::size_t j = findIndexFromSocket(socket);
                     if (j != -1) {
-                        _sockets[j].first = _recv_buf[0].lobbies[0].player_uuid;
+                        _sockets[j].first = _lobby_buf[0].lobbies[0].player_uuid;
                     }
-                    for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid
-                        << "from user " << _recv_buf[0].lobbies[i].player_uuid << std::endl;
+                    for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
+                        std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid
+                        << "from user " << _lobby_buf[0].lobbies[i].player_uuid << std::endl;
                     }
                 }
                 std::cout << "List of players uuid paired with socket: " << std::endl;
@@ -112,11 +112,11 @@ class tcp_server {
                     std::cout << socket_index << ": " << pair.first << std::endl;
                     socket_index += 1;
                 }
-                async_read_(socket);
+                asyncRead(socket);
             }
         }
 
-        void send_(void)
+        void send(void)
         {
             Lobby lobby1 = {boost::uuids::random_generator()(), true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
             Lobby lobby2 = {boost::uuids::random_generator()(), true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
@@ -134,10 +134,10 @@ class tcp_server {
                 std::cout << "data sent to client" << std::endl;
             }
             _timer.expires_from_now(boost::posix_time::milliseconds(500));
-            _timer.async_wait(boost::bind(&tcp_server::send_, this));
+            _timer.async_wait(boost::bind(&tcp_server::send, this));
         }
     private:
-        union { boost::array <Data, 1> _recv_buf; };
+        union { boost::array <Data, 1> _lobby_buf; };
         boost::asio::ip::tcp::acceptor _acceptor;
         std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
         boost::asio::deadline_timer _timer;
