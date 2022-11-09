@@ -15,6 +15,7 @@ void Menu::Menu::displayMenu(sf::RenderWindow &window)
     window.draw(_menu_text_top_right02._item);
     window.draw(_menu_text_multiplayer._item);
     window.draw(_menu_text_settings._item);
+    window.draw(_menu_text_quit._item);
     window.draw(_menu_text_bottom_right._item);
 }
 
@@ -53,4 +54,6 @@ void Menu::Menu::displaySettings(sf::RenderWindow &window)
     window.draw(_settings_sonds_volume._item);
     window.draw(_settings_sounds_volume_bar);
     window.draw(_settings_sounds_volume_progression_bar);
+    //fps
+    window.draw(_settings_fps._item);
 }

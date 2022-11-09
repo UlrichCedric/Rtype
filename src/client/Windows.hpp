@@ -30,6 +30,11 @@
 namespace Game {
     class Windows {
         public:
+            Windows();
+            ~Windows() = default;
+            // void Events();
+            void GameLoop();//Client &client);
+            void init();
             Windows(void);
             void GameLoop(Client &);
             void Display_menu(void);
@@ -51,6 +56,7 @@ namespace Game {
             std::string _ip;
             sf::Font font;
             int _fps;
+
             Image _img;
             Image _background;
             Player _player;
