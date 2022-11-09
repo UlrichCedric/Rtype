@@ -39,11 +39,15 @@ class Server {
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
-        /*
-            TCP:
-            acceptClients();
-            send();
+        // TCP:
+        Lobby default_lobby = {{}, false, false, false, "whis", 1, 1, boost::uuids::random_generator()(), OPEN}; // provisoire
+        _lobbies.push_back(default_lobby); // provisoire
+        _lobbies.push_back(default_lobby); // provisoire
+        _lobbies.push_back(default_lobby); // provisoire
+        acceptClients();
+        // send();
 
+        /*
             UDP:
             handleTimer();
             startReceive();
@@ -93,15 +97,17 @@ class Server {
     boost::asio::ip::tcp::acceptor _acceptor;
     std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
     boost::uuids::uuid _empty_uuid;
-    boost::array<Data, 1> _lobby_buf; // probablement transformable en boost::array<Lobby, 16>
+    boost::array<Lobby, 1> _lobby_buf;
+    std::vector<Lobby> _lobbies;
 
     void acceptClients(void);
-    void read(void);
     void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     std::size_t findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     void handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         boost::system::error_code const& error, size_t bytes_transferred);
     void send(void);
+    void sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    void createLobby(Lobby &lobby);
 
     // Data, buffer, timer
 

@@ -18,10 +18,10 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 enum State {
-        MENU,
-        GAME,
-        PAUSE,
-        END,
+    MENU,
+    GAME,
+    PAUSE,
+    END,
 };
 
 enum Input {
@@ -124,9 +124,10 @@ enum Status {
 
 typedef struct Lobby {
     boost::uuids::uuid player_uuid;
+    bool askForLobbies;
     bool create;
     bool join;
-    std::string name;
+    std::array<char, 64> name;
     std::size_t nb_players;
     std::size_t size;
     boost::uuids::uuid lobby_uuid;

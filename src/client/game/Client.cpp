@@ -152,69 +152,113 @@ void Client::setCanReceiveData(bool canReceiveData)
     _canReceiveData = canReceiveData;
 }
 
-void Client::createLobby(std::string name, std::size_t size)
+void Client::createLobby(std::string name)
 {
+    std::array<char, 64> buf_name;
+    for (size_t i = 0;; i++) {
+        buf_name[i] = name[i];
+        if (name[i] == '\0') {
+            break;
+        }
+    }
     Lobby lobby;
     lobby.player_uuid = _uuid;
+    lobby.askForLobbies = false;
     lobby.create = true;
     lobby.join = false;
-    lobby.name = name;
+    lobby.name = buf_name;
     lobby.nb_players = 0;
-    lobby.size = size;
+    lobby.size = 4;
     lobby.lobby_uuid = boost::uuids::random_generator()();
     lobby.status = OPEN;
-    boost::array<Lobby, 1> buffer = {lobby};
-    // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
-    std::cout << "send create Lobby" << std::endl;
+
+    boost::array<Lobby, 1> array_buf = {lobby};
+
+    boost::system::error_code error;
+    boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
+    if (!error) {
+        std::cout << "send create Lobby" << std::endl;
+    } else {
+        std::cout << "send failed: " << error.message() << std::endl;
+    }
 }
 
 void Client::joinLobby(boost::uuids::uuid uuid)
 {
-    Lobby lobby;
-    lobby.player_uuid = _uuid;
-    lobby.create = false;
-    lobby.join = true;
-    lobby.name = "";
-    lobby.nb_players = 0;
-    lobby.size = 0;
-    lobby.lobby_uuid = uuid;
-    lobby.status = OPEN;
-    boost::array<Lobby, 1> buffer = {lobby};
-    // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
-    std::cout << "send join Lobby" << std::endl;
+    // Lobby lobby;
+    // lobby.player_uuid = _uuid;
+    // lobby.create = false;
+    // lobby.join = true;
+    // lobby.name = "";
+    // lobby.nb_players = 0;
+    // lobby.size = 0;
+    // lobby.lobby_uuid = uuid;
+    // lobby.status = OPEN;
+    // boost::array<Lobby, 1> buffer = {lobby};
+    // // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
+    // std::cout << "send join Lobby" << std::endl;
 }
 
 std::vector<Lobby> Client::getLobbies(void)
 {
-    boost::array<Lobby, 16> recv_lobbies;
-    boost::asio::ip::tcp::endpoint sender_endpoint;
-    // size_t len = _tcp_socket.receive_from(boost::asio::buffer(lobbies, sizeof(boost::array<Lobby, 16>)), sender_endpoint);
-    // if (len == 0) {
-    //     return;
-    // }
+    writeLobbyData(true, false, false);
+    boost::system::error_code error;
+    boost::asio::read(_tcp_socket, boost::asio::buffer(_recv_buf), error);
     std::vector<Lobby> lobbies;
-    for (size_t i = 0; recv_lobbies[i].size != 0; i++) {
-        lobbies.push_back(recv_lobbies[i]);
+    if (!error) {
+        if (_recv_buf[0].type == LobbyType) {
+            for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
+                lobbies.push_back(_recv_buf[0].lobbies[i]);
+            }
+            for (auto lobby : lobbies) {
+                std::cout << "+1 lobby" << std::endl;
+            }
+        }
+    } else {
+        std::cout << "read failed: " << error.message() << std::endl;
     }
     return lobbies;
 }
 
-void Client::writeData(void)
+void Client::asyncGetLobbies(void)
 {
-    Lobby lobby1 = {_uuid, true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby2 = {_uuid, true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby3 = {_uuid, true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby endArray = {_uuid, false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
-    boost::array<Lobby, 16> array_buf;
-    array_buf[0] = lobby1;
-    array_buf[1] = lobby2;
-    array_buf[2] = lobby3;
-    array_buf[3] = endArray;
-    Data data = {LobbyType, {}, {}, array_buf};
-    boost::array<Data, 1> send_buf = {data};
+    _tcp_socket.async_receive(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)),
+        boost::bind(&Client::handleGetLobbies, this,
+        boost::asio::placeholders::error,
+        boost::asio::placeholders::bytes_transferred));
+}
+
+void Client::handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred)
+{
+    if (!error) {
+        if (_recv_buf[0].type == LobbyType) {
+            std::vector<Lobby> lobbies;
+            for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
+                lobbies.push_back(_recv_buf[0].lobbies[i]);
+            }
+            for (auto lobby : lobbies) {
+                std::cout << "+1 lobby" << std::endl;
+            }
+        }
+    } else {
+        std::cout << "async receive failed: " << error.message() << std::endl;
+    }
+}
+
+void Client::writeLobbyData(bool ask, bool create, bool join, std::string name,
+    std::size_t nb_players, std::size_t size, boost::uuids::uuid lobby_uuid)
+{
+    std::array<char, 64> buf_name;
+    for (size_t i = 0;; i++) {
+        buf_name[i] = name[i];
+        if (name[i] == '\0') {
+            break;
+        }
+    }
+    Lobby lobby = {_uuid, ask, create, join, buf_name, nb_players, size, lobby_uuid, OPEN};
+    boost::array<Lobby, 1> array_buf = {lobby};
     boost::system::error_code error;
-    // probablement possible d'envoyer array_buf direct au lieu de send_buf
-    boost::asio::write(_tcp_socket, boost::asio::buffer(send_buf), error);
+    boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
         std::cout << "Client sent data!" << std::endl;
     } else {

@@ -286,19 +286,6 @@ void Server::acceptClients(void)
     });
 }
 
-void Server::read(void)
-{
-    for (auto pair : _sockets) {
-        boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
-        if (_lobby_buf[0].type == LobbyType) {
-            for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
-                std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
-            }
-        }
-    }
-    std::cout << "Read ended" << std::endl;
-}
-
 void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
     std::cout << "Ready to async read" << std::endl;
@@ -322,6 +309,7 @@ std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::so
 void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     boost::system::error_code const& error, size_t bytes_transferred)
 {
+    std::cout << "Received a Lobby" << std::endl;
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error)) {
         std::cout << "player disconnected" << std::endl;
@@ -335,32 +323,60 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         }
     } else {
         std::cout << "data received from client" << std::endl;
-        if (_lobby_buf[0].type == LobbyType) {
-            std::size_t j = findIndexFromSocket(socket);
-            if (j != -1) {
-                _sockets[j].first = _lobby_buf[0].lobbies[0].player_uuid;
-            }
-            for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
-                std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid
-                << "from user " << _lobby_buf[0].lobbies[i].player_uuid << std::endl;
-            }
+        std::size_t j = findIndexFromSocket(socket);
+        if (j != -1 && _sockets[j].first == _empty_uuid) {
+            _sockets[j].first = _lobby_buf[0].player_uuid;
         }
-        std::cout << "List of players uuid paired with socket: " << std::endl;
-        std::size_t socket_index = 0;
-        for (auto pair : _sockets) {
-            std::cout << socket_index << ": " << pair.first << std::endl;
-            socket_index += 1;
+        Lobby lobby = _lobby_buf[0];
+        if (lobby.askForLobbies) {
+            sendLobbies(socket);
+        } else if (lobby.create) {
+            createLobby(lobby);
+        } else if (lobby.join) {
+            /* join */
         }
         asyncRead(socket);
     }
 }
 
+void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
+{
+    boost::array<Lobby, 16> buf_lobbies;
+    Lobby endLobby = {{}, false, false, false, "", 0, 0, {}, CLOSE};
+    for (size_t i = 0; i <= _lobbies.size(); i++) {
+        if (i == 15) {
+            std::cout << "Too much lobbies, maximum is 15" << std::endl;
+            buf_lobbies[i] = endLobby;
+            break;
+        }
+        if (i == _lobbies.size()) {
+            buf_lobbies[i] = endLobby;
+        } else {
+            buf_lobbies[i] = _lobbies[i];
+        }
+    }
+    Data data = {LobbyType, {}, {}, buf_lobbies};
+    boost::array<Data, 1> send_buf = {data};
+    boost::system::error_code error;
+    boost::asio::write(*(socket.get()), boost::asio::buffer(send_buf), error);
+    if (!error) {
+        std::cout << "Lobbies sent" << std::endl;
+    } else {
+        std::cout << "send Lobbies error: " << error.message() << std::endl;
+    }
+}
+
+void Server::createLobby(Lobby &lobby)
+{
+    _lobbies.push_back(lobby);
+}
+
 void Server::send(void)
 {
-    Lobby lobby1 = {boost::uuids::random_generator()(), true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby2 = {boost::uuids::random_generator()(), true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby3 = {boost::uuids::random_generator()(), true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby endArray = {boost::uuids::random_generator()(), false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
+    Lobby lobby1 = {boost::uuids::random_generator()(), true, true, false, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
+    Lobby lobby2 = {boost::uuids::random_generator()(), true, true, false, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
+    Lobby lobby3 = {boost::uuids::random_generator()(), true, true, false, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
+    Lobby endArray = {boost::uuids::random_generator()(), false, false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
     boost::array<Lobby, 16> array_buf;
     array_buf[0] = lobby1;
     array_buf[1] = lobby2;

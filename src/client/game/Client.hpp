@@ -16,12 +16,15 @@ class Client {
     public:
         Client(std::string ip, std::size_t port)
         : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
-            _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0})
+            _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0}), _empty_uuid({})
         {
-            /*
-                TCP:
-                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+            // TCP:
+            _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+            getLobbies();
+            createLobby("nouveau lobby");
+            getLobbies();
 
+            /*
                 UDP:
                 _udp_socket.open(boost::asio::ip::udp::v4());
                 _uuid = boost::uuids::random_generator()();
@@ -40,11 +43,13 @@ class Client {
         void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);
         void setCanReceiveData(bool canReceiveData);
-        void createLobby(std::string name, std::size_t size);
+        void createLobby(std::string name);
         void joinLobby(boost::uuids::uuid uuid);
-        void writeData(void);
+        void writeLobbyData(bool ask, bool create, bool join, std::string name = "", std::size_t nb_players = 0, std::size_t size = 0, boost::uuids::uuid lobby_uuid = {});
         void readData(void);
         std::vector<Lobby> getLobbies(void);
+        void asyncGetLobbies(void);
+        void handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred);
 
         ~Client() {  };
 
@@ -65,6 +70,7 @@ class Client {
         std::string _ip;
         std::size_t _port;
         boost::uuids::uuid _uuid;
+        boost::uuids::uuid _empty_uuid;
         union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
         std::pair<float, float> _player_pos;
         bool _canReceiveData;
