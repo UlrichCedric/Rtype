@@ -17,7 +17,7 @@
 class Factory {
     public:
 
-    Factory(): _last_id(0) {
+    Factory(): _last_id(1) {
         std::ifstream file("src/server/ecs/entities.conf");
         std::string string;
         std::string word;
@@ -31,7 +31,6 @@ class Factory {
 
             std::istringstream stream(string);
             Entity e;
-            std::cout << "Creating entity named : " << name << " and with id : "  << e.getId() << std::endl;
 
             while (stream >> word) {
                 if (word.empty()) {
@@ -56,7 +55,6 @@ class Factory {
                 }
                 //TODO change this awful static cast
                 auto comp = mapNode.second.get()->getComponent(static_cast<components>(i)).get();
-                std::cout << "id " << i << " : " << comp->getName() << std::endl;
             }
         }
     }
@@ -64,7 +62,6 @@ class Factory {
     std::shared_ptr<Entity> createEntity(std::string name, std::size_t id = 0) {
         for (auto custom: _customs) {
             if (custom.first == name) {
-                std::cout << "Creating entity " << name << std::endl;
                 std::shared_ptr<Entity> e = std::make_shared<Entity>(*custom.second.get());
                 if (e == nullptr) {
                     std::cout << "Failed to create entity " << name << std::endl;
@@ -85,7 +82,7 @@ class Factory {
             if (custom.second.get()->getId() == id) {
                 std::shared_ptr<Entity> e = std::make_shared<Entity>(*custom.second.get());
                 if (e == nullptr) {
-                    std::cout << "Failed to get entity by id: " << id << std::endl;
+                    std::cerr << "Failed to get entity by id: " << id << std::endl;
                 }
                 return e;
             }
@@ -99,6 +96,6 @@ class Factory {
 
     private:
 
-    std::size_t _last_id;
+    std::size_t _last_id = 1;
     std::unordered_map<std::string, std::shared_ptr<Entity>> _customs;
 };
