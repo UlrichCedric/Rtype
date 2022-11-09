@@ -33,7 +33,7 @@ namespace Game {
             Windows();
             ~Windows() = default;
             // void Events();
-            void GameLoop();
+            void GameLoop(Client &client);
             void init();
 
         private:

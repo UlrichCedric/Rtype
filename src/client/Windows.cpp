@@ -43,7 +43,7 @@ namespace Game {
         // }
     // }
 
-    void Windows::GameLoop()
+    void Windows::GameLoop(Client &client)
     {
         while (_window.isOpen()) {
             switch (_state) {
