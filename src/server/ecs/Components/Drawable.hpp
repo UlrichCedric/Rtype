@@ -117,6 +117,25 @@ class Drawable: public AComponent {
     }
 
     /**
+     * @brief Set the size of the rectangle
+     *
+     * @param new rectangle size
+     */
+    void setRectSize(std::pair<float, float> rectSize) {
+        _rectSizeX = rectSize.first;
+        _rectSizeY = rectSize.second;
+    }
+
+    /**
+     * @brief Get the size of the rectangle
+     *
+     * @return std::pair<float, float> rectangle Size
+     */
+    std::pair<float, float> getRectSize(void) {
+        return { _rectSizeX, _rectSizeY };
+    }
+
+    /**
      * @brief Set the Sprite object
      *
      * @param texture path
@@ -130,6 +149,8 @@ class Drawable: public AComponent {
     float _offsetY;     // y rectangle offset
     float _sizeX;       // x size of the sprite
     float _sizeY;       // y size of the sprite
+    float _rectSizeX;   // size of the rectangle X
+    float _rectSizeY;   // size of the rectangle Y
     float _maxSizeX;    // x max offset for the rectangle
     float _maxSizeY;    // y max offset for the rectangle
     std::string _path;  // texture path

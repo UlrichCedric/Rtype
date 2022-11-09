@@ -25,7 +25,6 @@ class Entity {
     public:
 
     Entity(size_t id = 0) {
-        std::cout << "Entity constructor with id " << id << std::endl;
         _id = id;
     }
 
@@ -35,7 +34,6 @@ class Entity {
         for (auto comp: e._comps) {
             _comps.push_back(comp);
         }
-        std::cout << "Entity constructor by copy with id " << _id << std::endl;
     }
 
     size_t getId(void) { return _id; }

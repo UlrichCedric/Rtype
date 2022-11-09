@@ -1,0 +1,16 @@
+createEntity	src/server/Server.cpp	/^std::shared_ptr<Entity> Server::createEntity($/;"	f	class:Server	typeref:typename:std::shared_ptr<Entity>
+findPlayerSprite	src/server/Server.cpp	/^void Server::findPlayerSprite(Action action)$/;"	f	class:Server	typeref:typename:void
+getEntityIdByUuid	src/server/Server.cpp	/^std::size_t Server::getEntityIdByUuid(Action action)$/;"	f	class:Server	typeref:typename:std::size_t
+getInitSpriteData	src/server/Server.cpp	/^InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {$/;"	f	class:Server	typeref:typename:InitSpriteData
+getSpriteData	src/server/Server.cpp	/^SpriteData getSpriteData(std::shared_ptr<Entity> &e) {$/;"	f	typeref:typename:SpriteData
+handleInput	src/server/Server.cpp	/^void Server::handleInput(Action action)$/;"	f	class:Server	typeref:typename:void
+handleReceive	src/server/Server.cpp	/^void Server::handleReceive(const boost::system::error_code &error, std::size_t)$/;"	f	class:Server	typeref:typename:void
+handleSend	src/server/Server.cpp	/^void Server::handleSend($/;"	f	class:Server	typeref:typename:void
+handleTimer	src/server/Server.cpp	/^void Server::handleTimer(void) {$/;"	f	class:Server	typeref:typename:void
+initEcs	src/server/Server.cpp	/^void Server::initEcs(boost::uuids::uuid uuid)$/;"	f	class:Server	typeref:typename:void
+isNewUuid	src/server/Server.cpp	/^bool Server::isNewUuid(boost::uuids::uuid uuid)$/;"	f	class:Server	typeref:typename:bool
+moveSprite	src/server/Server.cpp	/^void Server::moveSprite(SpriteData& sprite, enum Input input)$/;"	f	class:Server	typeref:typename:void
+parseWaves	src/server/Server.cpp	/^void Server::parseWaves(void) {$/;"	f	class:Server	typeref:typename:void
+sendSprites	src/server/Server.cpp	/^void Server::sendSprites(void)$/;"	f	class:Server	typeref:typename:void
+setNewSpriteId	src/server/Server.cpp	/^std::size_t Server::setNewSpriteId(std::size_t new_id)$/;"	f	class:Server	typeref:typename:std::size_t
+startReceive	src/server/Server.cpp	/^void Server::startReceive(void)$/;"	f	class:Server	typeref:typename:void
