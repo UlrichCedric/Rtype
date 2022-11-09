@@ -17,7 +17,8 @@
 class tcp_server {
     public:
         tcp_server(boost::asio::io_context &io_context): _timer(io_context),
-            _acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 1234))
+            _acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)),
+            _empty_uuid({})
         {
             accept_clients();
             send_();
@@ -140,6 +141,7 @@ class tcp_server {
         boost::asio::ip::tcp::acceptor _acceptor;
         std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
         boost::asio::deadline_timer _timer;
+        boost::uuids::uuid _empty_uuid;
 };
 
 int main(void)

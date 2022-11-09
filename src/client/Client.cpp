@@ -155,12 +155,13 @@ void Client::setCanReceiveData(bool canReceiveData)
 void Client::createLobby(std::string name, std::size_t size)
 {
     Lobby lobby;
+    lobby.player_uuid = _uuid;
     lobby.create = true;
     lobby.join = false;
     lobby.name = name;
     lobby.nb_players = 0;
     lobby.size = size;
-    lobby.uuid = boost::uuids::random_generator()();
+    lobby.lobby_uuid = boost::uuids::random_generator()();
     lobby.status = OPEN;
     boost::array<Lobby, 1> buffer = {lobby};
     // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
@@ -170,12 +171,13 @@ void Client::createLobby(std::string name, std::size_t size)
 void Client::joinLobby(boost::uuids::uuid uuid)
 {
     Lobby lobby;
+    lobby.player_uuid = _uuid;
     lobby.create = false;
     lobby.join = true;
     lobby.name = "";
     lobby.nb_players = 0;
     lobby.size = 0;
-    lobby.uuid = uuid;
+    lobby.lobby_uuid = uuid;
     lobby.status = OPEN;
     boost::array<Lobby, 1> buffer = {lobby};
     // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);

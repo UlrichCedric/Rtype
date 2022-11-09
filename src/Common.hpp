@@ -114,8 +114,6 @@ enum Status {
     CLOSE
 };
 
-boost::uuids::uuid EMPTY_UUID = {};
-
 typedef struct Lobby {
     boost::uuids::uuid player_uuid;
     bool create;
