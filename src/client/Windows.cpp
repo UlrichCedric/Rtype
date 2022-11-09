@@ -206,6 +206,9 @@ namespace Game {
                 case END: _window.close(); break;
                 default: break;
             }
+            if (_menu.getState() == Menu::State_menu::CLOSE)
+                _window.close();
+            _fps = _menu.getFps();
         }
     }
 }
