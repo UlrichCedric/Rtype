@@ -40,7 +40,7 @@ set(SRC_CLIENT src/client/main.cpp
 )
 
 set(SRC_SERVER
-	src/server/udp_server.cpp
+	src/server/main.cpp
 	src/server/Server.cpp
 )
 
