@@ -216,10 +216,10 @@ void Client::joinLobby(boost::uuids::uuid uuid)
     boost::array<int, 1> response_buf;
     boost::asio::read(_tcp_socket, boost::asio::buffer(response_buf), error);
     if (!error) {
-        if (response_buf[0]) {
+        if (response_buf[0] == OK) {
             std::cout << "Join accepted in lobby " << uuid << std::endl;
             // start UDP Game
-        } else {
+        } else if (response_buf[0] == FORBIDDEN) {
             std::cout << "Something wrong when trying to join lobby " << uuid << std::endl;
         }
     } else {
