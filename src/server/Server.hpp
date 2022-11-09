@@ -99,6 +99,7 @@ class Server {
         boost::system::error_code const& error, size_t bytes_transferred);
     void send(void);
     void sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    void createLobby(Lobby &lobby);
 
     // Data, buffer, timer
 

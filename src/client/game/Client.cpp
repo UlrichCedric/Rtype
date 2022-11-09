@@ -152,20 +152,35 @@ void Client::setCanReceiveData(bool canReceiveData)
     _canReceiveData = canReceiveData;
 }
 
-void Client::createLobby(std::string name, std::size_t size)
+void Client::createLobby(std::string name)
 {
-    // Lobby lobby;
-    // lobby.player_uuid = _uuid;
-    // lobby.create = true;
-    // lobby.join = false;
-    // lobby.name = name;
-    // lobby.nb_players = 0;
-    // lobby.size = size;
-    // lobby.lobby_uuid = boost::uuids::random_generator()();
-    // lobby.status = OPEN;
-    // boost::array<Lobby, 1> buffer = {lobby};
-    // // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
-    // std::cout << "send create Lobby" << std::endl;
+    std::array<char, 64> buf_name;
+    for (size_t i = 0;; i++) {
+        buf_name[i] = name[i];
+        if (name[i] == '\0') {
+            break;
+        }
+    }
+    Lobby lobby;
+    lobby.player_uuid = _uuid;
+    lobby.askForLobbies = false;
+    lobby.create = true;
+    lobby.join = false;
+    lobby.name = buf_name;
+    lobby.nb_players = 0;
+    lobby.size = 4;
+    lobby.lobby_uuid = boost::uuids::random_generator()();
+    lobby.status = OPEN;
+
+    boost::array<Lobby, 1> array_buf = {lobby};
+
+    boost::system::error_code error;
+    boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
+    if (!error) {
+        std::cout << "send create Lobby" << std::endl;
+    } else {
+        std::cout << "send failed: " << error.message() << std::endl;
+    }
 }
 
 void Client::joinLobby(boost::uuids::uuid uuid)
@@ -234,9 +249,11 @@ void Client::writeLobbyData(bool ask, bool create, bool join, std::string name,
     std::size_t nb_players, std::size_t size, boost::uuids::uuid lobby_uuid)
 {
     std::array<char, 64> buf_name;
-    size_t i = 0;
-    for (char c : name) {
-        buf_name[i++] = c;
+    for (size_t i = 0;; i++) {
+        buf_name[i] = name[i];
+        if (name[i] == '\0') {
+            break;
+        }
     }
     Lobby lobby = {_uuid, ask, create, join, buf_name, nb_players, size, lobby_uuid, OPEN};
     boost::array<Lobby, 1> array_buf = {lobby};

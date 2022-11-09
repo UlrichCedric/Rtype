@@ -21,6 +21,8 @@ class Client {
             // TCP:
             _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
             getLobbies();
+            createLobby("nouveau lobby");
+            getLobbies();
 
             /*
                 UDP:
@@ -41,7 +43,7 @@ class Client {
         void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);
         void setCanReceiveData(bool canReceiveData);
-        void createLobby(std::string name, std::size_t size);
+        void createLobby(std::string name);
         void joinLobby(boost::uuids::uuid uuid);
         void writeLobbyData(bool ask, bool create, bool join, std::string name = "", std::size_t nb_players = 0, std::size_t size = 0, boost::uuids::uuid lobby_uuid = {});
         void readData(void);

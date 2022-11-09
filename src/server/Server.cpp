@@ -263,7 +263,7 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         if (lobby.askForLobbies) {
             sendLobbies(socket);
         } else if (lobby.create) {
-            /* create */
+            createLobby(lobby);
         } else if (lobby.join) {
             /* join */
         }
@@ -296,6 +296,11 @@ void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
     } else {
         std::cout << "send Lobbies error: " << error.message() << std::endl;
     }
+}
+
+void Server::createLobby(Lobby &lobby)
+{
+    _lobbies.push_back(lobby);
 }
 
 void Server::send(void)
