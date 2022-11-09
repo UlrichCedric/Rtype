@@ -109,9 +109,26 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
     );
 }
 
+enum Status {
+    OPEN,
+    CLOSE
+};
+
+typedef struct Lobby {
+    boost::uuids::uuid player_uuid;
+    bool create;
+    bool join;
+    std::string name;
+    std::size_t nb_players;
+    std::size_t size;
+    boost::uuids::uuid lobby_uuid;
+    enum Status status;
+} Lobby;
+
 enum Type {
     InitSpriteDataType,
     SpriteDataType,
+    LobbyType,
     Loose
 };
 
@@ -119,4 +136,5 @@ struct Data {
     enum Type type;
     boost::array<SpriteData, 16> spriteDatas;
     boost::array<InitSpriteData, 16> initSpriteDatas;
+    boost::array<Lobby, 16> lobbies;
 };

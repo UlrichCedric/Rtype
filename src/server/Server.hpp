@@ -29,7 +29,7 @@ struct Player {
 class Server {
     public:
     Server(boost::asio::io_context &io_context):
-        _socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 10001)),
+        _udp_socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 10001)),
         _timer(io_context)
     {
         try {
@@ -75,7 +75,7 @@ class Server {
     void moveSprite(SpriteData& sprite, enum Input input);
     std::size_t setNewSpriteId(std::size_t new_id);
 
-    boost::asio::ip::udp::socket _socket;
+    boost::asio::ip::udp::socket _udp_socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;
     boost::array<Action, 1> _recv_buf;
     std::vector<Player> _players;

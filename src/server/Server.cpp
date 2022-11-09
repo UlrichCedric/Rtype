@@ -36,7 +36,7 @@ void Server::parseWaves(void) {
 
 void Server::startReceive(void)
 {
-    _socket.async_receive_from(
+    _udp_socket.async_receive_from(
         boost::asio::buffer(_recv_buf), _remote_endpoint,
         boost::bind(&Server::handleReceive, this,
                     boost::asio::placeholders::error,
@@ -154,7 +154,7 @@ void Server::sendSprites(void)
     boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
         std::cout << "async send to " << player.uuid << std::endl;
-        _socket.async_send_to(
+        _udp_socket.async_send_to(
             boost::asio::buffer(send_buf), player.endpoint,
             boost::bind(&Server::handleSend, this, player.uuid, send_buf,
                 boost::asio::placeholders::error,
@@ -269,7 +269,7 @@ void Server::initEcs(void)
         boost::array<Data, 1> send_buf = {data};
         for (Player player : _players) {
             std::cout << "async send to " << player.uuid << std::endl;
-            _socket.async_send_to(
+            _udp_socket.async_send_to(
                 boost::asio::buffer(send_buf), player.endpoint,
                 boost::bind(&Server::handleSend, this, player.uuid, send_buf,
                     boost::asio::placeholders::error,

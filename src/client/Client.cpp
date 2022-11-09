@@ -10,14 +10,14 @@
 void Client::sendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{action, _uuid}};
-    _socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
+    _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
     std::cout << "sendData" << std::endl;
 }
 
 void Client::asyncSendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{action, _uuid}};
-    _socket.async_send_to(
+    _udp_socket.async_send_to(
         boost::asio::buffer(send_buf), _receiver_endpoint,
         boost::bind(&Client::handleSendData, this,
             boost::asio::placeholders::error,
@@ -34,7 +34,7 @@ void Client::receiveData(void)
     while (_canReceiveData) {
         boost::asio::ip::udp::endpoint sender_endpoint;
         std::string type = "undefined";
-        size_t len = _socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
+        size_t len = _udp_socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
         if (_recv_buf.size() == 0) {
             continue;
         }
@@ -114,7 +114,7 @@ void Client::asyncReceiveData(void)
 {
     std::cout << "Async receive Data" << std::endl;
     boost::asio::ip::udp::endpoint sender_endpoint;
-    _socket.async_receive_from(boost::asio::buffer(_recv_buf), sender_endpoint,
+    _udp_socket.async_receive_from(boost::asio::buffer(_recv_buf), sender_endpoint,
         boost::bind(&Client::handleReceiveData, this,
             boost::asio::placeholders::error,
             boost::asio::placeholders::bytes_transferred));
@@ -150,4 +150,51 @@ void Client::handleThread(void)
 void Client::setCanReceiveData(bool canReceiveData)
 {
     _canReceiveData = canReceiveData;
+}
+
+void Client::createLobby(std::string name, std::size_t size)
+{
+    Lobby lobby;
+    lobby.player_uuid = _uuid;
+    lobby.create = true;
+    lobby.join = false;
+    lobby.name = name;
+    lobby.nb_players = 0;
+    lobby.size = size;
+    lobby.lobby_uuid = boost::uuids::random_generator()();
+    lobby.status = OPEN;
+    boost::array<Lobby, 1> buffer = {lobby};
+    // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
+    std::cout << "send create Lobby" << std::endl;
+}
+
+void Client::joinLobby(boost::uuids::uuid uuid)
+{
+    Lobby lobby;
+    lobby.player_uuid = _uuid;
+    lobby.create = false;
+    lobby.join = true;
+    lobby.name = "";
+    lobby.nb_players = 0;
+    lobby.size = 0;
+    lobby.lobby_uuid = uuid;
+    lobby.status = OPEN;
+    boost::array<Lobby, 1> buffer = {lobby};
+    // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
+    std::cout << "send join Lobby" << std::endl;
+}
+
+std::vector<Lobby> Client::getLobbies(void)
+{
+    boost::array<Lobby, 16> recv_lobbies;
+    boost::asio::ip::tcp::endpoint sender_endpoint;
+    // size_t len = _tcp_socket.receive_from(boost::asio::buffer(lobbies, sizeof(boost::array<Lobby, 16>)), sender_endpoint);
+    // if (len == 0) {
+    //     return;
+    // }
+    std::vector<Lobby> lobbies;
+    for (size_t i = 0; recv_lobbies[i].size != 0; i++) {
+        lobbies.push_back(recv_lobbies[i]);
+    }
+    return lobbies;
 }
