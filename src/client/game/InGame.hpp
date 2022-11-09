@@ -27,7 +27,10 @@ class InGame {
         ~InGame();
 
         void handleInGame(sf::RenderWindow &window, State &state);
+        //Events / handle player input
         void handleEvents(sf::RenderWindow &window);
+        void handleEventsMovementPlayer(sf::Event &event);
+        void handleEventsOthers(sf::Event &event);
         void initInGame();
         void displayInGame(sf::RenderWindow &window);
 
