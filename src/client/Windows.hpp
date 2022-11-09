@@ -31,11 +31,7 @@ namespace Game {
     class Windows {
         public:
             Windows();
-            ~Windows() = default;
-            // void Events();
-            void GameLoop();//Client &client);
-            void init();
-            Windows(void);
+
             void GameLoop(Client &);
             void Display_menu(void);
             void Display_pause(void);
