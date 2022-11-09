@@ -43,7 +43,6 @@ class InGame {
         Menu::Button _button;
         // Game::Ennemy _ennemy;
         Game::Text _score_text;
-        Game::Text _score_number;
         int _score;
 };
 

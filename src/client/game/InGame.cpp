@@ -30,6 +30,7 @@ void InGame::displayInGame(sf::RenderWindow &window)
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
+    // window.draw(_score_number._item);
     // paralax.update();
         // paralax.draw(_window);
         // _player.draw(_window);
@@ -62,9 +63,11 @@ void InGame::handleEvents(sf::RenderWindow &window)
             window.close();
         }
         else if (event.type == sf::Event::KeyReleased) {
-            if (event.key.code == sf::Keyboard::Escape) {
-                _score += 1;
-                _score_number.SetText(std::to_string(_score));
+            if (event.key.code == sf::Keyboard::M) {
+                _score += 10;
+                _score_text.SetText("Score " + std::to_string(_score));
+                _score_text.setPos(10, 10);
+                _score_text.setFontSize(40);
             }
         }
     }
@@ -76,11 +79,7 @@ void InGame::initInGame()
     _background_paralax.setSprites(Game::paralax::GAME_PARALAX);
     _score = 0;
     _score_text = Game::Text("assets/menu/fonts/r-type.ttf");
-    _score_text.SetText("Score : ");
+    _score_text.SetText("Score " + std::to_string(_score));
     _score_text.setPos(10, 10);
     _score_text.setFontSize(40);
-    _score_number = Game::Text("assets/menu/fonts/r-type.ttf");
-    _score_number.SetText(std::to_string(_score));
-    _score_number.setPos(150, 10);
-    _score_number.setFontSize(40);
 }
