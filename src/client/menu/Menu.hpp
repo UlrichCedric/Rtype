@@ -97,7 +97,7 @@ namespace Menu {
                 std::string status;
                 std::size_t nb_players;
             };
-            void fetchLobbyList(std::vector<Lobby> list_of_lobbies);
+            void fetchLobbyList();
             std::vector<Lobby> _game_lobby_list;
             // Create a lobby
             sf::RectangleShape _create_lobby_modal_alpha;

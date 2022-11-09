@@ -52,9 +52,23 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state, Client &clie
     window.display();
 }
 
-void Menu::Menu::fetchLobbyList(std::vector<Lobby> list_of_lobbies)
+std::string convert_string_array_into_dynamic_string(std::array<char, 64UL> &array)
 {
-    _game_lobby_list = list_of_lobbies;
+    std::string str;
+
+    for (auto &i : array) {
+        if (i == '\0') {
+            break;
+        } else {
+            str += i;
+        }
+    }
+    std::cout << "str = " << str << std::endl;
+    return str;
+}
+
+void Menu::Menu::fetchLobbyList()
+{
     std::vector<Lobby>::iterator it = _game_lobby_list.begin();
     std::string state_open_tmp = "open";
     std::string state_close_tmp = "close";
@@ -63,26 +77,26 @@ void Menu::Menu::fetchLobbyList(std::vector<Lobby> list_of_lobbies)
         switch (i) {
             case (0): _game1_lobby.initGameLobby(
                 it->status == 0 ? state_open_tmp : state_close_tmp,
-                it->name,
+                convert_string_array_into_dynamic_string(it->name),
                 it->nb_players);
                 _game1_lobby.setPosition(0); break;
             case (1): _game2_lobby.initGameLobby(
                 it->status == 0 ? state_open_tmp : state_close_tmp,
-                it->name,
+                convert_string_array_into_dynamic_string(it->name),
                 it->nb_players);
                 _game2_lobby.setPosition(1); break;
             case (2): _game3_lobby.initGameLobby(
                 it->status == 0 ? state_open_tmp : state_close_tmp,
-                it->name,
+                convert_string_array_into_dynamic_string(it->name),
                 it->nb_players);
                 _game3_lobby.setPosition(2); break;
             case (3): _game4_lobby.initGameLobby(
                 it->status == 0 ? state_open_tmp : state_close_tmp,
-                it->name,
+                convert_string_array_into_dynamic_string(it->name),
                 it->nb_players); _game4_lobby.setPosition(3); break;
             case (4): _game5_lobby.initGameLobby(
                 it->status == 0 ? state_open_tmp : state_close_tmp,
-                it->name,
+                convert_string_array_into_dynamic_string(it->name),
                 it->nb_players);
                 _game5_lobby.setPosition(4); break;
             default: break;

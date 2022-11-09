@@ -39,7 +39,7 @@ void Menu::Menu::displayLobby(sf::RenderWindow &window)
     if (_lobby_select == CREATE_A_LOBBY_MODAL) {
         window.draw(_create_lobby_modal_alpha);
         window.draw(_create_lobby_modal);
-        // _game_name_text_box.drawTo(window);
+        _game_name_text_box.drawTo(window);
     }
 }
 

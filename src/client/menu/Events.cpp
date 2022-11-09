@@ -38,7 +38,8 @@ void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
             if (_menu_select == MULTIPLAYER_SELECTION) {
                 _validate_sound.play();
                 _state = State_menu::LOBBY;
-                client.getLobbies();
+                _game_lobby_list = client.getLobbies();
+                fetchLobbyList();
             }
             else if (_menu_select == SETTINGS_SELECTION) {
                 _validate_sound.play();
@@ -51,9 +52,10 @@ void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
 void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::TextEntered) {
-        // if (_lobby_select == CREATE_A_LOBBY_MODAL) {
-        //     _game_name_text_box.typedOn(event);
-        // }
+        if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+            std::cout << "hello je m'appelle marius et je suis gay" << std::endl;
+            _game_name_text_box.typedOn(event);
+        }
     }
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Escape) {

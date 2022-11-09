@@ -33,8 +33,11 @@ class TextBox {
             }
         }
 
-        void setFont(sf::Font &font) {
-            textbox.setFont(font);
+        void setFont(std::string path) {
+            _font.loadFromFile(Game::Config::ExecutablePath + path);
+            textbox.setFont(_font);
+            _data = sf::String("");
+            textbox = sf::Text(_data, _font, 50);
         }
 
         void setPosition(sf::Vector2f pos) {
@@ -67,6 +70,7 @@ class TextBox {
         }
 
         void drawTo(sf::RenderWindow &window) {
+            textbox.setString(text.str() + "");
             window.draw(textbox);
         }
 
@@ -94,6 +98,8 @@ class TextBox {
     bool isSelected = false;
     bool hasLimit = false;
     int limit;
+    sf::Font _font;
+    sf::String _data;
 
 
     void inputLogic(int charTyped) {

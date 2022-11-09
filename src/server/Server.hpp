@@ -17,7 +17,6 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
-#include <string.h>
 
 #include "../Common.hpp"
 
@@ -62,14 +61,7 @@ class Server {
     private:
     void parseWaves(void);
     void sendSprites(void);
-    void handleReceive(const boost::system::error_code &, std::size_t);
 
-    void handleSend(
-        boost::uuids::uuid,
-        const boost::array<Data, 1>,
-        const boost::system::error_code &,
-        std::size_t
-    );
     void handleTimer(void);
     void handleInput(Action action);
     bool isNewUuid(boost::uuids::uuid uuid);
@@ -117,17 +109,17 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-    void initEcs(boost::uuids::uuid);
+    void initEcs(void);
 
     /**
      * @brief Initialize new wave's sprites
      * @param size_t wave number
      * @throw Error & if size_t is negative or not saved in _waveConf
      */
-    void newWave(std::size_t) {  };
+    void newWave(std::size_t);
     std::size_t getEntityIdByUuid(Action action);
 
     // Factory
