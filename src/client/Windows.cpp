@@ -11,15 +11,9 @@
 
 namespace Game {
     Windows::Windows() {
-        _text = Text("assets/police.ttf");
-        _text.SetText("Score : 0");
-        _text.setPos(0, 0);
-        _text.setFontSize(50);
-        // img.setTexture(Config::ExecutablePath + "assets/background.jpg");
-        // background.setTexture(Config::ExecutablePath + "assets/background_menu.jpg");
         _music.isRepeatable(true);
         _state = GAME;
-        _score = 0;
+        _in_game.setScore(0);
         _fps = 60;
         _key_pressed = NONE;
         _music.play();
@@ -50,10 +44,10 @@ namespace Game {
             if (event.type == sf::Event::Closed) {
                 _state = END;
             } else if (event.type == sf::Event::MouseMoved) {
-                _button.IsHover(sf::Mouse::getPosition(_window));
+                _in_game.getButton().IsHover(sf::Mouse::getPosition(_window));
             } else if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (_button.IsClicked(sf::Mouse::getPosition(_window))) {
+                    if (_in_game.getButton().IsClicked(sf::Mouse::getPosition(_window))) {
                         _state = GAME;
                     }
                 }
@@ -65,7 +59,7 @@ namespace Game {
     {
         _window.clear();
         _window.draw(_background.get_sprite());
-        _window.draw(_button._image.get_sprite());
+        _in_game.drawButton(_window);
         _window.display();
     }
 
@@ -169,7 +163,7 @@ namespace Game {
     {
         Events_game();
         _window.clear();
-        _window.draw(_text._item);
+        _in_game.drawScoreText(_window);
 
         for (auto img: client._images) {
             try {
@@ -179,7 +173,7 @@ namespace Game {
             }
         }
         _window.display();
-        _score++;
+        _in_game.setScore(_in_game.getScore() + 1);
     }
 
     /**
@@ -197,7 +191,7 @@ namespace Game {
      *
      * @param client
      */
-    void Windows::Loop(Client &client)
+    void Windows::GameLoop(Client &client)
     {
         while (_window.isOpen()) {
             switch (_state) {

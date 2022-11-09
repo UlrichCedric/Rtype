@@ -9,9 +9,8 @@
 
 void Client::sendData(enum Input action)
 {
-    boost::array<Action, 1> send_buf = {{action, _uuid}};
+    boost::array<Action, 1> send_buf = {{ action, _uuid }};
     _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
-    std::cout << "sendData" << std::endl;
 }
 
 /**
@@ -19,20 +18,20 @@ void Client::sendData(enum Input action)
  *
  * @param action
  */
-void Client::asyncSendData(enum Input action)
-{
-    boost::array<Action, 1> send_buf = {{ action, _uuid }};
-    _socket.async_send_to(
-        boost::asio::buffer(send_buf),
-        _receiver_endpoint,
-        boost::bind(
-            &Client::handleSendData,
-            this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred
-        )
-    );
-}
+// void Client::asyncSendData(enum Input action)
+// {
+//     boost::array<Action, 1> send_buf = {{ action, _uuid }};
+//     _socket.async_send_to(
+//         boost::asio::buffer(send_buf),
+//         _receiver_endpoint,
+//         boost::bind(
+//             &Client::handleSendData,
+//             this,
+//             boost::asio::placeholders::error,
+//             boost::asio::placeholders::bytes_transferred
+//         )
+//     );
+// }
 
 void Client::handleSendData(const boost::system::error_code &error, std::size_t)
 {
@@ -47,7 +46,7 @@ void Client::receiveData(void)
 {
     while (_canReceiveData) {
         boost::asio::ip::udp::endpoint sender_endpoint;
-        size_t len = _socket.receive_from(
+        size_t len = _udp_socket.receive_from(
             boost::asio::buffer(
                 _recv_buf,
                 sizeof(boost::array<Data, 1>)
@@ -128,7 +127,7 @@ void Client::asyncReceiveData(void)
 {
     std::cout << "Async receive Data" << std::endl;
     boost::asio::ip::udp::endpoint sender_endpoint;
-    _socket.async_receive_from(
+    _udp_socket.async_receive_from(
         boost::asio::buffer(_recv_buf),
         sender_endpoint,
         boost::bind(
@@ -149,16 +148,6 @@ void Client::handleReceiveData(const boost::system::error_code& error, std::size
         _player_pos.second = _recv_buf[0].initSpriteDatas[i].coords.second;
     }
     asyncReceiveData();
-    // boost::receive_from(
-    //     boost::asio::buffer(_recv_buf),
-    //     sender_point,
-    //     boost::bind(
-    //         &Client::handleReceiveData,
-    //         this,
-    //         boost::asio::placeholders::error,
-    //         boost::asio::placeholders::bytes_transferred
-    //     )
-    // );
 }
 
 /**
@@ -208,9 +197,7 @@ void Client::createLobby(std::string name, std::size_t size)
     lobby.size = size;
     lobby.lobby_uuid = boost::uuids::random_generator()();
     lobby.status = OPEN;
-    boost::array<Lobby, 1> buffer = {lobby};
-    // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
-    std::cout << "send create Lobby" << std::endl;
+    boost::array<Lobby, 1> buffer = { lobby };
 }
 
 void Client::joinLobby(boost::uuids::uuid uuid)
@@ -246,17 +233,17 @@ std::vector<Lobby> Client::getLobbies(void)
 
 void Client::writeData(void)
 {
-    Lobby lobby1 = {_uuid, true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby2 = {_uuid, true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby3 = {_uuid, true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby endArray = {_uuid, false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
+    Lobby lobby1 = { _uuid, true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby lobby2 = { _uuid, true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby lobby3 = { _uuid, true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby endArray = { _uuid, false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE };
     boost::array<Lobby, 16> array_buf;
     array_buf[0] = lobby1;
     array_buf[1] = lobby2;
     array_buf[2] = lobby3;
     array_buf[3] = endArray;
-    Data data = {LobbyType, {}, {}, array_buf};
-    boost::array<Data, 1> send_buf = {data};
+    Data data = { LOBBYTYPE, {}, {}, array_buf };
+    boost::array<Data, 1> send_buf = { data };
     boost::system::error_code error;
     // probablement possible d'envoyer array_buf direct au lieu de send_buf
     boost::asio::write(_tcp_socket, boost::asio::buffer(send_buf), error);
@@ -271,8 +258,9 @@ void Client::readData(void)
 {
     boost::system::error_code error;
     boost::asio::read(_tcp_socket, boost::asio::buffer(_recv_buf), error);
+
     if (!error) {
-        if (_recv_buf[0].type == LobbyType) {
+        if (_recv_buf[0].type == LOBBYTYPE) {
             for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
                 std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid << std::endl;
             }

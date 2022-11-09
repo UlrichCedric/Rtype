@@ -1,3 +1,16 @@
+Client	src/client/Client.hpp	/^        Client(const std::string ip, const std::size_t port):$/;"	f	class:Client
+Client	src/client/Client.hpp	/^class Client {$/;"	c
+__anon5c9ff99f010a	src/client/Client.hpp	/^        union { boost::array<Data, 1> _recv_buf; }; \/\/ avoid Client to try to destroy _recv_bu/;"	u	class:Client
+_canReceiveData	src/client/Client.hpp	/^        bool _canReceiveData = true;$/;"	m	class:Client	typeref:typename:bool
+_images	src/client/Client.hpp	/^        std::vector<std::shared_ptr<Game::Image>> _images;$/;"	m	class:Client	typeref:typename:std::vector<std::shared_ptr<Game::Image>>
+_io_context	src/client/Client.hpp	/^        boost::asio::io_context _io_context;$/;"	m	class:Client	typeref:typename:boost::asio::io_context
+_ip	src/client/Client.hpp	/^        std::string _ip;$/;"	m	class:Client	typeref:typename:std::string
+_player_pos	src/client/Client.hpp	/^        std::pair<float, float> _player_pos = { 0.0, 0.0 };$/;"	m	class:Client	typeref:typename:std::pair<float,float>
+_port	src/client/Client.hpp	/^        std::size_t _port;$/;"	m	class:Client	typeref:typename:std::size_t
+_receiver_endpoint	src/client/Client.hpp	/^        boost::asio::ip::udp::endpoint _receiver_endpoint;$/;"	m	class:Client	typeref:typename:boost::asio::ip::udp::endpoint
+_recv_buf	src/client/Client.hpp	/^        union { boost::array<Data, 1> _recv_buf; }; \/\/ avoid Client to try to destroy _recv_bu/;"	m	union:Client::__anon5c9ff99f010a	typeref:typename:boost::array<Data,1>
+_socket	src/client/Client.hpp	/^        boost::asio::ip::udp::socket _socket;$/;"	m	class:Client	typeref:typename:boost::asio::ip::udp::socket
+_uuid	src/client/Client.hpp	/^        boost::uuids::uuid _uuid;$/;"	m	class:Client	typeref:typename:boost::uuids::uuid
 createEntity	src/server/Server.cpp	/^std::shared_ptr<Entity> Server::createEntity($/;"	f	class:Server	typeref:typename:std::shared_ptr<Entity>
 findPlayerSprite	src/server/Server.cpp	/^void Server::findPlayerSprite(Action action)$/;"	f	class:Server	typeref:typename:void
 getEntityIdByUuid	src/server/Server.cpp	/^std::size_t Server::getEntityIdByUuid(Action action)$/;"	f	class:Server	typeref:typename:std::size_t

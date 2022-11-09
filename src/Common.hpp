@@ -132,6 +132,7 @@ typedef struct Lobby {
 enum Type {
     INITSPRITEDATATYPE,
     SPRITEDATATYPE,
+    LOBBYTYPE,
     LOOSE
 };
 

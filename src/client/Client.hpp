@@ -7,35 +7,25 @@
 
 #pragma once
 
+#include <boost/uuid/uuid_generators.hpp>
 #include <boost/thread/thread.hpp>
-
-#include "../../Common.hpp"
-#include "../utils/Image.hpp"
-#include "Image.hpp"
 
 #include <memory>
 #include <fstream>
+
+#include "../Common.hpp"
+#include "Image.hpp"
 
 class Client {
     public:
         Client(const std::string ip, const std::size_t port):
             _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
-            _udp_socket(_io_context),
-            _tcp_socket(_io_context),
+            _socket(_io_context),
             _player_pos({0, 0}),
             _ip(ip),
             _port(port)
         {
-            // TCP
-            _tcp_socket.connect(
-                boost::asio::ip::tcp::endpoint(
-                    boost::asio::ip::address::from_string("127.0.0.1"),
-                    1234
-                )
-            );
-
-            // UDP
-            _udp_socket.open(boost::asio::ip::udp::v4());
+            _socket.open(boost::asio::ip::udp::v4());
             _uuid = boost::uuids::random_generator()();
             std::thread thread(&Client::handleThread, this);
             thread.detach();
@@ -50,14 +40,9 @@ class Client {
         void asyncReceiveData(void);
         void handleReceiveData(const boost::system::error_code &, std::size_t);
         void handleThread(void);
-        void createLobby(std::string, std::size_t);
-        void joinLobby(boost::uuids::uuid);
-        void writeData(void);
-        void readData(void);
-        std::vector<Lobby> getLobbies(void);
         void setCanReceiveData(bool);
 
-        ~Client() {  };
+        ~Client() = default;
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
@@ -66,8 +51,7 @@ class Client {
     private:
         boost::asio::io_context _io_context;
         boost::asio::ip::udp::endpoint _receiver_endpoint;
-        boost::asio::ip::udp::socket _udp_socket;
-        boost::asio::ip::tcp::socket _tcp_socket;
+        boost::asio::ip::udp::socket _socket;
         std::string _ip;
         std::size_t _port;
         boost::uuids::uuid _uuid;

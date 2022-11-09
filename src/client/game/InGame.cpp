@@ -10,11 +10,15 @@
 InGame::InGame()
 {
     initInGame();
+
+    // Sets default score text
+    _score_text = Game::Text("assets/police.ttf");
+    _score_text.SetText("Score : 0");
+    _score_text.setPos(0, 0);
+    _score_text.setFontSize(50);
 }
 
-InGame::~InGame()
-{
-}
+InGame::~InGame() = default;
 
 void InGame::handleInGame(sf::RenderWindow &window, State &state)
 {

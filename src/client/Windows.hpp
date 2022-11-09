@@ -30,20 +30,15 @@
 namespace Game {
     class Windows {
         public:
-            Windows();
-            ~Windows() = default;
-            // void Events();
-            void GameLoop(Client &client);
-            void init();
             Windows(void);
-            void Loop(Client &);
+            void GameLoop(Client &);
             void Display_menu(void);
             void Display_pause(void);
             void Events(void);
             void Events_game(void);
             void Events_pause(void);
-            void handleKeyPressed(sf::Event& event);
-            void handleKeyReleased(sf::Event& event);
+            void handleKeyPressed(sf::Event &);
+            void handleKeyReleased(sf::Event &);
             void handleMenu(void);
             void handleGame(Client &);
             void handlePause(void);

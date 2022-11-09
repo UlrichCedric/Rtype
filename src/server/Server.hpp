@@ -80,13 +80,6 @@ class Server {
     std::vector<Player> _players;
 
     void startReceive(void);
-    void handleReceive(const boost::system::error_code &, std::size_t);
-    void handleSend(
-        boost::uuids::uuid,
-        const boost::array<Data, 1>,
-        const boost::system::error_code &,
-        std::size_t
-    );
 
     // TCP
 

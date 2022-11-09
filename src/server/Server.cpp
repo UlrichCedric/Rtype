@@ -8,7 +8,7 @@
 #include "Server.hpp"
 #include "ecs/constants.hpp"
 
-//TODO it displays but does not move
+//TODO it displays but cannot move
 
 /**
  * @brief parses the 'enemies.conf' file to get the different waves
@@ -46,7 +46,7 @@ void Server::parseWaves(void) {
  */
 void Server::startReceive(void)
 {
-    _socket.async_receive_from(
+    _udp_socket.async_receive_from(
         boost::asio::buffer(_recv_buf),
         _remote_endpoint,
         boost::bind(
@@ -193,7 +193,7 @@ void Server::sendSprites(void)
     boost::array<Data, 1> send_buf = { data };
 
     for (Player player : _players) {
-        _socket.async_send_to(
+        _udp_socket.async_send_to(
             boost::asio::buffer(send_buf),
             player.endpoint,
             boost::bind(
@@ -214,15 +214,15 @@ void Server::sendSprites(void)
  * @param error if any
  * @param std::size_t byte size
  */
-void Server::handleReceive(const boost::system::error_code &error, std::size_t)
+void Server::handleReceive(const boost::system::error_code &error, std::size_t bytes)
 {
-    if (error) {
+    if (error || bytes == 0) {
         return;
     }
     std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
     if (isNewUuid(_recv_buf[0].uuid)) {
         std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
-        Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
+        Player new_player_info = { _remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0) };
         _players.push_back(new_player_info);
         SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
         std::cout << "before Init ECS" << std::endl;
@@ -290,7 +290,7 @@ void Server::read(void)
 {
     for (auto pair : _sockets) {
         boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
-        if (_lobby_buf[0].type == LobbyType) {
+        if (_lobby_buf[0].type == LOBBYTYPE) {
             for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
                 std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
             }
@@ -335,7 +335,7 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         }
     } else {
         std::cout << "data received from client" << std::endl;
-        if (_lobby_buf[0].type == LobbyType) {
+        if (_lobby_buf[0].type == LOBBYTYPE) {
             std::size_t j = findIndexFromSocket(socket);
             if (j != -1) {
                 _sockets[j].first = _lobby_buf[0].lobbies[0].player_uuid;
@@ -357,21 +357,23 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
 
 void Server::send(void)
 {
-    Lobby lobby1 = {boost::uuids::random_generator()(), true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby2 = {boost::uuids::random_generator()(), true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby lobby3 = {boost::uuids::random_generator()(), true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN};
-    Lobby endArray = {boost::uuids::random_generator()(), false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE};
+    Lobby lobby1 = { boost::uuids::random_generator()(), true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby lobby2 = { boost::uuids::random_generator()(), true, true, "lobby2", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby lobby3 = { boost::uuids::random_generator()(), true, true, "lobby3", 2, 4, boost::uuids::random_generator()(), OPEN };
+    Lobby endArray = { boost::uuids::random_generator()(), false, false, "", 0, 0, boost::uuids::random_generator()(), CLOSE };
     boost::array<Lobby, 16> array_buf;
     array_buf[0] = lobby1;
     array_buf[1] = lobby2;
     array_buf[2] = lobby3;
     array_buf[3] = endArray;
-    Data data = {LobbyType, {}, {}, array_buf};
-    boost::array<Data, 1> send_buf = {data};
+    Data data = { LOBBYTYPE, {}, {}, array_buf };
+    boost::array<Data, 1> send_buf = { data };
+
     for (auto pair : _sockets) {
         boost::asio::write(*(pair.second.get()), boost::asio::buffer(send_buf));
         std::cout << "data sent to client" << std::endl;
     }
+
     _timer.expires_from_now(boost::posix_time::milliseconds(500));
     _timer.async_wait(boost::bind(&Server::send, this));
 }
@@ -470,7 +472,7 @@ void Server::initEcs(boost::uuids::uuid uuid)
 
             // if right player, send buffer
             std::cout << send_buf[0].initSpriteDatas[0].path << std::endl;
-            _socket.async_send_to(
+            _udp_socket.async_send_to(
                 boost::asio::buffer(send_buf),
                 p.endpoint,
                 boost::bind(
