@@ -36,7 +36,7 @@ Menu::Menu::~Menu()
 {
 }
 
-void Menu::Menu::handleMenu(sf::RenderWindow &window)
+void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state)
 {
     this->handleEvents(window);
     window.clear();
@@ -46,7 +46,7 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window)
         case MENU: displayMenu(window); break;
         case LOBBY: displayLobby(window); break;
         case SETTINGS: displaySettings(window); break;
-        case GAME: break;
+        case GAME: state = State::GAME; break;
         default: break;
     }
     window.display();

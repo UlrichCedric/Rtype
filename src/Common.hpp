@@ -17,6 +17,13 @@
 #include <boost/uuid/uuid_io.hpp> // <iostream> for uuid
 #include <boost/uuid/uuid_generators.hpp>
 
+enum State {
+        MENU,
+        GAME,
+        PAUSE,
+        END,
+};
+
 enum Input {
     UP,
     DOWN,

@@ -10,7 +10,7 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <exception>
 #include <iostream>
-#include "../Errors.hpp"
+#include "../../Errors.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Config.hpp"

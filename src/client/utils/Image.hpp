@@ -15,8 +15,8 @@
 
 #include <exception>
 
-#include "Health.hpp"
-#include "../Errors.hpp"
+#include "../game/Health.hpp"
+#include "../../Errors.hpp"
 #include "Config.hpp"
 
 static const constexpr int WIDTH = 1280;

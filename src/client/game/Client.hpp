@@ -9,8 +9,8 @@
 
 #include <boost/thread/thread.hpp>
 
-#include "../Common.hpp"
-#include "Image.hpp"
+#include "../../Common.hpp"
+#include "../utils/Image.hpp"
 
 class Client {
     public:

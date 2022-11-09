@@ -11,15 +11,15 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
-#include "../Image.hpp"
-#include "../Button.hpp"
-#include "../Text.hpp"
+#include "../utils/Image.hpp"
+#include "../utils/Button.hpp"
+#include "../utils/Text.hpp"
 #include "../utils/Sound.hpp"
-#include "../Config.hpp"
-#include "../Music.hpp"
-#include "../Paralax.hpp"
+#include "../utils/Config.hpp"
+#include "../utils/Music.hpp"
+#include "../utils/Paralax.hpp"
 #include "GameLobby.hpp"
-
+#include "../../Common.hpp"
 
 namespace Menu {
     enum State_menu {
@@ -39,7 +39,7 @@ namespace Menu {
             void handleEventsLobby(sf::Event &event);
             void handleEventsSettings(sf::Event &event);
 
-            void handleMenu(sf::RenderWindow &window);
+            void handleMenu(sf::RenderWindow &window, State &state);
 
             //Menu
             void initMenu();

@@ -6,10 +6,10 @@
 */
 
 #pragma once
-#include "Image.hpp"
-#include "Config.hpp"
-#include "Health.hpp"
-#include "Shoot.hpp"
+#include "../utils/Image.hpp"
+#include "../utils/Config.hpp"
+#include "../game/Health.hpp"
+#include "../game/Shoot.hpp"
 
 namespace Game {
     class Player {

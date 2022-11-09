@@ -53,6 +53,9 @@ void Menu::Menu::handleEventsLobby(sf::Event &event)
         if (event.key.code == sf::Keyboard::Escape) {
             _state = State_menu::MENU;
         }
+        else if (event.key.code == sf::Keyboard::Return) {
+            _state = State_menu::GAME;
+        }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
             if (_lobby_select == CREATE_A_LOBBY) {
                 _lobby_select = REFRESH_ICON;

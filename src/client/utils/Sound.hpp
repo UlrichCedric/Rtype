@@ -13,7 +13,7 @@
 #include "../../Errors.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "../Config.hpp"
+#include "Config.hpp"
 
 
 class Sound {
