@@ -59,6 +59,10 @@ struct SpriteData {
     std::pair<float, float> coords;
     int health;
 };
+/**
+   *  coords: pair of coords of the sprite (x, y)
+   *  id: the id of the sprite
+*/
 
 /**
  * @brief Struct to init a sprite
@@ -75,7 +79,7 @@ struct InitSpriteData {
      * @brief Path of the texture
      *
      */
-    char path[128];
+    std::string path;
 
     /**
      * @brief Spawn coordinates
@@ -93,7 +97,7 @@ struct InitSpriteData {
      * @brief Max size of the rect
      *
      */
-    std::pair<float, float> rectSize;
+    std::pair<float, float> maxSize;
 
     /**
      * @brief Health of the entity
@@ -109,7 +113,7 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
         e1.path == e2.path &&
         e1.coords == e2.coords &&
         e1.scale == e2.scale &&
-        e1.rectSize == e2.rectSize
+        e1.maxSize == e2.maxSize
     );
 }
 
@@ -130,9 +134,10 @@ typedef struct Lobby {
 } Lobby;
 
 enum Type {
-    INITSPRITEDATATYPE,
-    SPRITEDATATYPE,
-    LOOSE
+    InitSpriteDataType,
+    SpriteDataType,
+    LobbyType,
+    Loose
 };
 
 struct Data {

@@ -20,6 +20,8 @@
 #include "../utils/Paralax.hpp"
 #include "GameLobby.hpp"
 #include "../../Common.hpp"
+#include "../game/Client.hpp"
+#include "../utils/TextBox.hpp"
 
 namespace Menu {
     enum State_menu {
@@ -34,12 +36,12 @@ namespace Menu {
             Menu();
             ~Menu();
             //Events
-            void handleEvents(sf::RenderWindow &window);
-            void handleEventsMenu(sf::Event &event);
-            void handleEventsLobby(sf::Event &event);
+            void handleEvents(sf::RenderWindow &window, Client &client);
+            void handleEventsMenu(sf::Event &event, Client &client);
+            void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
 
-            void handleMenu(sf::RenderWindow &window, State &state);
+            void handleMenu(sf::RenderWindow &window, State &state, Client &client);
 
             //Menu
             void initMenu();
@@ -76,7 +78,7 @@ namespace Menu {
             _selection_possibility_menu _menu_select;
 
             // Lobby
-            enum _selection_possibility_lobby {CREATE_A_LOBBY, REFRESH_ICON, BOX_LIST_LOBBY};
+            enum _selection_possibility_lobby {CREATE_A_LOBBY, REFRESH_ICON, BOX_LIST_LOBBY, CREATE_A_LOBBY_MODAL};
             _selection_possibility_lobby _lobby_select;
             Game::Text _lobby_title;
             Game::Text _lobby_create;
@@ -95,9 +97,12 @@ namespace Menu {
                 std::string status;
                 std::size_t nb_players;
             };
-            void fetchLobbyList();
-            std::vector<_game_lobby> _game_lobby_list;
-
+            void fetchLobbyList(std::vector<Lobby> list_of_lobbies);
+            std::vector<Lobby> _game_lobby_list;
+            // Create a lobby
+            sf::RectangleShape _create_lobby_modal_alpha;
+            sf::RectangleShape _create_lobby_modal;
+            TextBox _game_name_text_box;
 
             // Settings
             enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};

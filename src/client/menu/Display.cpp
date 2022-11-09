@@ -34,8 +34,13 @@ void Menu::Menu::displayLobby(sf::RenderWindow &window)
     _game4_lobby.display(window);
     _game5_lobby.display(window);
     //display rect selection game lobby
-    if (_lobby_select != CREATE_A_LOBBY && _lobby_select != REFRESH_ICON)
+    if (_lobby_select != CREATE_A_LOBBY && _lobby_select != REFRESH_ICON && _lobby_select != CREATE_A_LOBBY_MODAL)
         window.draw(_lobby_box_selection);
+    if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+        window.draw(_create_lobby_modal_alpha);
+        window.draw(_create_lobby_modal);
+        // _game_name_text_box.drawTo(window);
+    }
 }
 
 void Menu::Menu::displaySettings(sf::RenderWindow &window)

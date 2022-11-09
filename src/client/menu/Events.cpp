@@ -7,7 +7,7 @@
 
 #include "Menu.hpp"
 
-void Menu::Menu::handleEventsMenu(sf::Event &event)
+void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
@@ -38,6 +38,7 @@ void Menu::Menu::handleEventsMenu(sf::Event &event)
             if (_menu_select == MULTIPLAYER_SELECTION) {
                 _validate_sound.play();
                 _state = State_menu::LOBBY;
+                client.getLobbies();
             }
             else if (_menu_select == SETTINGS_SELECTION) {
                 _validate_sound.play();
@@ -47,14 +48,29 @@ void Menu::Menu::handleEventsMenu(sf::Event &event)
     }
 }
 
-void Menu::Menu::handleEventsLobby(sf::Event &event)
+void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
 {
+    if (event.type == sf::Event::TextEntered) {
+        // if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+        //     _game_name_text_box.typedOn(event);
+        // }
+    }
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Escape) {
             _state = State_menu::MENU;
         }
         else if (event.key.code == sf::Keyboard::Return) {
-            _state = State_menu::GAME;
+            if (_lobby_select == REFRESH_ICON) {
+                client.getLobbies();
+            }
+            else if (_lobby_select == CREATE_A_LOBBY) {
+                _lobby_select = CREATE_A_LOBBY_MODAL;
+                // client.createLobby();
+            }
+            else if (_lobby_select == BOX_LIST_LOBBY) {
+                // client.joinLobby();
+                _state = State_menu::GAME;
+            }
         }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
             if (_lobby_select == CREATE_A_LOBBY) {
@@ -107,12 +123,12 @@ void Menu::Menu::handleEventsLobby(sf::Event &event)
             }
         }
         else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-            if (_lobby_select == REFRESH_ICON) {
+            if (_lobby_select == REFRESH_ICON && _game_lobby_list.size() > 0) {
                 _lobby_select = BOX_LIST_LOBBY;
                 index_of_game_lobby_selected = 0;
                 _lobby_refresh_icon.setColor(sf::Color::White);
             }
-            else if (_lobby_select == CREATE_A_LOBBY) {
+            else if (_lobby_select == CREATE_A_LOBBY && _game_lobby_list.size() > 0) {
                 _lobby_select = BOX_LIST_LOBBY;
                 index_of_game_lobby_selected = 0;
                 _lobby_create.setFontColor(sf::Color::White);
@@ -121,21 +137,25 @@ void Menu::Menu::handleEventsLobby(sf::Event &event)
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 switch(index_of_game_lobby_selected) {
                     case (0):
-                        _lobby_box_selection.setPosition(215, 295);
-                        index_of_game_lobby_selected = 1;
-                        break;
+                        if (_game_lobby_list.size() > 1) {
+                            _lobby_box_selection.setPosition(215, 295);
+                            index_of_game_lobby_selected = 1;
+                        } break;
                     case (1):
-                        _lobby_box_selection.setPosition(215, 385);
-                        index_of_game_lobby_selected = 2;
-                        break;
+                        if (_game_lobby_list.size() > 2) {
+                            _lobby_box_selection.setPosition(215, 385);
+                            index_of_game_lobby_selected = 2;
+                        } break;
                     case (2):
-                        _lobby_box_selection.setPosition(215, 475);
-                        index_of_game_lobby_selected = 3;
-                        break;
+                        if (_game_lobby_list.size() > 3) {
+                            _lobby_box_selection.setPosition(215, 475);
+                            index_of_game_lobby_selected = 3;
+                        } break;
                     case (3):
-                        _lobby_box_selection.setPosition(215, 565);
-                        index_of_game_lobby_selected = 4;
-                        break;
+                        if (_game_lobby_list.size() > 4) {
+                            _lobby_box_selection.setPosition(215, 565);
+                            index_of_game_lobby_selected = 4;
+                        } break;
                     case (4): break;
                     default: break;
                 }
@@ -242,7 +262,7 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
     }
 }
 
-void Menu::Menu::handleEvents(sf::RenderWindow &window)
+void Menu::Menu::handleEvents(sf::RenderWindow &window, Client &client)
 {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -250,8 +270,8 @@ void Menu::Menu::handleEvents(sf::RenderWindow &window)
             window.close();
         }
         switch (_state) {
-            case MENU: handleEventsMenu(event); break;
-            case LOBBY: handleEventsLobby(event); break;
+            case MENU: handleEventsMenu(event, client); break;
+            case LOBBY: handleEventsLobby(event, client); break;
             case SETTINGS: handleEventsSettings(event); break;
         default: break;
         }

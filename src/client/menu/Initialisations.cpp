@@ -83,11 +83,31 @@ void Menu::Menu::initLobby()
     _lobby_box_selection.setOutlineThickness(10);
     _lobby_box_selection.setFillColor(sf::Color::Transparent);
     _lobby_box_selection.setPosition(215, 205);
+    //Create a lobby
+    _create_lobby_modal_alpha.setSize(sf::Vector2f(1280, 720));
+    _create_lobby_modal_alpha.setFillColor(sf::Color(0, 0, 0, 200));
+    _create_lobby_modal.setSize(sf::Vector2f(680, 380));
+    _create_lobby_modal.setFillColor(sf::Color(0, 0, 0, 255));
+    _create_lobby_modal.setPosition(300, 170);
+    _create_lobby_modal.setOutlineColor(sf::Color::White);
+    _create_lobby_modal.setOutlineThickness(6);
+    _game_name_text_box.init(15, sf::Color::White, true);
+    // sf::Font r_type_font;
+    // r_type_font.loadFromFile(Game::Config::ExecutablePath + "assets/menu/fonts/r-type.ttf");
+    // _game_name_text_box.setFont(r_type_font);
+    // _game_name_text_box.setPosition(sf::Vector2f(400, 250));
 
-    _game_lobby_list.push_back(_game_lobby{"open", "lobby1", 0});
-    _game_lobby_list.push_back(_game_lobby{"open", "lobby2", 1});
-    _game_lobby_list.push_back(_game_lobby{"closed", "lobby3", 2});
-    fetchLobbyList();
+    // Je préremplie la liste de lobby comme ça en attendant que marius mette en place la récupération des lobbys en async
+    boost::uuids::uuid uuid_tmp = boost::uuids::random_generator()();
+    boost::uuids::uuid uuid_tmp2 = boost::uuids::random_generator()();
+    Lobby lobby1 = {uuid_tmp, true, true, "lobby1", 2, 4, boost::uuids::random_generator()(), Status::CLOSE};
+    Lobby lobby2 = {uuid_tmp, true, true, "lobby eza eaz", 2, 4, boost::uuids::random_generator()(), Status::OPEN};
+    Lobby lobby3 = {uuid_tmp2, true, true, "lobby ezae az", 2, 4, boost::uuids::random_generator()(), Status::OPEN};
+    std::vector<Lobby> lobbies;
+    lobbies.push_back(lobby1);
+    lobbies.push_back(lobby2);
+    // lobbies.push_back(lobby3);
+    fetchLobbyList(lobbies);
 }
 
 void Menu::Menu::initSettings()
