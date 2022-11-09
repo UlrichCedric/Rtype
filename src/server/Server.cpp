@@ -6,6 +6,7 @@
 */
 
 #include "Server.hpp"
+#include "ecs/constants.hpp"
 
 //TODO it displays but does not move
 
@@ -40,6 +41,9 @@ void Server::parseWaves(void) {
     std::cout << "Testing finished" << std::endl;
 }
 
+/** @brief start receiving upd
+ *
+ */
 void Server::startReceive(void)
 {
     _socket.async_receive_from(
@@ -120,6 +124,10 @@ void Server::moveSprite(SpriteData& sprite, enum Input input)
     }
 }
 
+/** @brief gets the sprite from the given player
+ *
+ * @param acttion { uuid of the player, action (not used) }
+ */
 void Server::findPlayerSprite(Action action)
 {
     std::size_t id_sprite_player = 0;
@@ -128,6 +136,11 @@ void Server::findPlayerSprite(Action action)
         if (action.uuid == player.uuid) {
             id_sprite_player = player.idSprite;
             break;
+        }
+    }
+    for (auto entity: _entities) {
+        if (!entity->has(DRAWABLE)) {
+            continue;
         }
     }
     if (id_sprite_player == 0) {
@@ -140,16 +153,17 @@ void Server::findPlayerSprite(Action action)
     }
 }
 
+/** @brief handle any input sent from client
+ *
+ * @param action sent from the client { uuid, key_pressed }
+ *
+ */
 void Server::handleInput(Action action)
 {
-    if (action.input == NONE) {
-        return;
-    }
-    if (action.input == SPACE) {
-        /* shoot projectile */
-        std::cout << "shoot projectile" << std::endl;
-    } else {
-        findPlayerSprite(action);
+    switch (action.input) {
+        case (NONE) : return;
+        case (SPACE): std::cout << "shoot" << std::endl; break;
+        default: findPlayerSprite(action); break;
     }
 }
 
@@ -202,27 +216,35 @@ void Server::sendSprites(void)
  */
 void Server::handleReceive(const boost::system::error_code &error, std::size_t)
 {
-    if (!error) {
-        std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
-        if (isNewUuid(_recv_buf[0].uuid)) {
-            std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
-            Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
-            _players.push_back(new_player_info);
-            SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
-            std::cout << "before Init ECS" << std::endl;
-            initEcs(_recv_buf[0].uuid);
-        }
-        handleInput(_recv_buf[0]);
-        // sendSprites();
+    if (error) {
+        return;
     }
+    std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
+    if (isNewUuid(_recv_buf[0].uuid)) {
+        std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
+        Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
+        _players.push_back(new_player_info);
+        SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
+        std::cout << "before Init ECS" << std::endl;
+        initEcs(_recv_buf[0].uuid);
+    }
+    handleInput(_recv_buf[0]);
     startReceive();
 }
 
+/**
+ * @brief brief receiving
+ *
+ * @param boost::uuids::uuid uuid of the client
+ * @param const boost::array<Data, 1> data sent to the client
+ * @param const boost::system::error_code& error code
+ * @param std::size_t number of bytes received
+ */
 void Server::handleSend(
     boost::uuids::uuid uuidReceiver,
     const boost::array<Data, 1> send_buf,
-    const boost::system::error_code& /*error*/,
-    std::size_t /*bytes_transferred*/
+    const boost::system::error_code &,
+    std::size_t
 ) {
     if (send_buf[0].type == INITSPRITEDATATYPE && send_buf[0].initSpriteDatas[0].id == 0) {
         std::cout << "sent path: " << send_buf[0].initSpriteDatas[0].path << std::endl;
@@ -307,7 +329,7 @@ void Server::initEcs(boost::uuids::uuid uuid)
     InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
 
     try {
-        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 26.0 }));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 16.0 }));
 
         std::size_t i = 0;
         boost::array<InitSpriteData, 16> array_buf = { endArray };

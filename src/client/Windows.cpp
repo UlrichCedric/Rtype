@@ -75,16 +75,16 @@ namespace Game {
             return;
         }
         switch (event.key.code) {
-            case sf::Keyboard::Left:
+            case (sf::Keyboard::Left):
                 _key_pressed = LEFT;
                 break;
-            case sf::Keyboard::Right:
+            case (sf::Keyboard::Right):
                 _key_pressed = RIGHT;
                 break;
-            case sf::Keyboard::Up:
+            case (sf::Keyboard::Up):
                 _key_pressed = UP;
                 break;
-            case sf::Keyboard::Down:
+            case (sf::Keyboard::Down):
                 _key_pressed = DOWN;
                 break;
             default: break;

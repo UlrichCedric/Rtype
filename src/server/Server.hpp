@@ -46,23 +46,8 @@ class Server {
     void parseWaves(void);
     void startReceive(void);
     void sendSprites(void);
-
-    /**
-     * @brief handle received
-     *
-     * @param const boost::system::error_code & error (if any)
-     * @param std::size_t transfered bytes
-     */
     void handleReceive(const boost::system::error_code &, std::size_t);
 
-    /**
-     * @brief brief description of the fonction
-     *
-     * @param boost::uuids::uuid uuid of the client
-     * @param const boost::array<Data, 1> data sent to the client
-     * @param const boost::system::error_code& error code
-     * @param std::size_t number of bytes received
-     */
     void handleSend(
         boost::uuids::uuid,
         const boost::array<Data, 1>,
@@ -88,12 +73,6 @@ class Server {
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-
-    /**
-     * @brief Initialize the sprite for the ECS
-     *
-     * @param uuid UUID of the new player
-     */
     void initEcs(boost::uuids::uuid);
 
     /**
@@ -101,14 +80,7 @@ class Server {
      * @param size_t wave number
      * @throw Error & if size_t is negative or not saved in _waveConf
      */
-    void newWave(std::size_t);
-
-    /**
-     * @brief Get the Entity Id By Uuid
-     *
-     * @param action with UUID and arrow
-     * @return std::size_t id of the Entity
-     */
+    void newWave(std::size_t) {  };
     std::size_t getEntityIdByUuid(Action action);
 
     // Factory

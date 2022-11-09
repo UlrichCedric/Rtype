@@ -10,7 +10,7 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 -D_WIN32_WINNT=0x0A00")
 else()
   set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lstdc++fs -std=c++2a -pthread")
-  SET(CMAKE_CXX_FLAGS "-g")
+  SET(CMAKE_CXX_FLAGS "-g -j$(nproc)")
 endif()
 
 find_package(Boost)
