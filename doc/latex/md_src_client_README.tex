@@ -1,0 +1,189 @@
+ 
+
+ \&\#xa0;
+
+ \href{https://bcpp500ncy51rtypemariusnowak.netlify.app}{\texttt{ Demo}} 
+
+\doxysection*{B CPP 500 NCY 5 1 Rtype Marius Nowak}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+Status
+
+\doxyparagraph*{🚧 B CPP 500 NCY 5 1 Rtype Marius Nowak 🚀 Under construction... 🚧 }
+
+\DoxyHorRuler{0}
+
+
+
+
+\href{\#dart-about}{\texttt{ About}} \&\#xa0; $\vert$ \&\#xa0; \href{\#sparkles-features}{\texttt{ Features}} \&\#xa0; $\vert$ \&\#xa0; \href{\#rocket-technologies}{\texttt{ Technologies}} \&\#xa0; $\vert$ \&\#xa0; \href{\#white_check_mark-requirements}{\texttt{ Requirements}} \&\#xa0; $\vert$ \&\#xa0; \href{\#checkered_flag-starting}{\texttt{ Starting}} \&\#xa0; $\vert$ \&\#xa0; \href{\#memo-license}{\texttt{ License}} \&\#xa0; $\vert$ \&\#xa0; \href{https://github.com/{{YOUR_GITHUB_USERNAME}}}{\texttt{ Author}} 
+
+~\newline
+\hypertarget{md_src_client_README_autotoc_md6}{}\doxysubsubsection{The Player}\label{md_src_client_README_autotoc_md6}
+An {\ttfamily \mbox{\hyperlink{structPlayer}{Player}}} is an object who manage all player issuses.
+
+Here is the prototype for an \mbox{\hyperlink{structPlayer}{Player}} \+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{  \textcolor{keyword}{namespace }Game \{}
+\DoxyCodeLine{    \textcolor{keyword}{class }\mbox{\hyperlink{structPlayer}{Player}} \{}
+\DoxyCodeLine{        \textcolor{keyword}{public}:}
+\DoxyCodeLine{            \mbox{\hyperlink{structPlayer}{Player}}();}
+\DoxyCodeLine{            \string~\mbox{\hyperlink{structPlayer}{Player}}();}
+\DoxyCodeLine{            \textcolor{comment}{// set the player's position}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} setPos(\textcolor{keywordtype}{float} x, \textcolor{keywordtype}{float} y);}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{// draw the player}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} draw(sf::RenderWindow \&window);}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//update the life of the player}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} setLife(\textcolor{keywordtype}{int} life);}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//shoot a bullet}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} bullet\_reset() \{ \_shoot.setPos(\_player.getPos().x + 33 , \_player.getPos().y + 8);\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//get the position of the player}}
+\DoxyCodeLine{            sf::Vector2f getPos() \{\_pos = \_player.getPos(); \textcolor{keywordflow}{return} \_pos;\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//generate a sprite for the player}}
+\DoxyCodeLine{            Image \_player;}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//Manage the health of the player}}
+\DoxyCodeLine{            \mbox{\hyperlink{classHealth}{Health}} \_health;}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//the position of the player}}
+\DoxyCodeLine{            sf::Vector2f \_pos;}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//is life}}
+\DoxyCodeLine{            \textcolor{keywordtype}{int} \_life = 100;}
+\DoxyCodeLine{}
+\DoxyCodeLine{            \textcolor{comment}{//the bullet}}
+\DoxyCodeLine{            Shoot \_shoot;}
+\DoxyCodeLine{    \};}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \hypertarget{md_src_client_README_autotoc_md7}{}\doxysubsubsection{The Config}\label{md_src_client_README_autotoc_md7}
+An {\ttfamily config} is an object who check the path of the executable .
+
+Here is the prototype for config \+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{namespace }Config \{}
+\DoxyCodeLine{          \textcolor{comment}{//stock the path of the executable}}
+\DoxyCodeLine{          \textcolor{keyword}{extern} std::string  ExecutablePath;}
+\DoxyCodeLine{          \textcolor{comment}{//get the path of the executable}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} initialize();}
+\DoxyCodeLine{  \};}
+
+\end{DoxyCode}
+\hypertarget{md_src_client_README_autotoc_md8}{}\doxysubsubsection{The Music}\label{md_src_client_README_autotoc_md8}
+An {\ttfamily Music} is an object who manage the music .
+
+Here is the prototype for Music \+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }Music \{}
+\DoxyCodeLine{      \textcolor{keyword}{public}:}
+\DoxyCodeLine{          Music();}
+\DoxyCodeLine{          \textcolor{comment}{//play the music}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} play() \{ \_music.play(); \};}
+\DoxyCodeLine{          \textcolor{comment}{//restart the music}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} replay() \{ \_music.stop(); \_music.play(); \};}
+\DoxyCodeLine{          \textcolor{comment}{//stop the music}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} stop() \{ \_music.stop(); \};}
+\DoxyCodeLine{          \textcolor{comment}{//set to loop the music}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} isRepeatable(\textcolor{keywordtype}{bool} repeat) \{ \_music.setLoop(repeat); \};}
+\DoxyCodeLine{          \textcolor{comment}{//set the volume of the music}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setVolume(\textcolor{keywordtype}{float} volume) \{ \_music.setVolume(volume); \};}
+\DoxyCodeLine{          \string~Music() \{\};}
+\DoxyCodeLine{      \textcolor{keyword}{private}:}
+\DoxyCodeLine{          sf::Music \_music;}
+\DoxyCodeLine{          std::string path;}
+\DoxyCodeLine{  \};}
+
+\end{DoxyCode}
+ \hypertarget{md_src_client_README_autotoc_md9}{}\doxysubsubsection{The Image}\label{md_src_client_README_autotoc_md9}
+An {\ttfamily Image} is an object who manage the texture for the sprite .
+
+Here is the prototype for Image \+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }Image \{}
+\DoxyCodeLine{      \textcolor{keyword}{public}:}
+\DoxyCodeLine{          Image() \{\};}
+\DoxyCodeLine{          \textcolor{comment}{//Set the texture of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setTexture(std::string  path);}
+\DoxyCodeLine{}
+\DoxyCodeLine{          std::string \&get\_path() \{ \textcolor{keywordflow}{return} \_path; \}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} set\_path(std::string path) \{ \_path = path; \}}
+\DoxyCodeLine{          \textcolor{comment}{//return the sprite}}
+\DoxyCodeLine{          sf::Sprite \&get\_sprite() \{ \textcolor{keywordflow}{return} \_sprite; \}}
+\DoxyCodeLine{          \textcolor{comment}{//set the position of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setPos(\textcolor{keywordtype}{float} posX = 0, \textcolor{keywordtype}{float} posY = 0) \{ \_sprite.setPosition(posX, posY); \};}
+\DoxyCodeLine{          \textcolor{comment}{//Set the scale of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setScale(\textcolor{keywordtype}{float} scaleX = 1, \textcolor{keywordtype}{float} scaleY = 1) \{ \_sprite.setScale(scaleX, scaleY); \};}
+\DoxyCodeLine{          \textcolor{comment}{//return the position of the sprite}}
+\DoxyCodeLine{          sf::Vector2f getPos() \{ \textcolor{keywordflow}{return} \_sprite.getPosition(); \};}
+\DoxyCodeLine{          \textcolor{comment}{//return the color of the sprite}}
+\DoxyCodeLine{          sf::Color getColor() \{ \textcolor{keywordflow}{return} \_sprite.getColor(); \};}
+\DoxyCodeLine{          \textcolor{comment}{//set the color of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setColor(sf::Color color) \{ \_sprite.setColor(color); \};}
+\DoxyCodeLine{          \textcolor{comment}{//set the rotation of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setRotation(\textcolor{keywordtype}{float} angle) \{ \_sprite.setRotation(angle); \};}
+\DoxyCodeLine{          \textcolor{comment}{//set the rect of the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} setRect(\textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y, \textcolor{keywordtype}{int} width, \textcolor{keywordtype}{int} height) \{ \_sprite.setTextureRect(sf::IntRect(x, y, width, height)); \};}
+\DoxyCodeLine{          \textcolor{comment}{//Move the rect to animate the sprite}}
+\DoxyCodeLine{          \textcolor{keywordtype}{void} MoveRect(\textcolor{keywordtype}{int} x, \textcolor{keywordtype}{int} y, \textcolor{keywordtype}{int} width, \textcolor{keywordtype}{int} height) \{ \_sprite.setTextureRect(sf::IntRect(x, y, width, height)); \};}
+\DoxyCodeLine{          \string~Image() \{\};}
+
+\end{DoxyCode}
+\hypertarget{md_src_client_README_autotoc_md10}{}\doxysubsubsection{The Window}\label{md_src_client_README_autotoc_md10}
+An {\ttfamily Window} is an object who run all the classes and communicate with the server .
+
+Here is the prototype for Window \+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{class }Windows \{}
+\DoxyCodeLine{        \textcolor{keyword}{public}:}
+\DoxyCodeLine{            Windows();}
+\DoxyCodeLine{            \textcolor{comment}{//Do a loop to display the window}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Loop(\mbox{\hyperlink{classClient}{Client}}\& client);}
+\DoxyCodeLine{            \textcolor{comment}{//Draw the menu}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Display\_menu();}
+\DoxyCodeLine{            \textcolor{comment}{//Draw the pause menu}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Display\_pause();}
+\DoxyCodeLine{            \textcolor{comment}{//get the event of the menu}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Events();}
+\DoxyCodeLine{            \textcolor{comment}{//get the event of the game}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Events\_game();}
+\DoxyCodeLine{            \textcolor{comment}{//get the event of the pause menu}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} Events\_pause();}
+\DoxyCodeLine{            \textcolor{comment}{//Check the input}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} handleKeyPressed(sf::Event\& event);}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} handleKeyReleased(sf::Event\& event);}
+\DoxyCodeLine{            \textcolor{comment}{//init the window}}
+\DoxyCodeLine{            \textcolor{keywordtype}{void} init();}
+\DoxyCodeLine{            \string~Windows() \{\};}
+
+\end{DoxyCode}
+
+
+\`{}\`{}\`{}c\hypertarget{md_src_client_README_autotoc_md11}{}\doxysubsection{\+:memo\+: License}\label{md_src_client_README_autotoc_md11}
+This project is under license from MIT. For more details, see the LICENSE file.
+
+Made with \+:heart\+: by \href{https://github.com/{{YOUR_GITHUB_USERNAME}}}{\texttt{ \{\{YOUR\+\_\+\+NAME\}\}}}
+
+\&\#xa0;
+
+\href{\#top}{\texttt{ Back to top}} 

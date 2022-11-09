@@ -31,6 +31,12 @@ set(SRC_CLIENT src/client/main.cpp
 	src/client/Pause.cpp
 	src/client/Shoot.cpp
 	src/client/Button.cpp
+	src/client/menu/Display.cpp
+	src/client/menu/Events.cpp
+	src/client/menu/GameLobby.cpp
+	src/client/menu/Initialisations.cpp
+	src/client/menu/Menu.cpp
+	src/client/utils/Sound.cpp
 )
 
 set(SRC_SERVER
