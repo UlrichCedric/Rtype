@@ -213,6 +213,18 @@ void Client::joinLobby(boost::uuids::uuid uuid)
     } else {
         std::cout << "write failed: " << error.message() << std::endl;
     }
+    boost::array<int, 1> response_buf;
+    boost::asio::read(_tcp_socket, boost::asio::buffer(response_buf), error);
+    if (!error) {
+        if (response_buf[0]) {
+            std::cout << "Join accepted in lobby " << uuid << std::endl;
+            // start UDP Game
+        } else {
+            std::cout << "Something wrong when trying to join lobby " << uuid << std::endl;
+        }
+    } else {
+        std::cout << "read failed: " << error.message() << std::endl;
+    }
 }
 
 std::vector<Lobby> Client::getLobbies(void)

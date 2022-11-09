@@ -30,6 +30,7 @@ class Client {
             getLobbies();
             createLobby("nouveau lobby");
             getLobbies();
+            joinLobby(_empty_uuid);
 
             /*
                 UDP:

@@ -238,10 +238,24 @@ std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::so
     return j;
 }
 
+Lobby Server::getLobbyFromUUID(boost::uuids::uuid uuid)
+{
+    Lobby lobby = {{}, false, false, false, "", 0, 0, uuid, CLOSE};
+    for (auto l : _lobbies) {
+        if (l.lobby_uuid == uuid) {
+            lobby = l;
+            break;
+        }
+    }
+    if (!lobby.askForLobbies && !lobby.create && !lobby.join) {
+        std::cout << "Lobby introuvable" << std::endl;
+    }
+    return lobby;
+}
+
 void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     boost::system::error_code const& error, size_t bytes_transferred)
 {
-    std::cout << "Received a Lobby" << std::endl;
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error)) {
         std::cout << "player disconnected" << std::endl;
@@ -254,18 +268,21 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
             std::cout << "vector sockets empty" << std::endl;
         }
     } else {
-        std::cout << "data received from client" << std::endl;
         std::size_t j = findIndexFromSocket(socket);
-        if (j != -1 && _sockets[j].first == _empty_uuid) {
-            _sockets[j].first = _lobby_buf[0].player_uuid;
-        }
         Lobby lobby = _lobby_buf[0];
+        if (j != -1 && _sockets[j].first == _empty_uuid) {
+            _sockets[j].first = lobby.player_uuid;
+            std::cout << "socket linked with player uuid " << lobby.player_uuid << std::endl;
+        }
         if (lobby.askForLobbies) {
             sendLobbies(socket);
         } else if (lobby.create) {
             createLobby(lobby);
         } else if (lobby.join) {
-            /* join */
+            boost::uuids::uuid current_player_uuid = lobby.player_uuid;
+            lobby = getLobbyFromUUID(lobby.lobby_uuid);
+            lobby.player_uuid = current_player_uuid;
+            joinLobby(lobby, socket);
         }
         asyncRead(socket);
     }
@@ -301,6 +318,64 @@ void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 void Server::createLobby(Lobby &lobby)
 {
     _lobbies.push_back(lobby);
+}
+
+void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp::socket> joiner_socket)
+{
+    bool lobbyFound = joined_lobby.create;
+    bool lobbyExist = false;
+    bool playerExist = false;
+    bool lobbyOpen = joined_lobby.nb_players < joined_lobby.size;
+    bool playerNotInOtherLobby = true;
+    for (auto lobby : _lobbies) {
+        if (lobby.lobby_uuid == joined_lobby.lobby_uuid) {
+            lobbyExist = true;
+        }
+    }
+    for (auto socket : _sockets) {
+        if (socket.first == joined_lobby.player_uuid) {
+            playerExist = true;
+        }
+    }
+    for (auto players_in_lobby : _players_in_lobbies) {
+        for (auto player_uuid : players_in_lobby.second) {
+            if (player_uuid == joined_lobby.player_uuid) {
+                playerNotInOtherLobby = false;
+            }
+        }
+    }
+    boost::array<int, 1> response = {lobbyExist && playerExist && lobbyOpen && playerNotInOtherLobby && lobbyFound};
+    if (!lobbyFound) std::cout << "Aucun lobby ne possède cette uuid" << std::endl;
+    else if (!lobbyExist) std::cout << "Tentative de connexion à un lobby inexistant" << std::endl;
+    else if (!playerExist) std::cout << "Joueur inexistant (" << joined_lobby.player_uuid << ") essaie de rejoindre un lobby" << std::endl;
+    else if (!lobbyOpen) std::cout << "Tentative de connexion à un lobby injoignable" << std::endl;
+    else if (!playerNotInOtherLobby) std::cout << "Le joueur est déjà connecté à un autre lobby" << std::endl;
+    boost::system::error_code error;
+    boost::asio::write(*(joiner_socket.get()), boost::asio::buffer(response), error);
+    if (!error) {
+        std::cout << "Response " << response[0] << " sent" << std::endl;
+        for (auto &lobby : _lobbies) {
+            if (lobby.lobby_uuid == joined_lobby.lobby_uuid) {
+                lobby.nb_players += 1;
+            }
+        }
+        bool lobbyFound = false;
+        for (auto &players_in_lobby : _players_in_lobbies) {
+            if (players_in_lobby.first == joined_lobby.lobby_uuid) {
+                if (players_in_lobby.second.size() < joined_lobby.size) {
+                    players_in_lobby.second.push_back(joined_lobby.player_uuid);
+                }
+                lobbyFound = true;
+                break;
+            }
+        }
+        if (!lobbyFound) {
+            std::pair<boost::uuids::uuid, std::vector<boost::uuids::uuid>> new_lobby = {joined_lobby.lobby_uuid, {joined_lobby.player_uuid}};
+            _players_in_lobbies.push_back(new_lobby);
+        }
+    } else {
+        std::cout << "sent response error: " << error.message() << std::endl;
+    }
 }
 
 void Server::send(void)

@@ -122,6 +122,11 @@ enum Status {
     CLOSE
 };
 
+enum Response {
+    FORBIDDEN,
+    OK
+};
+
 typedef struct Lobby {
     boost::uuids::uuid player_uuid;
     bool askForLobbies;
