@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../IComponent.hpp"
+#include "../AComponent.hpp"
 
 /**
  *@brief Does the sprite have to repeat ? (prallax)
  */
-class Repeatable: public IComponent {
+class Repeatable: public AComponent {
 
     public:
 

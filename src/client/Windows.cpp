@@ -196,7 +196,7 @@ namespace Game {
         while (_window.isOpen()) {
             switch (_state) {
                 case MENU: _menu.handleMenu(_window, _state); break;
-                case GAME: _in_game.handleInGame(_window, _state); break;
+                case GAME: _in_game.handleInGame(_window, _state, client); break;
                 case END: _window.close(); break;
                 default: break;
             }

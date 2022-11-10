@@ -103,10 +103,10 @@ void Client::handleSpriteData(void)
 {
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
         for (auto img: _images) {
-            if (img.get()->getId() == _recv_buf[0].spriteDatas[i].id) {
-                img.get()->setPos(_recv_buf[0].initSpriteDatas[i].coords);
+            if (img->getId() == _recv_buf[0].spriteDatas[i].id) {
+                img->setPos(_recv_buf[0].initSpriteDatas[i].coords);
                 try {
-                    img.get()->setHp(
+                    img->setHp(
                         _recv_buf[0].initSpriteDatas[i].health,
                         _recv_buf[0].initSpriteDatas[i].coords
                     );

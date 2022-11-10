@@ -43,11 +43,10 @@ class Server {
             TCP:
             acceptClients();
             send();
-
+*/
             UDP:
             handleTimer();
             startReceive();
-        */
     }
 
     ~Server()

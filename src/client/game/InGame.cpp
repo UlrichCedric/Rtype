@@ -20,7 +20,7 @@ InGame::InGame()
 
 InGame::~InGame() = default;
 
-void InGame::handleInGame(sf::RenderWindow &window, State &state)
+void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
     // if (_key_pressed != NONE) {
     //     client.sendData(_key_pressed);
@@ -31,12 +31,12 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state)
     // }
     handleEvents(window);
     window.clear();
-    displayInGame(window);
+    displayInGame(window, client);
     window.display();
     // _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
 }
 
-void InGame::displayInGame(sf::RenderWindow &window)
+void InGame::displayInGame(sf::RenderWindow &window, Client &client)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
@@ -58,9 +58,9 @@ void InGame::displayInGame(sf::RenderWindow &window)
     //         _player.setLife(100);
     //     }
     // }
-    // for (auto img: client._images) {
-    //     img.draw(_window);
-    // }
+    for (auto img: client._images) {
+        img->draw(window);
+    }
 }
 
 void InGame::handleEventsOthers(sf::Event &event)
