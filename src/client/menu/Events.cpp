@@ -53,29 +53,38 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::TextEntered) {
         if (_lobby_select == CREATE_A_LOBBY_MODAL) {
-            std::cout << "hello je m'appelle marius et je suis gay" << std::endl;
             _game_name_text_box.typedOn(event);
         }
     }
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Escape) {
-            _state = State_menu::MENU;
+            if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+                _validate_sound.play();
+                _lobby_select = CREATE_A_LOBBY;
+            } else {
+                _validate_sound.play();
+                _state = State_menu::MENU;
+            }
         }
         else if (event.key.code == sf::Keyboard::Return) {
             if (_lobby_select == REFRESH_ICON) {
+                _validate_sound.play();
                 client.getLobbies();
             }
             else if (_lobby_select == CREATE_A_LOBBY) {
+                _validate_sound.play();
                 _lobby_select = CREATE_A_LOBBY_MODAL;
                 // client.createLobby();
             }
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 // client.joinLobby();
+                _validate_sound.play();
                 _state = State_menu::GAME;
             }
         }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
             if (_lobby_select == CREATE_A_LOBBY) {
+                _navigation_sound.play();
                 _lobby_select = REFRESH_ICON;
                 _lobby_rect_selection.setRect(0, 0, 36, 36);
                 _lobby_rect_selection.setPos(1018, 153);
@@ -86,6 +95,7 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
         }
         else if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Left) {
             if (_lobby_select == REFRESH_ICON) {
+                _navigation_sound.play();
                 _lobby_select = CREATE_A_LOBBY;
                 _lobby_rect_selection.setRect(0, 0, 385, 45);
                 _lobby_rect_selection.setPos(210, 145);
@@ -99,24 +109,29 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
                 switch(index_of_game_lobby_selected) {
                     case (0):
                         _lobby_select = CREATE_A_LOBBY;
+                        _navigation_sound.play();
                         _lobby_rect_selection.setRect(0, 0, 385, 45);
                         _lobby_rect_selection.setPos(210, 145);
                         _lobby_create.setFontColor(sf::Color::Black);
                         _lobby_create.setFontStyle(sf::Text::Bold);
                         break;
                     case (1):
+                        _navigation_sound.play();
                         _lobby_box_selection.setPosition(215, 205);
                         index_of_game_lobby_selected = 0;
                         break;
                     case (2):
+                        _navigation_sound.play();
                         _lobby_box_selection.setPosition(215, 295);
                         index_of_game_lobby_selected = 1;
                         break;
                     case (3):
+                        _navigation_sound.play();
                         _lobby_box_selection.setPosition(215, 385);
                         index_of_game_lobby_selected = 2;
                         break;
                     case (4): 
+                        _navigation_sound.play();
                         _lobby_box_selection.setPosition(215, 475);
                         index_of_game_lobby_selected = 3;
                     break;
@@ -127,11 +142,13 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
         else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
             if (_lobby_select == REFRESH_ICON && _game_lobby_list.size() > 0) {
                 _lobby_select = BOX_LIST_LOBBY;
+                _navigation_sound.play();
                 index_of_game_lobby_selected = 0;
                 _lobby_refresh_icon.setColor(sf::Color::White);
             }
             else if (_lobby_select == CREATE_A_LOBBY && _game_lobby_list.size() > 0) {
                 _lobby_select = BOX_LIST_LOBBY;
+                _navigation_sound.play();
                 index_of_game_lobby_selected = 0;
                 _lobby_create.setFontColor(sf::Color::White);
                 _lobby_create.setFontStyle(sf::Text::Regular);
@@ -140,21 +157,25 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
                 switch(index_of_game_lobby_selected) {
                     case (0):
                         if (_game_lobby_list.size() > 1) {
+                            _navigation_sound.play();
                             _lobby_box_selection.setPosition(215, 295);
                             index_of_game_lobby_selected = 1;
                         } break;
                     case (1):
                         if (_game_lobby_list.size() > 2) {
+                            _navigation_sound.play();
                             _lobby_box_selection.setPosition(215, 385);
                             index_of_game_lobby_selected = 2;
                         } break;
                     case (2):
                         if (_game_lobby_list.size() > 3) {
+                            _navigation_sound.play();
                             _lobby_box_selection.setPosition(215, 475);
                             index_of_game_lobby_selected = 3;
                         } break;
                     case (3):
                         if (_game_lobby_list.size() > 4) {
+                            _navigation_sound.play();
                             _lobby_box_selection.setPosition(215, 565);
                             index_of_game_lobby_selected = 4;
                         } break;
