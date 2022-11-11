@@ -39,10 +39,10 @@ class Server {
             std::cout << e.what() << std::endl;
         }
         // TCP:
-        Lobby default_lobby = {{}, false, false, false, "whis", 1, 1, boost::uuids::random_generator()(), OPEN}; // provisoire
-        _lobbies.push_back(default_lobby); // provisoire
-        _lobbies.push_back(default_lobby); // provisoire
-        _lobbies.push_back(default_lobby); // provisoire
+        // Lobby default_lobby = {{}, false, false, false, "whis", 1, 1, boost::uuids::random_generator()(), OPEN}; // provisoire
+        // _lobbies.push_back(default_lobby); // provisoire
+        // _lobbies.push_back(default_lobby); // provisoire
+        // _lobbies.push_back(default_lobby); // provisoire
         acceptClients();
         // send();
 

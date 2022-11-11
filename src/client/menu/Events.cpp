@@ -7,6 +7,20 @@
 
 #include "Menu.hpp"
 
+boost::uuids::uuid Menu::Menu::get_uuid_of_selected_lobby()
+{
+    int i = 0;
+
+    for (auto &_game_lobby : _game_lobby_list) {
+        if (index_of_game_lobby_selected == i) {
+            return _game_lobby.lobby_uuid;
+        }
+        i++;
+    }
+    //TODO renvoyer un uuid null ou quelque chose comme ça pour dire que rien n'a été trouvé
+    return boost::uuids::uuid();
+}
+
 void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::KeyPressed) {
@@ -69,15 +83,19 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
         else if (event.key.code == sf::Keyboard::Return) {
             if (_lobby_select == REFRESH_ICON) {
                 _validate_sound.play();
-                client.getLobbies();
+                _game_lobby_list = client.getLobbies();
+                fetchLobbyList();
             }
             else if (_lobby_select == CREATE_A_LOBBY) {
                 _validate_sound.play();
                 _lobby_select = CREATE_A_LOBBY_MODAL;
-                // client.createLobby();
+                client.createLobby("LobbyCreatedByMe");
+                _game_lobby_list = client.getLobbies();
+                fetchLobbyList();
             }
             else if (_lobby_select == BOX_LIST_LOBBY) {
-                // client.joinLobby();
+                std::cout << "Joining lobby with uuid : " << this->get_uuid_of_selected_lobby() << std::endl;
+                client.joinLobby(this->get_uuid_of_selected_lobby());
                 _validate_sound.play();
                 _state = State_menu::GAME;
             }

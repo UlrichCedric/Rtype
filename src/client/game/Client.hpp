@@ -27,10 +27,6 @@ class Client {
                 std::cout << "Impossible de se connecter au serveur" << std::endl;
                 return;
             }
-            getLobbies();
-            createLobby("nouveau lobby");
-            getLobbies();
-            joinLobby(_empty_uuid);
 
             /*
                 UDP:

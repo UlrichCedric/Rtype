@@ -103,6 +103,8 @@ namespace Menu {
             sf::RectangleShape _create_lobby_modal_alpha;
             sf::RectangleShape _create_lobby_modal;
             TextBox _game_name_text_box;
+            // Join a lobby
+            boost::uuids::uuid get_uuid_of_selected_lobby();
 
             // Settings
             enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};
