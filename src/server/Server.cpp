@@ -221,7 +221,7 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t b
     }
     std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
     if (isNewUuid(_recv_buf[0].uuid)) {
-        std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
+        std::cout << "New player with UUID" << _recv_buf[0].uuid << std::endl;
         Player new_player_info = { _remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0) };
         _players.push_back(new_player_info);
         SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
