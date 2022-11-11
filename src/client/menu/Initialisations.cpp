@@ -92,21 +92,35 @@ void Menu::Menu::initLobby()
     _create_lobby_modal.setPosition(300, 170);
     _create_lobby_modal.setOutlineColor(sf::Color::White);
     _create_lobby_modal.setOutlineThickness(6);
+    //_game_name_text_box
     _game_name_text_box.init(14, sf::Color::White, false);
     _game_name_text_box.setLimit(true, 32);
     _game_name_text_box.setFont("assets/menu/fonts/r-type.ttf");
-    _game_name_text_box.setPosition(sf::Vector2f(400, 250));
+    _game_name_text_box.setPosition(sf::Vector2f(400, 270));
+    //_game_name_title
     _game_name_title.SetText("Give a name to your game lobby");
     _game_name_title.setFontSize(16);
     _game_name_title.setFontColor(sf::Color::White);
-    _game_name_title.setPos(380, 200);
+    _game_name_title.setPos(380, 220);
+    //_validate_create_lobby_button
     _validate_create_lobby_button.setColorRect(Button::COLOR_CODE::BLACK, Button::COLOR_CODE::WHITE, 2.0f);
     _validate_create_lobby_button.setFont("assets/menu/fonts/r-type.ttf");
     _validate_create_lobby_button.setText("Create");
     _validate_create_lobby_button.setFontSize(16);
     _validate_create_lobby_button.setFontColor(sf::Color::White);
     _validate_create_lobby_button.setFontStyle(sf::Text::Bold);
-    _validate_create_lobby_button.setPos(420, 355);
+    _validate_create_lobby_button.setPos(580, 405);
+    // edit icon
+    _edit_icon_game_name.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/editer.png");
+    _edit_icon_game_name.setScale(0.6, 0.6);
+    _edit_icon_game_name.setColor(sf::Color::Black);
+    _edit_icon_game_name.setPos(905, 255);
+    //_rect_select_create_lobby_modal
+    _rect_select_create_lobby_modal.setSize(sf::Vector2f(48, 48));
+    _rect_select_create_lobby_modal.setFillColor(sf::Color::White);
+    _rect_select_create_lobby_modal.setPosition(900, 252);
+    // init var selection
+    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
 }
 
 void Menu::Menu::initSettings()

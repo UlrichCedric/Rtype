@@ -39,9 +39,12 @@ void Menu::Menu::displayLobby(sf::RenderWindow &window)
     if (_lobby_select == CREATE_A_LOBBY_MODAL) {
         window.draw(_create_lobby_modal_alpha);
         window.draw(_create_lobby_modal);
+        if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::GAME_NAME)
+            window.draw(_rect_select_create_lobby_modal);
         _game_name_text_box.drawTo(window);
         window.draw(_game_name_title._item);
         _validate_create_lobby_button.draw(window);
+        window.draw(_edit_icon_game_name.get_sprite());
     }
 }
 

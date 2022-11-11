@@ -71,7 +71,7 @@ void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
 void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::TextEntered) {
-        if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+        if (_lobby_select == CREATE_A_LOBBY_MODAL && _create_lobby_modal_select == WRITING_GAME_NAME) {
             _game_name_text_box.setSelected(true);
             _game_name_text_box.typedOn(event);
         }
@@ -87,7 +87,27 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             }
         }
         else if (event.key.code == sf::Keyboard::Return) {
-            if (_lobby_select == REFRESH_ICON) {
+            if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+                if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::GAME_NAME) {
+                    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::WRITING_GAME_NAME;
+                    _edit_icon_game_name.setColor(sf::Color::White);
+                } else if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::WRITING_GAME_NAME) {
+                    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
+                    _edit_icon_game_name.setColor(sf::Color::Black);
+                    _game_name_text_box.setSelected(false);
+                } else if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::VALIDATE_CREATE_LOBBY) {
+                    try {
+                        client.createLobby(_game_name_text_box.getText());
+                        _game_lobby_list = client.getLobbies();
+                        fetchLobbyList();
+                        _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
+                        _lobby_select = CREATE_A_LOBBY;
+                    }
+                    catch (Error &e) {
+                        std::cout << e.what() << std::endl;
+                    }
+                }
+            } else if (_lobby_select == REFRESH_ICON) {
                 _validate_sound.play();
                 try {
                     _game_lobby_list = client.getLobbies();
@@ -100,14 +120,14 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             else if (_lobby_select == CREATE_A_LOBBY) {
                 _validate_sound.play();
                 _lobby_select = CREATE_A_LOBBY_MODAL;
-                try {
-                    client.createLobby("LobbyCreatedByMe");
-                    _game_lobby_list = client.getLobbies();
-                    fetchLobbyList();
-                }
-                catch (Error &e) {
-                    std::cout << e.what() << std::endl;
-                }
+                _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
+                _edit_icon_game_name.setColor(sf::Color::Black);
+                _game_name_text_box.setSelected(false);
+                _game_name_text_box.clearText();
+                _validate_create_lobby_button.setColorRect(Button::COLOR_CODE::BLACK, Button::COLOR_CODE::WHITE, 2.0f);
+                _validate_create_lobby_button.setFontSize(16);
+                _validate_create_lobby_button.setFontColor(sf::Color::White);
+                _validate_create_lobby_button.setFontStyle(sf::Text::Bold);
             }
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 _validate_sound.play();
@@ -142,7 +162,17 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             }
         }
         else if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
-            if (_lobby_select == BOX_LIST_LOBBY) {
+            if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+                if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::VALIDATE_CREATE_LOBBY) {
+                    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
+                    _edit_icon_game_name.setColor(sf::Color::Black);
+                    _validate_create_lobby_button.setColorRect(Button::COLOR_CODE::BLACK, Button::COLOR_CODE::WHITE, 2.0f);
+                    _validate_create_lobby_button.setFontSize(16);
+                    _validate_create_lobby_button.setFontColor(sf::Color::White);
+                    _validate_create_lobby_button.setFontStyle(sf::Text::Bold);
+                }
+            }
+            else if (_lobby_select == BOX_LIST_LOBBY) {
                 switch(index_of_game_lobby_selected) {
                     case (0):
                         _lobby_select = CREATE_A_LOBBY;
@@ -177,7 +207,17 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             }
         }
         else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-            if (_lobby_select == REFRESH_ICON && _game_lobby_list.size() > 0) {
+            if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+                if (_create_lobby_modal_select == _selection_possibility_create_lobby_modal::GAME_NAME) {
+                    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::VALIDATE_CREATE_LOBBY;
+                    _edit_icon_game_name.setColor(sf::Color::White);
+                    _validate_create_lobby_button.setColorRect(Button::COLOR_CODE::WHITE, Button::COLOR_CODE::BLACK, 2.0f);
+                    _validate_create_lobby_button.setFontSize(16);
+                    _validate_create_lobby_button.setFontColor(sf::Color::Black);
+                    _validate_create_lobby_button.setFontStyle(sf::Text::Bold);
+                }
+            }
+            else if (_lobby_select == REFRESH_ICON && _game_lobby_list.size() > 0) {
                 _lobby_select = BOX_LIST_LOBBY;
                 _navigation_sound.play();
                 index_of_game_lobby_selected = 0;

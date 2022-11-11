@@ -105,6 +105,10 @@ namespace Menu {
             TextBox _game_name_text_box;
             Game::Text _game_name_title;
             Button _validate_create_lobby_button;
+            Game::Image _edit_icon_game_name;
+            sf::RectangleShape _rect_select_create_lobby_modal;
+            enum _selection_possibility_create_lobby_modal {GAME_NAME, WRITING_GAME_NAME, VALIDATE_CREATE_LOBBY};
+            _selection_possibility_create_lobby_modal _create_lobby_modal_select;
             // Join a lobby
             boost::uuids::uuid get_uuid_of_selected_lobby();
 

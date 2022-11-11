@@ -75,8 +75,18 @@ class TextBox {
             return text.str();
         }
 
+        void clearText() {
+            text.str("");
+            textbox.setString("");
+        }
+
         void drawTo(sf::RenderWindow &window) {
-            textbox.setString(text.str() + "_");
+            if (isSelected) {
+                textbox.setString(text.str() + "_");
+            }
+            else {
+                textbox.setString(text.str());
+            }
             textbox.setCharacterSize(charSize);
             window.draw(textbox_box);
             window.draw(textbox);
