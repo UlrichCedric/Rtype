@@ -33,23 +33,22 @@ class Server {
         _acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)),
         _timer(io_context), _empty_uuid({})
     {
-        try {
-            parseWaves();
-        } catch (Error &e) {
-            std::cout << e.what() << std::endl;
-        }
         // TCP:
-        // Lobby default_lobby = {{}, false, false, false, "whis", 1, 1, boost::uuids::random_generator()(), OPEN}; // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
         acceptClients();
         // send();
 
         /*
             UDP:
+
+            try {
+                parseWaves();
+            } catch (Error &e) {
+                std::cout << e.what() << std::endl;
+            }
+
             handleTimer();
             startReceive();
+        */
     }
 
     ~Server()
@@ -75,6 +74,13 @@ class Server {
     std::vector<Player> _players;
 
     void startReceive(void);
+    void handleReceive(const boost::system::error_code &, std::size_t);
+    void handleSend(
+        boost::uuids::uuid,
+        const boost::array<Data, 1>,
+        const boost::system::error_code &,
+        std::size_t
+    );
 
     // TCP
 
@@ -104,10 +110,10 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-    void initEcs(void);
+    void initEcs(boost::uuids::uuid);
 
     /**
      * @brief Initialize new wave's sprites

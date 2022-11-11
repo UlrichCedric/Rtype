@@ -154,7 +154,7 @@ void Server::sendSprites(void)
         }
     }
     boost::array<InitSpriteData, 16> empty_array;
-    Data data = {SpriteDataType, array_buf};
+    Data data = {SPRITEDATATYPE, array_buf};
     boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
         std::cout << "async send to " << player.uuid << std::endl;
@@ -202,9 +202,9 @@ void Server::handleSend(
     }
 
     std::string type = "undefined";
-    if (send_buf[0].type == InitSpriteDataType) {
+    if (send_buf[0].type == INITSPRITEDATATYPE) {
         type = "InitSpriteData";
-    } else if (send_buf[0].type == SpriteDataType) {
+    } else if (send_buf[0].type == SPRITEDATATYPE) {
         type = "SpriteData";
     }
     std::cout << type << " sent to " << uuidReceiver << std::endl;
@@ -227,19 +227,6 @@ void Server::acceptClients(void)
         asyncRead(new_socket_ptr);
         acceptClients();
     });
-}
-
-void Server::read(void)
-{
-    for (auto pair : _sockets) {
-        boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
-        if (_lobby_buf[0].type == LOBBYTYPE) {
-            for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
-                std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
-            }
-        }
-    }
-    std::cout << "Read ended" << std::endl;
 }
 
 void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
@@ -328,7 +315,7 @@ void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
             buf_lobbies[i] = _lobbies[i];
         }
     }
-    Data data = {LobbyType, {}, {}, buf_lobbies};
+    Data data = {LOBBYTYPE, {}, {}, buf_lobbies};
     boost::array<Data, 1> send_buf = {data};
     boost::system::error_code error;
     boost::asio::write(*(socket.get()), boost::asio::buffer(send_buf), error);
@@ -427,19 +414,32 @@ void Server::send(void)
 
 // ECS
 
+/**
+ * @brief create a new entity with the given parameters
+ *
+ * @param template of the new entity
+ * @param path of the texture
+ * @param velocity if any
+ * @param position of the new sprite
+ * @param scale of the new sprite
+ * @return std::shared_ptr<Entity> new sprite
+ */
 std::shared_ptr<Entity> Server::createEntity(
     std::string templ,
     std::string path,
     std::pair<float, float> velocity,
     std::pair<float, float> position = { -1.0, -1.0 },
-    std::pair<float, float> scale = { 1.0, 1.0 }
+    std::pair<float, float> scale = { 1.0, 1.0 },
+    std::pair<float, float> rect = { -1.0, -1.0 }
 ) {
     std::shared_ptr<Entity> e = _f.get()->createEntity(templ);
+    std::cout << "id de la nouvelle entity " << e.get()->getId() << std::endl;
 
     try {
         auto eDraw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
         if (eDraw != nullptr && !path.empty()) {
             eDraw->setSprite(path);
+            eDraw->setRectSize(rect);
         }
         auto eVel = std::dynamic_pointer_cast<Velocity>(e.get()->getComponent(VELOCITY));
         if (eVel != nullptr) {
@@ -462,29 +462,24 @@ std::shared_ptr<Entity> Server::createEntity(
     return e;
 }
 
-void Server::initEcs(void)
+/**
+ * @brief creates the necessary sprites to launch the game
+ *
+ * @param uuid of the new client
+ */
+void Server::initEcs(boost::uuids::uuid uuid)
 {
     _f = std::make_unique<Factory>();
     _d = std::make_unique<DrawSystem>();
     _h = std::make_unique<HealthSystem>();
 
-    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
-    boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
 
     try {
-        std::shared_ptr<Entity> e1 = createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e2 = createEntity("Background", "../../assets/paralax/planet.png", { -2.0, 0.0 }, { 10.0, 10.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e3 = createEntity("Background", "../../assets/paralax/planet.png", { -4.0, 0.0 }, { 10.0, 500.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e4 = createEntity("Background", "../../assets/paralax/stars.png", { -3.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e5 = createEntity("Background", "../../assets/paralax/stars.png", { -4.0, 0.0 }, { 0.0, 250.0 }, { 5.0, 6.0 });
-
-        _entities.push_back(std::move(e1));
-        _entities.push_back(std::move(e2));
-        _entities.push_back(std::move(e3));
-        _entities.push_back(std::move(e4));
-        _entities.push_back(std::move(e5));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 16.0 }));
 
         std::size_t i = 0;
+        boost::array<InitSpriteData, 16> array_buf = { endArray };
 
         for (auto entity: _entities) {
             if (i == 15) {
@@ -520,10 +515,12 @@ void Server::initEcs(void)
                     uuid,
                     send_buf,
                     boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+                    boost::asio::placeholders::bytes_transferred
+                )
+            );
         }
     } catch (std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Error initECS: " << e.what() << std::endl;
     }
 }
 
@@ -547,6 +544,12 @@ SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
     }
 }
 
+/**
+ * @brief returns the InitSpriteData based on the given entity
+ *
+ * @param e the entity to get the InitSpriteData from
+ * @return InitSpriteData from the given entity
+ */
 InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
@@ -556,19 +559,22 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
         auto draw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
         auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
         auto scale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        std::shared_ptr<Health> health;
+        if (e.get()->has(HEALTH)) {
+            health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        }
         InitSpriteData s = {
-            e.get()->getId(),              // get the id of the sprite
-            draw.get()->getPath(),         // get the path of the texture
-            pos.get()->getPos(),           // get the position of the sprite
-            scale.get()->getScale(),       // get the scale of the sprite
-            draw.get()->getMaxOffset(),    // get the max coordinates of the rect
-            health.get()->getHp(),         // get the health
+            .id = e.get()->getId(),                                     // get the id of the sprite
+            .coords = pos.get()->getPos(),                              // get the position of the sprite
+            .scale = scale.get()->getScale(),                           // get the scale of the sprite
+            .rectSize = draw.get()->getRectSize(),                      // get the max coordinates of the rect
+            .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
         };
+        strcpy(s.path, draw.get()->getPath().c_str());
 
         return s;
     } catch (std::exception &e) {
-        throw Error(e.what());
+        std::cerr << "Error - getInitSpriteData: " << e.what() << std::endl;
     }
 }
 

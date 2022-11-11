@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** Rtype [WSL : Ubuntu]
+** Rtype [WSL : Ubuntu]
 ** File description:
 ** Initialisations
 */
@@ -18,7 +18,6 @@ void Menu::Menu::initMenu()
     _menu_text_settings = Game::Text("assets/menu/fonts/r-type.ttf");
     _menu_text_top_right01 = Game::Text("assets/menu/fonts/r-type.ttf");
     _menu_text_top_right02 = Game::Text("assets/menu/fonts/r-type.ttf");
-    _menu_text_quit = Game::Text("assets/menu/fonts/r-type.ttf");
     //_text_top_right01
     _menu_text_top_right01.SetText("BLAST OFF AND STRIKE");
     _menu_text_top_right01.setFontSize(20);
@@ -37,10 +36,6 @@ void Menu::Menu::initMenu()
     _menu_text_settings.SetText("SETTINGS");
     _menu_text_settings.setFontSize(30);
     _menu_text_settings.setPos(995, 270);
-    //_text_quit
-    _menu_text_quit.SetText("QUIT");
-    _menu_text_quit.setFontSize(30);
-    _menu_text_quit.setPos(995, 360);
     //_text_bottom_right
     _menu_text_bottom_right.SetText("Epitech project 2022");
     _menu_text_bottom_right.setFontSize(20);
@@ -58,7 +53,6 @@ void Menu::Menu::initLobby()
     // Load Fonts
     _lobby_title = Game::Text("assets/menu/fonts/r-type.ttf");
     _lobby_create = Game::Text("assets/menu/fonts/r-type.ttf");
-    _game_name_title = Game::Text("assets/menu/fonts/r-type.ttf");
     //_lobby_title
     _lobby_title.SetText("Multiplayer");
     _lobby_title.setFontSize(50);
@@ -89,43 +83,11 @@ void Menu::Menu::initLobby()
     _lobby_box_selection.setOutlineThickness(10);
     _lobby_box_selection.setFillColor(sf::Color::Transparent);
     _lobby_box_selection.setPosition(215, 205);
-    //Create a lobby
-    _create_lobby_modal_alpha.setSize(sf::Vector2f(1280, 720));
-    _create_lobby_modal_alpha.setFillColor(sf::Color(0, 0, 0, 200));
-    _create_lobby_modal.setSize(sf::Vector2f(680, 380));
-    _create_lobby_modal.setFillColor(sf::Color(0, 0, 0, 255));
-    _create_lobby_modal.setPosition(300, 170);
-    _create_lobby_modal.setOutlineColor(sf::Color::White);
-    _create_lobby_modal.setOutlineThickness(6);
-    //_game_name_text_box
-    _game_name_text_box.init(14, sf::Color::White, false);
-    _game_name_text_box.setLimit(true, 32);
-    _game_name_text_box.setFont("assets/menu/fonts/r-type.ttf");
-    _game_name_text_box.setPosition(sf::Vector2f(400, 270));
-    //_game_name_title
-    _game_name_title.SetText("Give a name to your game lobby");
-    _game_name_title.setFontSize(16);
-    _game_name_title.setFontColor(sf::Color::White);
-    _game_name_title.setPos(380, 220);
-    //_validate_create_lobby_button
-    _validate_create_lobby_button.setColorRect(Button::COLOR_CODE::BLACK, Button::COLOR_CODE::WHITE, 2.0f);
-    _validate_create_lobby_button.setFont("assets/menu/fonts/r-type.ttf");
-    _validate_create_lobby_button.setText("Create");
-    _validate_create_lobby_button.setFontSize(16);
-    _validate_create_lobby_button.setFontColor(sf::Color::White);
-    _validate_create_lobby_button.setFontStyle(sf::Text::Bold);
-    _validate_create_lobby_button.setPos(580, 405);
-    // edit icon
-    _edit_icon_game_name.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/editer.png");
-    _edit_icon_game_name.setScale(0.6, 0.6);
-    _edit_icon_game_name.setColor(sf::Color::Black);
-    _edit_icon_game_name.setPos(905, 255);
-    //_rect_select_create_lobby_modal
-    _rect_select_create_lobby_modal.setSize(sf::Vector2f(48, 48));
-    _rect_select_create_lobby_modal.setFillColor(sf::Color::White);
-    _rect_select_create_lobby_modal.setPosition(900, 252);
-    // init var selection
-    _create_lobby_modal_select = _selection_possibility_create_lobby_modal::GAME_NAME;
+
+    _game_lobby_list.push_back(_game_lobby{"open", "lobby1", 0});
+    _game_lobby_list.push_back(_game_lobby{"open", "lobby2", 1});
+    _game_lobby_list.push_back(_game_lobby{"closed", "lobby3", 2});
+    fetchLobbyList();
 }
 
 void Menu::Menu::initSettings()
@@ -140,7 +102,6 @@ void Menu::Menu::initSettings()
     _settings_title = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_music_volume = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_sonds_volume = Game::Text("assets/menu/fonts/r-type.ttf");
-    _settings_fps = Game::Text("assets/menu/fonts/r-type.ttf");
     //_settings_title
     _settings_title.SetText("Settings");
     _settings_title.setFontSize(50);
@@ -176,13 +137,4 @@ void Menu::Menu::initSettings()
     _settings_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
     _settings_sounds_volume_progression_bar.setPosition(163, 373);
 
-    //fps selector
-    _settings_fps.setFontSize(30);
-    _settings_fps.setFontColor(sf::Color::Black);
-    _settings_fps.setFontStyle(sf::Text::Bold);
-    _settings_fps.setPos(140, 460);
-    _fps = {30, 60, 144};
-    _fps_index = 1;
-    _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
 }
-

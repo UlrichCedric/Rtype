@@ -64,7 +64,7 @@ class Client {
          * @brief our image list
          *
          */
-        std::vector<Game::Image> _images;
+        std::vector<std::shared_ptr<Game::Image>> _images;
 
     private:
         boost::asio::io_context _io_context;

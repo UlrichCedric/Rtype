@@ -79,7 +79,7 @@ struct InitSpriteData {
      * @brief Path of the texture
      *
      */
-    std::string path;
+    char path[128];
 
     /**
      * @brief Spawn coordinates
@@ -98,6 +98,12 @@ struct InitSpriteData {
      *
      */
     std::pair<float, float> maxSize;
+
+    /**
+     * @brief Max size of the rect
+     *
+     */
+    std::pair<float, float> rectSize;
 
     /**
      * @brief Health of the entity

@@ -10,7 +10,7 @@
 namespace Game {
     Windows::Windows() {
         _music.isRepeatable(true);
-        _state = GAME;
+        _state = MENU;
         _in_game.setScore(0);
         _fps = 60;
         _key_pressed = NONE;
@@ -20,14 +20,14 @@ namespace Game {
     void Windows::Display_pause()
     {
         _state = MENU;
-        fps = 60;
+        _fps = 60;
     }
 
     void Windows::init()
     {
         try {
             _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-            _window.setFramerateLimit(fps);
+            _window.setFramerateLimit(_fps);
         } catch (std::exception &e) {
             throw WindowCreationError();
         }
@@ -119,14 +119,9 @@ namespace Game {
             switch (_state) {
                 case MENU: _menu.handleMenu(_window, _state); break;
                 case GAME: _in_game.handleInGame(_window, _state, client); break;
-                case END: client.setCanReceiveData(false); _window.close(); break;
+                case END: _window.close(); break;
                 default: break;
             }
-            if (_menu.getState() == Menu::State_menu::CLOSE) {
-                client.setCanReceiveData(false);
-                _window.close();
-            }
-            _fps = _menu.getFps();
         }
     }
 }

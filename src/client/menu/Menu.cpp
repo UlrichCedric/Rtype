@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** Rtype [WSL : Ubuntu]
+** Rtype [WSL : Ubuntu]
 ** File description:
 ** Menu
 */
@@ -36,9 +36,9 @@ Menu::Menu::~Menu()
 {
 }
 
-void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state, Client &client)
+void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state)
 {
-    this->handleEvents(window, client);
+    this->handleEvents(window);
     window.clear();
     _paralax_menu_background.update(Game::MENU_PARALAX);
     _paralax_menu_background.draw(window, Game::MENU_PARALAX);
@@ -52,59 +52,18 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state, Client &clie
     window.display();
 }
 
-std::string convert_string_array_into_dynamic_string(std::array<char, 64UL> &array)
-{
-    std::string str;
-
-    for (auto &i : array) {
-        if (i == '\0') {
-            break;
-        } else {
-            str += i;
-        }
-    }
-    std::cout << "str = " << str << std::endl;
-    return str;
-}
-
 void Menu::Menu::fetchLobbyList()
 {
-    std::vector<Lobby>::iterator it = _game_lobby_list.begin();
-    std::string state_open_tmp = "open";
-    std::string state_close_tmp = "close";
+    std::vector<_game_lobby>::iterator it = _game_lobby_list.begin();
 
     for (int i = 0; it != _game_lobby_list.end(); it++, i++) {
         switch (i) {
-            case (0): _game1_lobby.initGameLobby(
-                it->status == 0 ? state_open_tmp : state_close_tmp,
-                convert_string_array_into_dynamic_string(it->name),
-                it->nb_players);
-                _game1_lobby.setPosition(0); break;
-            case (1): _game2_lobby.initGameLobby(
-                it->status == 0 ? state_open_tmp : state_close_tmp,
-                convert_string_array_into_dynamic_string(it->name),
-                it->nb_players);
-                _game2_lobby.setPosition(1); break;
-            case (2): _game3_lobby.initGameLobby(
-                it->status == 0 ? state_open_tmp : state_close_tmp,
-                convert_string_array_into_dynamic_string(it->name),
-                it->nb_players);
-                _game3_lobby.setPosition(2); break;
-            case (3): _game4_lobby.initGameLobby(
-                it->status == 0 ? state_open_tmp : state_close_tmp,
-                convert_string_array_into_dynamic_string(it->name),
-                it->nb_players); _game4_lobby.setPosition(3); break;
-            case (4): _game5_lobby.initGameLobby(
-                it->status == 0 ? state_open_tmp : state_close_tmp,
-                convert_string_array_into_dynamic_string(it->name),
-                it->nb_players);
-                _game5_lobby.setPosition(4); break;
+            case (0): _game1_lobby.initGameLobby(it->status, it->name, it->nb_players); _game1_lobby.setPosition(0); break;
+            case (1): _game2_lobby.initGameLobby(it->status, it->name, it->nb_players); _game2_lobby.setPosition(1); break;
+            case (2): _game3_lobby.initGameLobby(it->status, it->name, it->nb_players); _game3_lobby.setPosition(2); break;
+            case (3): _game4_lobby.initGameLobby(it->status, it->name, it->nb_players); _game4_lobby.setPosition(3); break;
+            case (4): _game5_lobby.initGameLobby(it->status, it->name, it->nb_players); _game5_lobby.setPosition(4); break;
             default: break;
         }
     }
-}
-
-int Menu::Menu::getFps()
-{
-    return _fps[_fps_index];
 }
