@@ -22,18 +22,18 @@ InGame::~InGame() = default;
 
 void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
-    // if (_key_pressed != NONE) {
-    //     client.sendData(_key_pressed);
-    // }
+    handleEvents(window);
+    if (_key_pressed != NONE) {
+        client.sendData(_key_pressed);
+    }
     // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
     // if (_state == END) {
     //     client.setCanReceiveData(false);
     // }
-    handleEvents(window);
     window.clear();
     displayInGame(window, client);
     window.display();
-    // _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
+    _score_text.SetText("Score : " + std::to_string(_score));
 }
 
 void InGame::displayInGame(sf::RenderWindow &window, Client &client)
@@ -76,17 +76,20 @@ void InGame::handleEventsOthers(sf::Event &event)
 void InGame::handleEventsMovementPlayer(sf::Event &event)
 {
     switch (event.key.code) {
+        case sf::Keyboard::Up:
+            _key_pressed = UP;
+            break;
+        case sf::Keyboard::Down:
+            _key_pressed = DOWN;
+            break;
         case sf::Keyboard::Left:
             _key_pressed = LEFT;
             break;
         case sf::Keyboard::Right:
             _key_pressed = RIGHT;
             break;
-        case sf::Keyboard::Up:
-            _key_pressed = UP;
-            break;
-        case sf::Keyboard::Down:
-            _key_pressed = DOWN;
+        case sf::Keyboard::Space:
+            _key_pressed = SPACE;
             break;
         default: break;
     }
@@ -95,6 +98,7 @@ void InGame::handleEventsMovementPlayer(sf::Event &event)
 void InGame::handleEvents(sf::RenderWindow &window)
 {
     sf::Event event;
+
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window.close();

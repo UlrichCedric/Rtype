@@ -43,7 +43,7 @@ class Server {
             TCP:
             acceptClients();
             send();
-*/
+        */
             UDP:
             handleTimer();
             startReceive();
@@ -51,7 +51,7 @@ class Server {
 
     ~Server()
     {
-        std::cout << "Shut down the server" << std::endl;
+        std::cout << "Shutting down the server..." << std::endl;
     }
 
     private:

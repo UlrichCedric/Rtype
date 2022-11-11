@@ -10,6 +10,7 @@
 void Client::sendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{ action, _uuid }};
+    std::cout << "sendData" << send_buf[0].input << std::endl;
     _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
 }
 
@@ -33,10 +34,14 @@ void Client::sendData(enum Input action)
 //     );
 // }
 
-void Client::handleSendData(const boost::system::error_code &error, std::size_t)
-{
-    std::cout << "handleSendData" << std::endl;
-}
+// void Client::handleSendData(const boost::system::error_code &error, std::size_t)
+// {
+//     if (error) {
+//         std::cerr << "Error sending data to server: " << error << std::endl;
+//         return;
+//     }
+//     std::cout << "sending: " << send_buf.action << std::endl;
+// }
 
 /**
  * @brief When client receive data from server
@@ -103,17 +108,17 @@ void Client::handleSpriteData(void)
 {
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
         for (auto img: _images) {
-            if (img->getId() == _recv_buf[0].spriteDatas[i].id) {
-                img->setPos(_recv_buf[0].initSpriteDatas[i].coords);
-                try {
-                    img->setHp(
-                        _recv_buf[0].initSpriteDatas[i].health,
-                        _recv_buf[0].initSpriteDatas[i].coords
-                    );
-                } catch (Error &e) {
-                    std::cerr << "Error: " << e.what() << std::endl;
-                }
-                break;
+            if (img->getId() != _recv_buf[0].spriteDatas[i].id) {
+                continue;
+            }
+            img->setPos(_recv_buf[0].initSpriteDatas[i].coords);
+            try {
+                img->setHp(
+                    _recv_buf[0].initSpriteDatas[i].health,
+                    _recv_buf[0].initSpriteDatas[i].coords
+                );
+            } catch (Error &e) {
+                std::cerr << "Error: " << e.what() << std::endl;
             }
         }
     }
