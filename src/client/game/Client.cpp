@@ -220,7 +220,7 @@ void Client::joinLobby(boost::uuids::uuid uuid)
             std::cout << "Join accepted in lobby " << uuid << std::endl;
             // start UDP Game
         } else if (response_buf[0] == FORBIDDEN) {
-            std::cout << "Something wrong when trying to join lobby " << uuid << std::endl;
+            throw Error("Join lobby refused");
         }
     } else {
         std::cout << "read failed: " << error.message() << std::endl;

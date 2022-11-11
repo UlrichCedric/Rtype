@@ -95,9 +95,13 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             }
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 std::cout << "Joining lobby with uuid : " << this->get_uuid_of_selected_lobby() << std::endl;
-                client.joinLobby(this->get_uuid_of_selected_lobby());
                 _validate_sound.play();
-                _state = State_menu::GAME;
+                try {
+                    client.joinLobby(boost::uuids::uuid());
+                    _state = State_menu::GAME;
+                } catch (Error &e) {
+                    std::cout << e.what() << std::endl;
+                }
             }
         }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
