@@ -9,9 +9,9 @@
 
 void Client::sendData(enum Input action)
 {
-    boost::array<Action, 1> send_buf = {{action, _uuid}};
+    boost::array<Action, 1> send_buf = {{ action, _uuid }};
+    std::cout << "sendData" << send_buf[0].input << std::endl;
     _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
-    std::cout << "sendData" << std::endl;
 }
 
 void Client::asyncSendData(enum Input action)
@@ -32,18 +32,25 @@ void Client::handleSendData(const boost::system::error_code& error, std::size_t 
 void Client::receiveData(void)
 {
     while (_canReceiveData) {
-        boost::asio::ip::udp::endpoint sender_endpoint;
-        std::string type = "undefined";
-        size_t len = _udp_socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
-        if (_recv_buf.size() == 0) {
-            continue;
-        }
-        if (_recv_buf[0].type == InitSpriteDataType) {
-            type = "InitSpriteData";
-            handleInitSpriteData();
-        } else if (_recv_buf[0].type == SpriteDataType) {
-            type = "SpriteData";
-            handleSpriteData();
+        try {
+            size_t len = _udp_socket.receive(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)));
+            if (len == 0) {
+                std::cout << "Received empty data" << std::endl;
+                return;
+            }
+            if (_recv_buf[0].type == INITSPRITEDATATYPE) {
+                std::cout << "[1] Received initSpriteData" << std::endl;
+                std::cout << "received path: " << _recv_buf[0].initSpriteDatas[0].path << std::endl;
+                std::cout << "[2] Received initSpriteData" << std::endl;
+                handleInitSpriteData();
+            } else if (_recv_buf[0].type == SPRITEDATATYPE) {
+                handleSpriteData();
+            } else {
+                std::cerr << "Undefined type received: please verify what you're sending." << std::endl;
+            }
+        } catch(const boost::system::system_error& error) {
+            _canReceiveData = false;
+            std::cout << "receive failed (Client probably shut down)" << std::endl;
         }
         std::cout << type << " data received" << std::endl;
     }
@@ -76,17 +83,17 @@ void Client::handleSpriteData(void)
     // }
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
         for (auto img: _images) {
-            if (img.getId() == _recv_buf[0].spriteDatas[i].id) {
-                img.setPos(_recv_buf[0].initSpriteDatas[i].coords);
-                try {
-                    img.setHp(
-                        _recv_buf[0].initSpriteDatas[i].health,
-                        _recv_buf[0].initSpriteDatas[i].coords
-                    );
-                } catch (Error &e) {
-                    std::cerr << "Error: " << e.what() << std::endl;
-                }
-                break;
+            if (img->getId() != _recv_buf[0].spriteDatas[i].id) {
+                continue;
+            }
+            img->setPos(_recv_buf[0].initSpriteDatas[i].coords);
+            try {
+                img->setHp(
+                    _recv_buf[0].initSpriteDatas[i].health,
+                    _recv_buf[0].initSpriteDatas[i].coords
+                );
+            } catch (Error &e) {
+                std::cerr << "Error: " << e.what() << std::endl;
             }
         }
     }
@@ -299,8 +306,9 @@ void Client::readData(void)
 {
     boost::system::error_code error;
     boost::asio::read(_tcp_socket, boost::asio::buffer(_recv_buf), error);
+
     if (!error) {
-        if (_recv_buf[0].type == LobbyType) {
+        if (_recv_buf[0].type == LOBBYTYPE) {
             for (int i = 0; _recv_buf[0].lobbies[i].size != 0; i++) {
                 std::cout << "Lobby of uuid: " << _recv_buf[0].lobbies[i].lobby_uuid << std::endl;
             }

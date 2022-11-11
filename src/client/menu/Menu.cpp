@@ -103,3 +103,8 @@ void Menu::Menu::fetchLobbyList()
         }
     }
 }
+
+int Menu::Menu::getFps()
+{
+    return _fps[_fps_index];
+}

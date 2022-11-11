@@ -19,34 +19,41 @@
 #include "../utils/Config.hpp"
 #include "../utils/Music.hpp"
 #include "../utils/Paralax.hpp"
+#include "./Client.hpp"
 #include <string>
 
 class InGame {
     public:
-        InGame();
-        ~InGame();
+    InGame();
+    ~InGame();
 
-        void handleInGame(sf::RenderWindow &window, State &state);
-        //Events / handle player input
-        void handleEvents(sf::RenderWindow &window);
-        void handleEventsMovementPlayer(sf::Event &event);
-        void handleEventsOthers(sf::Event &event);
-        void initInGame();
-        void displayInGame(sf::RenderWindow &window);
+    void handleInGame(sf::RenderWindow &, State &, Client &);
+    // Events / handle player input
+    void handleEvents(sf::RenderWindow &, Client &);
+    void handleKeyPressed(sf::Event &);
+    void handleKeyReleased(sf::Event &);
+    void initInGame(void);
+    void setScore(int newScore) { _score = newScore; }
+    int getScore(void) { return _score; }
 
+    void drawScoreText(sf::RenderWindow &win) { _score_text.draw(win); }
+    void drawButton(sf::RenderWindow &win) { win.draw(_button._image.get_sprite()); }
 
-    protected:
+    Menu::Button &getButton(void) { return _button; }
+    Game::Text &getText(void) { return _score_text; }
+    void displayInGame(sf::RenderWindow &, Client &);
+
     private:
-        Game::Image img;
-        Game::Image background;
-        // Game::Player _player;
-        // Music _music;
-        Game::Paralax _background_paralax;
-        enum Input _key_pressed;
-        // Menu::Button _button;
-        // Game::Ennemy _ennemy;
-        Game::Text _score_text;
-        int _score;
+    Game::Image _img;
+    Game::Image _background;
+    // Game::Player _player;
+    // Music _music;
+    Game::Paralax _background_paralax;
+    enum Input _key_pressed;
+    Menu::Button _button;
+    // Game::Ennemy _ennemy;
+    Game::Text _score_text;
+    int _score;
 };
 
 #endif /* !INGAME_HPP_ */

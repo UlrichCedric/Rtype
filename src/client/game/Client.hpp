@@ -11,6 +11,7 @@
 
 #include "../../Common.hpp"
 #include "../utils/Image.hpp"
+#include "Image.hpp"
 
 class Client {
     public:

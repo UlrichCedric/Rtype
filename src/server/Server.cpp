@@ -166,20 +166,27 @@ void Server::sendSprites(void)
     }
 }
 
-void Server::handleReceive(const boost::system::error_code &error, std::size_t)
+/**
+ * @brief When received a message from the client
+ *
+ * @param error if any
+ * @param std::size_t byte size
+ */
+void Server::handleReceive(const boost::system::error_code &error, std::size_t bytes)
 {
-    if (!error) {
-        std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
-        if (isNewUuid(_recv_buf[0].uuid)) {
-            std::cout << "New player !" << std::endl;
-            Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
-            _players.push_back(new_player_info);
-            SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
-            _sprites.push_back(player);
-        }
-        handleInput(_recv_buf[0]);
-        // sendSprites();
+    if (error || bytes == 0) {
+        return;
     }
+    std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
+    if (isNewUuid(_recv_buf[0].uuid)) {
+        std::cout << "New player with UUID" << _recv_buf[0].uuid << std::endl;
+        Player new_player_info = { _remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0) };
+        _players.push_back(new_player_info);
+        SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
+        std::cout << "before Init ECS" << std::endl;
+        initEcs(_recv_buf[0].uuid);
+    }
+    handleInput(_recv_buf[0]);
     startReceive();
 }
 
@@ -220,6 +227,19 @@ void Server::acceptClients(void)
         asyncRead(new_socket_ptr);
         acceptClients();
     });
+}
+
+void Server::read(void)
+{
+    for (auto pair : _sockets) {
+        boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
+        if (_lobby_buf[0].type == LOBBYTYPE) {
+            for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
+                std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
+            }
+        }
+    }
+    std::cout << "Read ended" << std::endl;
 }
 
 void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
@@ -393,12 +413,14 @@ void Server::send(void)
     array_buf[1] = lobby2;
     array_buf[2] = lobby3;
     array_buf[3] = endArray;
-    Data data = {LobbyType, {}, {}, array_buf};
-    boost::array<Data, 1> send_buf = {data};
+    Data data = { LOBBYTYPE, {}, {}, array_buf };
+    boost::array<Data, 1> send_buf = { data };
+
     for (auto pair : _sockets) {
         boost::asio::write(*(pair.second.get()), boost::asio::buffer(send_buf));
         std::cout << "data sent to client" << std::endl;
     }
+
     _timer.expires_from_now(boost::posix_time::milliseconds(500));
     _timer.async_wait(boost::bind(&Server::send, this));
 }
@@ -465,17 +487,38 @@ void Server::initEcs(void)
         std::size_t i = 0;
 
         for (auto entity: _entities) {
-            buffer[i++] = getInitSpriteData(entity);
+            if (i == 15) {
+                std::cerr << "Error: upgrade boost::array size" << std::endl;
+                break;
+            }
+            array_buf.at(i) = getInitSpriteData(entity);
+            i++;
         }
-        buffer[i] = endArray;
-        boost::array<SpriteData, 16> empty_array;
-        Data data = {InitSpriteDataType, empty_array, buffer};
-        boost::array<Data, 1> send_buf = {data};
-        for (Player player : _players) {
-            std::cout << "async send to " << player.uuid << std::endl;
+
+        if (array_buf[0].id == endArray.id) {
+            std::cout << "Error InitECS : Empty array_buf" << std::endl;
+            return ;
+        }
+
+        Data d = { INITSPRITEDATATYPE, {  }, array_buf };
+        boost::array<Data, 1> send_buf = { d };
+
+        for (auto p: _players) {
+            // if wrong player, go to next player
+            if (p.uuid != uuid) {
+                continue;
+            }
+
+            // if right player, send buffer
+            std::cout << send_buf[0].initSpriteDatas[0].path << std::endl;
             _udp_socket.async_send_to(
-                boost::asio::buffer(send_buf), player.endpoint,
-                boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+                boost::asio::buffer(send_buf),
+                p.endpoint,
+                boost::bind(
+                    &Server::handleSend,
+                    this,
+                    uuid,
+                    send_buf,
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred));
         }

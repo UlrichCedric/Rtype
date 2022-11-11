@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** Rtype [WSL : Ubuntu]
+** Rtype [WSL : Ubuntu]
 ** File description:
 ** Menu
 */
@@ -29,6 +29,7 @@ namespace Menu {
         LOBBY,
         SETTINGS,
         GAME,
+        CLOSE,
     };
 
     class Menu {
@@ -40,7 +41,7 @@ namespace Menu {
             void handleEventsMenu(sf::Event &event, Client &client);
             void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
-
+            State_menu getState() {return _state;};
             void handleMenu(sf::RenderWindow &window, State &state, Client &client);
 
             //Menu
@@ -54,6 +55,7 @@ namespace Menu {
             //Settings
             void initSettings();
             void displaySettings(sf::RenderWindow &window);
+            int getFps();
 
         private:
             State_menu _state;
@@ -72,9 +74,10 @@ namespace Menu {
             Game::Text _menu_text_top_right02;
             Game::Text _menu_text_multiplayer;
             Game::Text _menu_text_settings;
+            Game::Text _menu_text_quit;
             Game::Text _menu_text_bottom_right;
             Game::Image _menu_rect_selection;
-            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION};
+            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION, QUIT_SELECTION};
             _selection_possibility_menu _menu_select;
 
             // Lobby
@@ -118,12 +121,14 @@ namespace Menu {
             Game::Text _settings_title;
             Game::Text _settings_music_volume;
             Game::Text _settings_sonds_volume;
+            Game::Text _settings_fps;
             Game::Image _settings_rect_selection;
             sf::RectangleShape _settings_music_volume_bar;
             sf::RectangleShape _settings_music_volume_progression_bar;
             sf::RectangleShape _settings_sounds_volume_bar;
             sf::RectangleShape _settings_sounds_volume_progression_bar;
-
+            std::array<int, 3> _fps;
+            size_t _fps_index;
     };
 }
 

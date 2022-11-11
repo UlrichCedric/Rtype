@@ -31,16 +31,32 @@ namespace Game {
     class Windows {
         public:
             Windows();
-            ~Windows() = default;
-            // void Events();
-            void GameLoop(Client &client);
-            void init();
+
+            void GameLoop(Client &);
+            void Display_menu(void);
+            void Display_pause(void);
+            void Events(void);
+            void Events_game(void);
+            void Events_pause(void);
+            void handleGame(Client &);
+            void handlePause(void);
+            void handleEnd(void);
+            void handleClose(Client &client);
+            void init(void);
+            ~Windows(void) = default;
 
         private:
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
-            int fps;
+            int _fps;
+
+            Image _img;
+            Image _background;
+            Player _player;
+            Music _music;
+            Paralax _paralax;
+            enum Input _key_pressed;
             enum State _state;
             
             //Menu

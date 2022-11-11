@@ -140,10 +140,10 @@ typedef struct Lobby {
 } Lobby;
 
 enum Type {
-    InitSpriteDataType,
-    SpriteDataType,
-    LobbyType,
-    Loose
+    INITSPRITEDATATYPE,
+    SPRITEDATATYPE,
+    LOBBYTYPE,
+    LOOSE
 };
 
 struct Data {
