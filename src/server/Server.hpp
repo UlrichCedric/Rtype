@@ -36,6 +36,8 @@ class Server {
     {
         try {
             parseWaves();
+            _d = std::make_unique<DrawSystem>();
+            _h = std::make_unique<HealthSystem>();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
@@ -69,7 +71,7 @@ class Server {
     void handleInput(Action action);
     bool isNewUuid(boost::uuids::uuid uuid);
     void findPlayerSprite(Action action);
-    void moveSprite(SpriteData& sprite, enum Input input);
+    void moveSprite(std::shared_ptr<Velocity>, enum Input);
     std::size_t setNewSpriteId(std::size_t new_id);
 
     // UDP
@@ -103,10 +105,10 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::string, std::size_t);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-    void initEcs(boost::uuids::uuid);
+    void initEcs(boost::uuids::uuid, std::size_t);
 
     /**
      * @brief Initialize new wave's sprites

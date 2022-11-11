@@ -7,11 +7,12 @@ class Uuid: public AComponent {
 
     public:
 
-    Uuid(std::string uuid = "NULL"): _uuid(uuid) {  }
-    Uuid(Uuid &u): _uuid(u._uuid) {  }
+    Uuid(std::string uuid = "EMPTY"): _uuid(uuid) { };
+    Uuid(Uuid &u): _uuid(u._uuid) { };
 
     std::string getUuid(void) { return _uuid; }
     std::string getName(void) override { return "uuid"; }
+    void setUuid(std::string uuid) { _uuid = uuid; }
     int getEnum(void) override { return UUID; }
 
     ~Uuid(void) {  };

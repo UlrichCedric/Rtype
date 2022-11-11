@@ -91,7 +91,9 @@ void InGame::handleEventsMovementPlayer(sf::Event &event)
         case sf::Keyboard::Space:
             _key_pressed = SPACE;
             break;
-        default: break;
+        default:
+            _key_pressed = NONE;
+            break;
     }
 }
 

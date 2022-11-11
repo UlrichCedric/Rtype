@@ -4,22 +4,22 @@
 #include "../Components/Health.hpp"
 
 #include <memory>
+#include <vector>
+#include <algorithm>
 
 class HealthSystem: public ASystem {
     public:
-    HealthSystem(void) {  };
+    HealthSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) override {
-        for (auto element : list) {
-            if (element.get()->has(HEALTH)) {
-                auto hp = std::dynamic_pointer_cast<Health>(element.get()->getComponent(HEALTH));
-                if (hp->getHp() <= 0) {
-                    element.get()->removeComponent(DRAWABLE);
-                    return;
-                }
+    void run(std::vector<std::shared_ptr<Entity>> &list) {
+        std::remove_if(list.begin(), list.end(), [](const std::shared_ptr<Entity> &e){
+            if (!e->has(HEALTH)) {
+                return false;
             }
-        }
+            auto hp = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
+            return hp->getHp() <= 0;
+        });
     }
 
-    ~HealthSystem() {  }
+    ~HealthSystem(void) = default;
 };

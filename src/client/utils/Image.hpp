@@ -14,6 +14,7 @@
 #include <SFML/Audio.hpp>
 
 #include <exception>
+#include <memory>
 
 #include "../game/Health.hpp"
 #include "../../Errors.hpp"
@@ -62,10 +63,11 @@ namespace Game {
             sf::Color getColor() { return _sprite.getColor(); };
             void setColor(sf::Color color) { _sprite.setColor(color); };
             void setRotation(float angle) { _sprite.setRotation(angle); };
+
             void setRect(int left, int top, int width, int height) {
                 _sprite.setTextureRect(sf::IntRect(left, top, width, height));
-                std::cout << "rectangle x: " << width << " y: " << height << std::endl;
             };
+
             void MoveRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
             std::size_t getId(void) { return _id; }
             void draw(sf::RenderWindow &win) { win.draw(_sprite); }
@@ -85,7 +87,7 @@ namespace Game {
              *
              */
             bool _isHealth;
-            Game::Health _health;
+            Health _health;
             bool _isAlive;
             int _scene;
     };

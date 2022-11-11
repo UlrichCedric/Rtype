@@ -13,8 +13,9 @@
 class Health: public AComponent {
 
     public:
-    Health(int hp = 100): _hp(hp) {  }
+    explicit Health(int hp = 100): _hp(hp) {  }
     Health(Health &h): _hp(h._hp) {  }
+
     std::string getName(void) override { return "health"; }
     int getEnum(void) override { return HEALTH; };
     void setHp(int hp) { _hp = hp; }

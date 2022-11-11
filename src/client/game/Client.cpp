@@ -63,10 +63,8 @@ void Client::receiveData(void)
             std::cout << "Received empty data" << std::endl;
             return;
         }
+        std::cout << "received type " << _recv_buf[0].type << std::endl;
         if (_recv_buf[0].type == INITSPRITEDATATYPE) {
-            std::cout << "[1] Received initSpriteData" << std::endl;
-            std::cout << "received path: " << _recv_buf[0].initSpriteDatas[0].path << std::endl;
-            std::cout << "[2] Received initSpriteData" << std::endl;
             handleInitSpriteData();
         } else if (_recv_buf[0].type == SPRITEDATATYPE) {
             handleSpriteData();
@@ -88,6 +86,7 @@ void Client::handleInitSpriteData(void)
             std::cerr << "Path " << _recv_buf[0].initSpriteDatas[i].path << " does not exist" << std::endl;
         }
 
+        std::cout << "Created Image with x " << _recv_buf[0].initSpriteDatas[i].coords.first << std::endl;
         std::shared_ptr<Game::Image> img = std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
             _recv_buf[0].initSpriteDatas[i].path,
@@ -106,20 +105,26 @@ void Client::handleInitSpriteData(void)
  */
 void Client::handleSpriteData(void)
 {
+    std::cout << "handleSpriteData" << std::endl;
+    std::shared_ptr<Game::Image> img;
+
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        for (auto img: _images) {
-            if (img->getId() != _recv_buf[0].spriteDatas[i].id) {
-                continue;
-            }
-            img->setPos(_recv_buf[0].initSpriteDatas[i].coords);
-            try {
-                img->setHp(
-                    _recv_buf[0].initSpriteDatas[i].health,
-                    _recv_buf[0].initSpriteDatas[i].coords
-                );
-            } catch (Error &e) {
-                std::cerr << "Error: " << e.what() << std::endl;
-            }
+        std::cout << "je passe dans la boucle for tkt bro" << std::endl;
+        try {
+            img = getImageById(_recv_buf[0].spriteDatas[i].id);
+        } catch (Error &e) {
+            std::cerr << "No image with id " << _recv_buf[0].spriteDatas[i].id << std::endl;
+        }
+
+        std::cout << "received coords: " << _recv_buf[0].spriteDatas[i].coords.first << std::endl;
+        img->setPos(_recv_buf[0].spriteDatas[i].coords);
+        try {
+            img->setHp(
+                _recv_buf[0].spriteDatas[i].health,
+                _recv_buf[0].spriteDatas[i].coords
+            );
+        } catch (Error &e) {
+            std::cerr << "Error: " << e.what() << std::endl;
         }
     }
 }

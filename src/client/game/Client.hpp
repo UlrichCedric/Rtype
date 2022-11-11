@@ -12,6 +12,7 @@
 #include "../../Common.hpp"
 #include "../utils/Image.hpp"
 #include "Image.hpp"
+#include "../../Errors.hpp"
 
 #include <memory>
 #include <fstream>
@@ -56,6 +57,16 @@ class Client {
         void readData(void);
         std::vector<Lobby> getLobbies(void);
         void setCanReceiveData(bool);
+
+        // utils
+        std::shared_ptr<Game::Image> getImageById(std::size_t id) {
+            for (auto img: _images) {
+                if (img->getId() == id) {
+                    return img;
+                }
+            }
+            throw Error("Couldn't find image with given ID");
+        }
 
         ~Client() {  };
 

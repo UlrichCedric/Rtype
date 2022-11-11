@@ -8,8 +8,6 @@
 #include "Server.hpp"
 #include "ecs/constants.hpp"
 
-//TODO it displays but cannot move
-
 /**
  * @brief parses the 'enemies.conf' file to get the different waves
  *
@@ -58,9 +56,15 @@ void Server::startReceive(void)
     );
 }
 
+/**
+ * @brief Main server gameloop
+ *
+ */
 void Server::handleTimer(void) {
-    sendSprites();
     // Wait for next timeout.
+    _d->run(_entities);
+    _h->run(_entities);
+    sendSprites();
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
     _timer.async_wait(boost::bind(&Server::handleTimer, this));
 }
@@ -101,27 +105,16 @@ std::size_t Server::setNewSpriteId(std::size_t new_id)
     return (new_id);
 }
 
-void Server::moveSprite(SpriteData& sprite, enum Input input)
+void Server::moveSprite(std::shared_ptr<Velocity> vel, enum Input input)
 {
     switch (input) {
-        case UP: sprite.coords.second -= 10; break;
-        case DOWN: sprite.coords.second += 10; break;
-        case LEFT: sprite.coords.first -= 10; break;
-        case RIGHT: sprite.coords.first += 10; break;
-        default: break;
+        case UP: vel->setYVelocity(1); vel->setXVelocity(0); break;
+        case DOWN: vel->setYVelocity(-1); vel->setXVelocity(0); break;
+        case LEFT: vel->setXVelocity(-1); vel->setYVelocity(0); break;
+        case RIGHT:vel->setXVelocity(1); vel->setYVelocity(0); break;
+        default: return;
     }
-    if (sprite.coords.first < -10) {
-        sprite.coords.first = -10;
-    }
-    if (sprite.coords.first > 1185) {
-        sprite.coords.first = 1185;
-    }
-    if (sprite.coords.second < -15) {
-        sprite.coords.second = -15;
-    }
-    if (sprite.coords.second > 870) {
-        sprite.coords.second = 870;
-    }
+    std::cout << "modified velocity" << std::endl;
 }
 
 /** @brief gets the sprite from the given player
@@ -130,30 +123,21 @@ void Server::moveSprite(SpriteData& sprite, enum Input input)
  */
 void Server::findPlayerSprite(Action action)
 {
-    std::size_t id_sprite_player = 0;
-
-    for (Player& player : _players) {
-        if (action.uuid == player.uuid) {
-            id_sprite_player = player.idSprite;
-            break;
-        }
-    }
     for (auto entity: _entities) {
-        if (!entity->has(DRAWABLE)) {
+        if (!entity->has(VELOCITY) || !entity->has(UUID) ) {
             continue;
         }
-    }
-    if (id_sprite_player == 0) {
-        return;
-    }
-    for (SpriteData& sprite : _sprites) {
-        if (sprite.id == id_sprite_player) {
-            moveSprite(sprite, action.input);
+
+        auto uuid = std::dynamic_pointer_cast<Uuid>(entity->getComponent(UUID));
+
+        if (entity->getId() == getEntityIdByUuid(action)) {
+            auto vel = std::dynamic_pointer_cast<Velocity>(entity->getComponent(VELOCITY));
+            moveSprite(vel, action.input);
         }
     }
 }
 
-/** @brief handle any input sent from client
+/** @brief handle any input sent from client UDP
  *
  * @param action sent from the client { uuid, key_pressed }
  *
@@ -171,8 +155,9 @@ void Server::sendSprites(void)
 {
     SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
     boost::array<SpriteData, 16> array_buf = { endArray };
+    std::size_t i = 0;
 
-    for (int i = 0; i <= _sprites.size(); i++) {
+    for (auto entity: _entities) {
         if (i == 15) {
             /*
                 Provisoire, c'est au cas où il y ait + que 16 sprites, pour éviter le crash
@@ -181,18 +166,20 @@ void Server::sendSprites(void)
             array_buf[i] = endArray;
             break;
         }
-        if (i == _sprites.size()) {
-            array_buf[i] = endArray;
-        } else {
-            array_buf[i] = _sprites[i];
-        }
+        array_buf[i++] = getSpriteData(entity);
     }
+    array_buf[i] = endArray;
 
-    boost::array<InitSpriteData, 16> empty_array;
-    Data data = { SPRITEDATATYPE, array_buf, {} };
+    for (auto array: array_buf) {
+        std::cout << array.coords.first << " " << array.coords.second << std::endl;
+    }
+    std::cout << "n'importe quoi" << std::endl;
+
+    Data data = { SPRITEDATATYPE, array_buf, { }, { } };
     boost::array<Data, 1> send_buf = { data };
 
     for (Player player : _players) {
+        std::cout << "envoi" << std::endl;
         _udp_socket.async_send_to(
             boost::asio::buffer(send_buf),
             player.endpoint,
@@ -209,7 +196,7 @@ void Server::sendSprites(void)
 }
 
 /**
- * @brief When received a message from the client
+ * @brief When received a UDP message from the client
  *
  * @param error if any
  * @param std::size_t byte size
@@ -219,15 +206,21 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t b
     if (error || bytes == 0) {
         return;
     }
-    std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
     if (isNewUuid(_recv_buf[0].uuid)) {
-        std::cout << "New player with UUID XDDDPUTE " << _recv_buf[0].uuid << std::endl;
-        Player new_player_info = { _remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0) };
-        _players.push_back(new_player_info);
-        SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
-        std::cout << "before Init ECS" << std::endl;
-        initEcs(_recv_buf[0].uuid);
+        std::cout << "New player with UUID: " << _recv_buf[0].uuid << std::endl;
+
+        Player new_player = {
+            .endpoint = _remote_endpoint,
+            .uuid = _recv_buf[0].uuid,
+            .idSprite = setNewSpriteId(0)
+        };
+
+        _players.push_back(new_player);
+
+        SpriteData player = { new_player.idSprite, { 800.0, 400.0 }, 100 };
+        initEcs(_recv_buf[0].uuid, new_player.idSprite);
     }
+    std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
     handleInput(_recv_buf[0]);
     startReceive();
 }
@@ -262,7 +255,7 @@ void Server::handleSend(
             std::cout << "inside handleSend -> path: " << send_buf[0].initSpriteDatas[i].path << std::endl;
         }
     } else if (send_buf[0].type == SPRITEDATATYPE) {
-        type = "SpriteData";
+        std::cout << "SpriteData sent: " << send_buf[0].spriteDatas[0].coords.first << std::endl;
     }
     std::cout << type << " sent to " << uuidReceiver << std::endl;
 }
@@ -301,11 +294,17 @@ void Server::read(void)
 
 void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
-    std::cout << "Ready to async read" << std::endl;
-    boost::asio::async_read(*(socket.get()), boost::asio::buffer(_lobby_buf),
-    boost::bind(&Server::handleRead, this, socket,
-        boost::asio::placeholders::error,
-        boost::asio::placeholders::bytes_transferred));
+    boost::asio::async_read(
+        *(socket.get()),
+        boost::asio::buffer(_lobby_buf),
+        boost::bind(
+            &Server::handleRead,
+            this,
+            socket,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
 }
 
 std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
@@ -319,9 +318,11 @@ std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::so
     return j;
 }
 
-void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
-    boost::system::error_code const& error, size_t bytes_transferred)
-{
+void Server::handleRead(
+    std::shared_ptr<boost::asio::ip::tcp::socket> socket,
+    boost::system::error_code const& error,
+    size_t bytes_transferred
+) {
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error)) {
         std::cout << "player disconnected" << std::endl;
@@ -396,31 +397,42 @@ std::shared_ptr<Entity> Server::createEntity(
     std::pair<float, float> velocity,
     std::pair<float, float> position = { -1.0, -1.0 },
     std::pair<float, float> scale = { 1.0, 1.0 },
-    std::pair<float, float> rect = { -1.0, -1.0 }
+    std::pair<float, float> rect = { -1.0, -1.0 },
+    std::string uuid = "EMPTY",
+    std::size_t id = 0
 ) {
-    std::shared_ptr<Entity> e = _f.get()->createEntity(templ);
-    std::cout << "id de la nouvelle entity " << e.get()->getId() << std::endl;
+    std::shared_ptr<Entity> e;
+    if (id != 0) {
+        e = _f->createEntity(templ, id);
+    } else {
+        e = _f->createEntity(templ);
+    }
+    std::cout << "id de la nouvelle entity " << e->getId() << std::endl;
 
     try {
-        auto eDraw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
+        auto eDraw = std::dynamic_pointer_cast<Drawable>(e->getComponent(DRAWABLE));
         if (eDraw != nullptr && !path.empty()) {
             eDraw->setSprite(path);
             eDraw->setRectSize(rect);
         }
-        auto eVel = std::dynamic_pointer_cast<Velocity>(e.get()->getComponent(VELOCITY));
+        auto eVel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
         if (eVel != nullptr) {
             eVel->setXVelocity(velocity.first);
             eVel->setYVelocity(velocity.second);
         }
-        auto eScale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
+        auto eScale = std::dynamic_pointer_cast<Scale>(e->getComponent(SCALE));
         if (eScale != nullptr) {
             eScale->setXScale(scale.first);
             eScale->setYScale(scale.second);
         }
-        auto ePos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
+        auto ePos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
         if (ePos != nullptr && position.first != -1 && position.second != -1) {
             ePos->setXPos(position.first);
             ePos->setYPos(position.second);
+        }
+        auto eUuid = std::dynamic_pointer_cast<Uuid>(e->getComponent(UUID));
+        if (uuid != "EMPTY" && eUuid != nullptr) {
+            eUuid->setUuid(uuid);
         }
     } catch (Error &e) {
         std::cout << "Error: " << e.what() << std::endl;
@@ -432,17 +444,17 @@ std::shared_ptr<Entity> Server::createEntity(
  * @brief creates the necessary sprites to launch the game
  *
  * @param uuid of the new client
+ * @param idSprite sprite ID of the new player
  */
-void Server::initEcs(boost::uuids::uuid uuid)
+void Server::initEcs(boost::uuids::uuid uuid, std::size_t idSprite)
 {
     _f = std::make_unique<Factory>();
-    _d = std::make_unique<DrawSystem>();
-    _h = std::make_unique<HealthSystem>();
 
     InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 }, 0 };
+    std::string uuid_str = boost::uuids::to_string(uuid);
 
     try {
-        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 16.0 }));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 16.0 }, uuid_str, idSprite));
 
         std::size_t i = 0;
         boost::array<InitSpriteData, 16> array_buf = { endArray };
@@ -452,8 +464,7 @@ void Server::initEcs(boost::uuids::uuid uuid)
                 std::cerr << "Error: upgrade boost::array size" << std::endl;
                 break;
             }
-            array_buf.at(i) = getInitSpriteData(entity);
-            i++;
+            array_buf.at(i++) = getInitSpriteData(entity);
         }
 
         if (array_buf[0].id == endArray.id) {
@@ -496,23 +507,21 @@ void Server::initEcs(boost::uuids::uuid uuid)
  * @param e the entity to get the SpriteData from
  * @return SpriteData from the given entity
  */
-SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
+SpriteData Server::getSpriteData(std::shared_ptr<Entity> &e) {
     if (!e.get()->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
     }
 
     try {
-        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        std::shared_ptr<Health> health;
+        auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+        auto health = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
 
-        if (e.get()->has(HEALTH)) {
-            health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
-        }
         SpriteData s = {
-            e.get()->getId(),
-            pos.get()->getPos(),
-            e.get()->has(HEALTH) ? health.get()->getHp() : -1
+            .id = e->getId(),
+            .coords = e->has(POSITION) ? pos->getPos() : std::make_pair<float, float>(0.0, 0.0),
+            .health = e->has(HEALTH) ? health->getHp() : -1
         };
+        std::cout << "getspritedata x/y: " << pos->getXPos() << "/" << pos->getYPos() << std::endl;
 
         return s;
     } catch (std::exception &e) {
@@ -532,21 +541,21 @@ InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
     }
 
     try {
-        auto draw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
-        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        auto scale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
+        auto draw = std::dynamic_pointer_cast<Drawable>(e->getComponent(DRAWABLE));
+        auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+        auto scale = std::dynamic_pointer_cast<Scale>(e->getComponent(SCALE));
         std::shared_ptr<Health> health;
-        if (e.get()->has(HEALTH)) {
-            health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        if (e->has(HEALTH)) {
+            health = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
         }
         InitSpriteData s = {
-            .id = e.get()->getId(),                                     // get the id of the sprite
-            .coords = pos.get()->getPos(),                              // get the position of the sprite
-            .scale = scale.get()->getScale(),                           // get the scale of the sprite
-            .rectSize = draw.get()->getRectSize(),                      // get the max coordinates of the rect
-            .health = e.get()->has(HEALTH) ? health.get()->getHp() : -1 // get the health
+            .id = e->getId(),                                     // get the id of the sprite
+            .coords = pos->getPos(),                              // get the position of the sprite
+            .scale = scale->getScale(),                           // get the scale of the sprite
+            .rectSize = draw->getRectSize(),                      // get the max coordinates of the rect
+            .health = e->has(HEALTH) ? health->getHp() : -1 // get the health
         };
-        strcpy(s.path, draw.get()->getPath().c_str());
+        strcpy(s.path, draw->getPath().c_str());
 
         return s;
     } catch (std::exception &e) {
@@ -568,11 +577,11 @@ std::size_t Server::getEntityIdByUuid(Action action)
         /*
             If this entity doesn't have any UUID, just continue to the next one
         */
-        if (!entity.get()->has(UUID)) {
+        if (!entity->has(UUID)) {
             continue;
         }
         try {
-            u = std::dynamic_pointer_cast<Uuid>(entity.get()->getComponent(UUID));
+            u = std::dynamic_pointer_cast<Uuid>(entity->getComponent(UUID));
         } catch (std::exception &e) {
             /*
                 For any reason, if the first verification failed, and this entity
@@ -582,7 +591,7 @@ std::size_t Server::getEntityIdByUuid(Action action)
         }
 
         if (u->getUuid() == boost::uuids::to_string(action.uuid)) {
-            return entity.get()->getId();
+            return entity->getId();
         }
     }
     throw Error("Entity not found");

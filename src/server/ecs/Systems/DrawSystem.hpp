@@ -5,41 +5,39 @@
 #include "../Components/Velocity.hpp"
 #include "../constants.hpp"
 
+#include <vector>
+#include <memory>
+
 class DrawSystem: public ASystem {
     public:
-    DrawSystem(void) {  }
+    DrawSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) override {
+    void run(std::vector<std::shared_ptr<Entity>> &list) {
+        std::cout << "run draw system" << std::endl;
         if (list.empty()) {
             return;
         }
 
-        for (auto element: list) {
-            auto e = element.get();
-            if (e == nullptr) {
-                continue;
-            }
-
-            if (!e->has("draw") || !e->has("position") || !e->has("velocity")) {
+        for (auto e: list) {
+            if (!e->has(DRAWABLE) || !e->has(POSITION) || !e->has(VELOCITY)) {
                 continue;
             }
 
             try {
-                Position *pos = static_cast<Position *>(e->getComponent("position").get());
+                auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
                 std::pair<float, float> p = pos->getPos();
-                Velocity *vel = static_cast<Velocity *>(e->getComponent("velocity").get());
+                auto vel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
                 std::pair<int, int> v = vel->getVelocity();
 
                 if (betw(-15, p.first + v.first, 1115) || betw(-15, p.second + v.second, 870)) {
-                    p.first += v.first;
-                    p.second += v.second;
-                    pos->setPos(p);
+                    pos->setPos(p.first + static_cast<float>(v.first), p.second + static_cast<float>(v.second));
+                    std::cout << "drawsystem run: " << pos->getPos().first << " :: " << pos->getPos().second << std::endl;
                 }
             } catch (std::exception & e) {
-                std::cout << "y' a une couille wolah" << std::endl;
+                std::cout << "y'a une couille wolah" << std::endl;
             }
         }
     }
 
-    ~DrawSystem() {  }
+    ~DrawSystem() override = default;
 };
