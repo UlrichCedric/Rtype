@@ -34,6 +34,8 @@ void Server::parseWaves(void) {
     std::cout << "Testing finished" << std::endl;
 }
 
+/// @brief Async function to receive data from clients.
+/// @param  No parameter
 void Server::startReceive(void)
 {
     _udp_socket.async_receive_from(
@@ -43,6 +45,8 @@ void Server::startReceive(void)
                     boost::asio::placeholders::bytes_transferred));
 }
 
+/// @brief Function called at the start of UDP sending data informations to clients. Recursively call itself every x milliseconds.
+/// @param  No parameter
 void Server::handleTimer(void) {
     sendSprites();
     // Wait for next timeout.
