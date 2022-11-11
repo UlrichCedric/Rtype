@@ -37,77 +37,12 @@ namespace Game {
         return;
     }
 
-    void Windows::Events()
-    {
-        sf::Event event;
-        while (_window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                _state = END;
-            } else if (event.type == sf::Event::MouseMoved) {
-                _in_game.getButton().IsHover(sf::Mouse::getPosition(_window));
-            } else if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (_in_game.getButton().IsClicked(sf::Mouse::getPosition(_window))) {
-                        _state = GAME;
-                    }
-                }
-            }
-        }
-    }
-
     void Windows::Display_menu()
     {
         _window.clear();
         _window.draw(_background.get_sprite());
         _in_game.drawButton(_window);
         _window.display();
-    }
-
-    void Windows::handleKeyPressed(sf::Event& event)
-    {
-        if (_key_pressed != NONE) {
-            return;
-        }
-        switch (event.key.code) {
-            case (sf::Keyboard::Left):
-                _key_pressed = LEFT;
-                break;
-            case (sf::Keyboard::Right):
-                _key_pressed = RIGHT;
-                break;
-            case (sf::Keyboard::Up):
-                _key_pressed = UP;
-                break;
-            case (sf::Keyboard::Down):
-                _key_pressed = DOWN;
-                break;
-            default: break;
-        }
-    }
-
-    void Windows::handleKeyReleased(sf::Event& event)
-    {
-        switch (event.key.code) {
-            case sf::Keyboard::Escape:
-                _state = PAUSE;
-                break;
-            case sf::Keyboard::Left:
-                _key_pressed == LEFT ? _key_pressed = NONE : false;
-                break;
-            case sf::Keyboard::Right:
-                _key_pressed == RIGHT ? _key_pressed = NONE : false;
-                break;
-            case sf::Keyboard::Up:
-                _key_pressed == UP ? _key_pressed = NONE : false;
-                break;
-            case sf::Keyboard::Down:
-                _key_pressed == DOWN ? _key_pressed = NONE : false;
-                break;
-            case sf::Keyboard::Space:
-                _player.bullet_reset();
-                break;
-            default: break;
-        }
     }
 
     void Windows::Events_game(void)
@@ -118,15 +53,15 @@ namespace Game {
                 _state = END;
                 return;
             }
-            switch (event.type) {
-                case sf::Event::KeyPressed:
-                    handleKeyPressed(event);
-                    break;
-                case sf::Event::KeyReleased:
-                    handleKeyReleased(event);
-                    break;
-                default: break;
-            }
+            // switch (event.type) {
+            //     case sf::Event::KeyPressed:
+            //         handleKeyPressed(event);
+            //         break;
+            //     case sf::Event::KeyReleased:
+            //         handleKeyReleased(event);
+            //         break;
+            //     default: break;
+            // }
         }
     }
 
@@ -142,16 +77,6 @@ namespace Game {
                 }
             }
         }
-    }
-
-    /**
-     * @brief main menu loop
-     *
-     */
-    void Windows::handleMenu(void)
-    {
-        Events();
-        Display_menu();
     }
 
     /**
@@ -197,11 +122,13 @@ namespace Game {
             switch (_state) {
                 case MENU: _menu.handleMenu(_window, _state); break;
                 case GAME: _in_game.handleInGame(_window, _state, client); break;
-                case END: _window.close(); break;
+                case END: client.setCanReceiveData(false); _window.close(); break;
                 default: break;
             }
-            if (_menu.getState() == Menu::State_menu::CLOSE)
+            if (_menu.getState() == Menu::State_menu::CLOSE) {
+                client.setCanReceiveData(false);
                 _window.close();
+            }
             _fps = _menu.getFps();
         }
     }
