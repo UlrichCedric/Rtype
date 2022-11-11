@@ -52,8 +52,13 @@ void Menu::Menu::handleEventsMenu(sf::Event &event, Client &client)
             if (_menu_select == MULTIPLAYER_SELECTION) {
                 _validate_sound.play();
                 _state = State_menu::LOBBY;
-                _game_lobby_list = client.getLobbies();
-                fetchLobbyList();
+                try {
+                    _game_lobby_list = client.getLobbies();
+                    fetchLobbyList();
+                }
+                catch (Error &e) {
+                    std::cerr << e.what() << std::endl;
+                }
             }
             else if (_menu_select == SETTINGS_SELECTION) {
                 _validate_sound.play();
@@ -67,6 +72,7 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
 {
     if (event.type == sf::Event::TextEntered) {
         if (_lobby_select == CREATE_A_LOBBY_MODAL) {
+            _game_name_text_box.setSelected(true);
             _game_name_text_box.typedOn(event);
         }
     }
@@ -83,21 +89,30 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
         else if (event.key.code == sf::Keyboard::Return) {
             if (_lobby_select == REFRESH_ICON) {
                 _validate_sound.play();
-                _game_lobby_list = client.getLobbies();
-                fetchLobbyList();
+                try {
+                    _game_lobby_list = client.getLobbies();
+                    fetchLobbyList();
+                }
+                catch (Error &e) {
+                    std::cerr << e.what() << std::endl;
+                }
             }
             else if (_lobby_select == CREATE_A_LOBBY) {
                 _validate_sound.play();
                 _lobby_select = CREATE_A_LOBBY_MODAL;
-                client.createLobby("LobbyCreatedByMe");
-                _game_lobby_list = client.getLobbies();
-                fetchLobbyList();
+                try {
+                    client.createLobby("LobbyCreatedByMe");
+                    _game_lobby_list = client.getLobbies();
+                    fetchLobbyList();
+                }
+                catch (Error &e) {
+                    std::cout << e.what() << std::endl;
+                }
             }
             else if (_lobby_select == BOX_LIST_LOBBY) {
-                std::cout << "Joining lobby with uuid : " << this->get_uuid_of_selected_lobby() << std::endl;
                 _validate_sound.play();
                 try {
-                    client.joinLobby(boost::uuids::uuid());
+                    client.joinLobby(this->get_uuid_of_selected_lobby());
                     _state = State_menu::GAME;
                 } catch (Error &e) {
                     std::cout << e.what() << std::endl;

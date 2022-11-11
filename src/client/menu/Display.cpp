@@ -40,6 +40,8 @@ void Menu::Menu::displayLobby(sf::RenderWindow &window)
         window.draw(_create_lobby_modal_alpha);
         window.draw(_create_lobby_modal);
         _game_name_text_box.drawTo(window);
+        window.draw(_game_name_title._item);
+        _validate_create_lobby_button.draw(window);
     }
 }
 

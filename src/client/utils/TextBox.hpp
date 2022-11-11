@@ -23,8 +23,13 @@ class TextBox {
         ~TextBox() {};
 
         void init(int size, sf::Color color, bool sel) {
+            textbox_box.setSize(sf::Vector2f(500, 55));
+            textbox_box.setFillColor(sf::Color::Black);
+            textbox_box.setOutlineColor(sf::Color::White);
+            textbox_box.setOutlineThickness(2);
             textbox.setCharacterSize(size);
-            textbox.setColor(color);
+            charSize = size;
+            textbox.setFillColor(color);
             isSelected = sel;
             if (sel) {
                 textbox.setString("_");
@@ -41,6 +46,7 @@ class TextBox {
         }
 
         void setPosition(sf::Vector2f pos) {
+            textbox_box.setPosition(pos.x - 20, pos.y - 20);
             textbox.setPosition(pos);
         }
 
@@ -70,7 +76,9 @@ class TextBox {
         }
 
         void drawTo(sf::RenderWindow &window) {
-            textbox.setString(text.str() + "");
+            textbox.setString(text.str() + "_");
+            textbox.setCharacterSize(charSize);
+            window.draw(textbox_box);
             window.draw(textbox);
         }
 
@@ -93,11 +101,13 @@ class TextBox {
 
     protected:
     private:
+    sf::RectangleShape textbox_box;
     sf::Text textbox;
     std::ostringstream text;
     bool isSelected = false;
     bool hasLimit = false;
     int limit;
+    unsigned int charSize;
     sf::Font _font;
     sf::String _data;
 

@@ -43,7 +43,7 @@ class InGame {
         // Music _music;
         Game::Paralax _background_paralax;
         enum Input _key_pressed;
-        Menu::Button _button;
+        // Menu::Button _button;
         // Game::Ennemy _ennemy;
         Game::Text _score_text;
         int _score;

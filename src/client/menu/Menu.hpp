@@ -103,6 +103,8 @@ namespace Menu {
             sf::RectangleShape _create_lobby_modal_alpha;
             sf::RectangleShape _create_lobby_modal;
             TextBox _game_name_text_box;
+            Game::Text _game_name_title;
+            Button _validate_create_lobby_button;
             // Join a lobby
             boost::uuids::uuid get_uuid_of_selected_lobby();
 

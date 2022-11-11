@@ -177,9 +177,9 @@ void Client::createLobby(std::string name)
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "write create Lobby" << std::endl;
+        std::cout << "You successfully create a Lobby with a name : " << name << std::endl;
     } else {
-        std::cout << "write failed: " << error.message() << std::endl;
+        throw Error("Create lobby failed");
     }
 }
 
@@ -244,6 +244,7 @@ std::vector<Lobby> Client::getLobbies(void)
         }
     } else {
         std::cout << "read failed: " << error.message() << std::endl;
+        throw Error("Get lobbies failed");
     }
     return lobbies;
 }
