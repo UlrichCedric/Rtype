@@ -91,6 +91,7 @@ class Server {
     boost::uuids::uuid _empty_uuid;
     boost::array<Lobby, 1> _lobby_buf;
     std::vector<Lobby> _lobbies;
+    std::vector<std::pair<boost::uuids::uuid, std::vector<boost::uuids::uuid>>> _players_in_lobbies;
 
     void acceptClients(void);
     void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
@@ -100,6 +101,8 @@ class Server {
     void send(void);
     void sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     void createLobby(Lobby &lobby);
+    void joinLobby(Lobby &lobby, std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    Lobby getLobbyFromUUID(boost::uuids::uuid uuid);
 
     // Data, buffer, timer
 

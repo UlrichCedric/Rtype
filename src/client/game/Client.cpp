@@ -177,26 +177,54 @@ void Client::createLobby(std::string name)
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "send create Lobby" << std::endl;
+        std::cout << "write create Lobby" << std::endl;
     } else {
-        std::cout << "send failed: " << error.message() << std::endl;
+        std::cout << "write failed: " << error.message() << std::endl;
     }
 }
 
 void Client::joinLobby(boost::uuids::uuid uuid)
 {
-    // Lobby lobby;
-    // lobby.player_uuid = _uuid;
-    // lobby.create = false;
-    // lobby.join = true;
-    // lobby.name = "";
-    // lobby.nb_players = 0;
-    // lobby.size = 0;
-    // lobby.lobby_uuid = uuid;
-    // lobby.status = OPEN;
-    // boost::array<Lobby, 1> buffer = {lobby};
-    // // _tcp_socket.send_to(boost::asio::buffer(buffer), _receiver_endpoint);
-    // std::cout << "send join Lobby" << std::endl;
+    std::string name = "joinLobby";
+    std::array<char, 64> buf_name;
+    for (size_t i = 0;; i++) {
+        buf_name[i] = name[i];
+        if (name[i] == '\0') {
+            break;
+        }
+    }
+    Lobby lobby;
+    lobby.player_uuid = _uuid;
+    lobby.askForLobbies = false;
+    lobby.create = false;
+    lobby.join = true;
+    lobby.name = buf_name;
+    lobby.nb_players = 0;
+    lobby.size = 0;
+    lobby.lobby_uuid = uuid;
+    lobby.status = OPEN;
+
+    boost::array<Lobby, 1> array_buf = {lobby};
+
+    boost::system::error_code error;
+    boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
+    if (!error) {
+        std::cout << "write join Lobby (" << uuid << ")" << std::endl;
+    } else {
+        std::cout << "write failed: " << error.message() << std::endl;
+    }
+    boost::array<int, 1> response_buf;
+    boost::asio::read(_tcp_socket, boost::asio::buffer(response_buf), error);
+    if (!error) {
+        if (response_buf[0] == OK) {
+            std::cout << "Join accepted in lobby " << uuid << std::endl;
+            // start UDP Game
+        } else if (response_buf[0] == FORBIDDEN) {
+            std::cout << "Something wrong when trying to join lobby " << uuid << std::endl;
+        }
+    } else {
+        std::cout << "read failed: " << error.message() << std::endl;
+    }
 }
 
 std::vector<Lobby> Client::getLobbies(void)
@@ -260,9 +288,9 @@ void Client::writeLobbyData(bool ask, bool create, bool join, std::string name,
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "Client sent data!" << std::endl;
+        std::cout << "Client wrote data!" << std::endl;
     } else {
-        std::cout << "send failed: " << error.message() << std::endl;
+        std::cout << "write failed: " << error.message() << std::endl;
     }
 }
 

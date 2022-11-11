@@ -18,16 +18,23 @@ class Client {
         : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
             _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0}), _empty_uuid({})
         {
+            _uuid = boost::uuids::random_generator()();
+
             // TCP:
-            _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+            try {
+                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+            } catch (const boost::system::system_error& error) {
+                std::cout << "Impossible de se connecter au serveur" << std::endl;
+                return;
+            }
             getLobbies();
             createLobby("nouveau lobby");
             getLobbies();
+            joinLobby(_empty_uuid);
 
             /*
                 UDP:
                 _udp_socket.open(boost::asio::ip::udp::v4());
-                _uuid = boost::uuids::random_generator()();
                 _canReceiveData = true;
                 std::thread thread(&Client::handleThread, this);
                 thread.detach();
