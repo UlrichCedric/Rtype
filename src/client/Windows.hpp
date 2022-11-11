@@ -38,12 +38,10 @@ namespace Game {
             void Events(void);
             void Events_game(void);
             void Events_pause(void);
-            void handleKeyPressed(sf::Event &);
-            void handleKeyReleased(sf::Event &);
-            void handleMenu(void);
             void handleGame(Client &);
             void handlePause(void);
             void handleEnd(void);
+            void handleClose(Client &client);
             void init(void);
             ~Windows(void) = default;
 

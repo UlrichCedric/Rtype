@@ -29,9 +29,9 @@ class InGame {
 
     void handleInGame(sf::RenderWindow &, State &, Client &);
     // Events / handle player input
-    void handleEvents(sf::RenderWindow &);
-    void handleEventsMovementPlayer(sf::Event &);
-    void handleEventsOthers(sf::Event &);
+    void handleEvents(sf::RenderWindow &, Client &);
+    void handleKeyPressed(sf::Event &);
+    void handleKeyReleased(sf::Event &);
     void initInGame(void);
     void setScore(int newScore) { _score = newScore; }
     int getScore(void) { return _score; }

@@ -142,3 +142,10 @@ struct Data {
     boost::array<InitSpriteData, 16> initSpriteDatas;
     boost::array<Lobby, 16> lobbies;
 };
+
+
+struct Wave {
+    int index;
+    std::string texture_path;
+    int ennemy_number;
+};

@@ -31,12 +31,6 @@ void Server::parseWaves(void) {
         std::string name = string.substr(string.find(':', 0), string.length() - 1);
         _waveConf[i++] = std::pair<std::size_t, std::string>(number, name);
     }
-
-    std::cout << "Testing parsing on enemies.conf:" << std::endl;
-    for (auto [key, value]: _waveConf) {
-        std::cout << "For key [" << key << "] = " << value.first << ", " << value.second << std::endl;
-    }
-    std::cout << "Testing finished" << std::endl;
 }
 
 /** @brief start receiving upd
@@ -108,11 +102,11 @@ std::size_t Server::setNewSpriteId(std::size_t new_id)
 void Server::moveSprite(std::shared_ptr<Velocity> vel, enum Input input)
 {
     switch (input) {
-        case UP: vel->setYVelocity(1); vel->setXVelocity(0); break;
-        case DOWN: vel->setYVelocity(-1); vel->setXVelocity(0); break;
-        case LEFT: vel->setXVelocity(-1); vel->setYVelocity(0); break;
-        case RIGHT:vel->setXVelocity(1); vel->setYVelocity(0); break;
-        default: return;
+        case UP: vel->setYVelocity(-2); vel->setXVelocity(0); break;
+        case DOWN: vel->setYVelocity(2); vel->setXVelocity(0); break;
+        case LEFT: vel->setXVelocity(-2); vel->setYVelocity(0); break;
+        case RIGHT:vel->setXVelocity(2); vel->setYVelocity(0); break;
+        default: vel->setYVelocity(0); vel->setXVelocity(0); break;
     }
     std::cout << "modified velocity" << std::endl;
 }
@@ -145,7 +139,6 @@ void Server::findPlayerSprite(Action action)
 void Server::handleInput(Action action)
 {
     switch (action.input) {
-        case (NONE) : return;
         case (SPACE): std::cout << "shoot" << std::endl; break;
         default: findPlayerSprite(action); break;
     }
@@ -454,7 +447,7 @@ void Server::initEcs(boost::uuids::uuid uuid, std::size_t idSprite)
     std::string uuid_str = boost::uuids::to_string(uuid);
 
     try {
-        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 5.0, 5.0 }, { 33.0, 16.0 }, uuid_str, idSprite));
+        _entities.push_back(createEntity("Player", "./assets/sprites/player.gif", { 0.1, 0.1 }, { 10.0, 10.0 }, { 3.0, 3.0 }, { 33.0, 16.0 }, uuid_str, idSprite));
 
         std::size_t i = 0;
         boost::array<InitSpriteData, 16> array_buf = { endArray };
@@ -499,6 +492,16 @@ void Server::initEcs(boost::uuids::uuid uuid, std::size_t idSprite)
     } catch (std::exception &e) {
         std::cerr << "Error initECS: " << e.what() << std::endl;
     }
+}
+
+/**
+ * @brief launch new wave by creating its sprites
+ *
+ */
+void Server::launchWave(std::size_t wave) {
+    _currentWave = wave;
+    //TODO add new wave
+    //TODO creating its sprites
 }
 
 /**

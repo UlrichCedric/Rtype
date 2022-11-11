@@ -50,11 +50,11 @@ class Factory {
         for (auto mapNode: _customs) {
             std::cout << mapNode.first << std::endl;
             for (int i = 0; i < comp_nb; ++i) {
-                if (!mapNode.second.get()->has(i)) {
+                if (!mapNode.second->has(i)) {
                     continue;
                 }
                 //TODO change this awful static cast
-                auto comp = mapNode.second.get()->getComponent(static_cast<components>(i)).get();
+                auto comp = mapNode.second->getComponent(static_cast<components>(i)).get();
             }
         }
     }

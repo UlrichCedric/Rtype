@@ -50,26 +50,25 @@ void Client::sendData(enum Input action)
 void Client::receiveData(void)
 {
     while (_canReceiveData) {
-        boost::asio::ip::udp::endpoint sender_endpoint;
-        size_t len = _udp_socket.receive_from(
-            boost::asio::buffer(
-                _recv_buf,
-                sizeof(boost::array<Data, 1>)
-            ),
-            sender_endpoint
-        );
-
-        if (len == 0) {
-            std::cout << "Received empty data" << std::endl;
-            return;
-        }
-        std::cout << "received type " << _recv_buf[0].type << std::endl;
-        if (_recv_buf[0].type == INITSPRITEDATATYPE) {
-            handleInitSpriteData();
-        } else if (_recv_buf[0].type == SPRITEDATATYPE) {
-            handleSpriteData();
-        } else {
-            std::cerr << "Undefined type received: please verify what you're sending." << std::endl;
+        try {
+            size_t len = _udp_socket.receive(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)));
+            if (len == 0) {
+                std::cout << "Received empty data" << std::endl;
+                return;
+            }
+            if (_recv_buf[0].type == INITSPRITEDATATYPE) {
+                std::cout << "[1] Received initSpriteData" << std::endl;
+                std::cout << "received path: " << _recv_buf[0].initSpriteDatas[0].path << std::endl;
+                std::cout << "[2] Received initSpriteData" << std::endl;
+                handleInitSpriteData();
+            } else if (_recv_buf[0].type == SPRITEDATATYPE) {
+                handleSpriteData();
+            } else {
+                std::cerr << "Undefined type received: please verify what you're sending." << std::endl;
+            }
+        } catch(const boost::system::system_error& error) {
+            _canReceiveData = false;
+            std::cout << "receive failed (Client probably shut down)" << std::endl;
         }
     }
 }

@@ -106,16 +106,11 @@ class Server {
     // ECS
 
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::string, std::size_t);
+    void launchWave(std::size_t);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
     void initEcs(boost::uuids::uuid, std::size_t);
 
-    /**
-     * @brief Initialize new wave's sprites
-     * @param size_t wave number
-     * @throw Error & if size_t is negative or not saved in _waveConf
-     */
-    void newWave(std::size_t) {  };
     std::size_t getEntityIdByUuid(Action action);
 
     // Factory
