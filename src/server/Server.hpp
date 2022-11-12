@@ -96,6 +96,7 @@ class Server {
     void deleteCorrespondingPlayerFromLobbies(boost::uuids::uuid player_uuid);
     boost::uuids::uuid getLobbyUuidFromPlayerUuid(boost::uuids::uuid player_uuid);
     void deleteCorrespondingSprite(std::size_t idSprite);
+    void customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite);
 
     // Data, buffer, timer
 

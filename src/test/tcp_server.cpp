@@ -71,7 +71,7 @@ class tcp_server {
 
         std::size_t findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
         {
-            std::size_t j = -1;
+            int j = -1;
             for (std::size_t i = 0; i < _sockets.size(); i++) {
                 if (_sockets[i].second == socket) {
                     j = i;

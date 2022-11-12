@@ -134,6 +134,25 @@ void Server::handleInput(Action action)
     }
 }
 
+void Server::customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite)
+{
+    int j = -1;
+
+    for (std::size_t i = 0; i < send_buf[0].spriteDatas.size(); i++) {
+        if (send_buf[0].spriteDatas[i].id == idSprite) {
+            j = i;
+            break;
+        }
+    }
+
+    if (j != -1) {
+        SpriteData first = send_buf[0].spriteDatas[j];
+        SpriteData other = send_buf[0].spriteDatas[0];
+        send_buf[0].spriteDatas[0] = first;
+        send_buf[0].spriteDatas[j] = other;
+    }
+}
+
 void Server::sendSprites(void)
 {
     SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
@@ -153,10 +172,10 @@ void Server::sendSprites(void)
             array_buf[i] = _sprites[i];
         }
     }
-    boost::array<InitSpriteData, 16> empty_array;
-    Data data = {SpriteDataType, array_buf};
+    Data data = {SpriteDataType, array_buf, {}, {}};
     boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
+        customizedSpriteData(send_buf, player.idSprite);
         _udp_socket.async_send_to(
             boost::asio::buffer(send_buf), player.endpoint,
             boost::bind(&Server::handleSend, this, player.uuid, send_buf,
@@ -231,7 +250,7 @@ void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 
 std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
-    std::size_t j = -1;
+    int j = -1;
     for (std::size_t i = 0; i < _sockets.size(); i++) {
         if (_sockets[i].second == socket) {
             j = i;
@@ -292,7 +311,7 @@ void Server::deleteCorrespondingPlayerFromLobbies(boost::uuids::uuid player_uuid
 
 void Server::deleteCorrespondingSprite(std::size_t idSprite)
 {
-    std::size_t j = -1;
+    int j = -1;
 
     for (std::size_t i = 0; i < _sprites.size(); i++) {
         if (_sprites[i].id == idSprite) {
@@ -307,7 +326,7 @@ void Server::deleteCorrespondingSprite(std::size_t idSprite)
 
 void Server::deleteCorrespondingPlayer(boost::uuids::uuid player_uuid)
 {
-    std::size_t j = -1;
+    int j = -1;
 
     for (std::size_t i = 0; i < _players.size(); i++) {
         if (_players[i].uuid == player_uuid) {
@@ -328,7 +347,7 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error)) {
         std::cout << "player disconnected" << std::endl;
-        std::size_t j = findIndexFromSocket(socket);
+        int j = findIndexFromSocket(socket);
         if (j != -1) {
             deleteCorrespondingPlayer(_sockets[j].first);
             _sockets.erase(_sockets.begin() + j);
@@ -338,7 +357,7 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
             std::cout << "vector sockets empty" << std::endl;
         }
     } else if (!error) {
-        std::size_t j = findIndexFromSocket(socket);
+        int j = findIndexFromSocket(socket);
         Lobby lobby = _lobby_buf[0];
         if (j != -1 && _sockets[j].first == _empty_uuid) {
             _sockets[j].first = lobby.player_uuid;

@@ -77,11 +77,17 @@ void Client::handleInitSpriteData(void)
 
 void Client::handleSpriteData(void)
 {
+    std::vector<std::pair<float, float>> others_pos;
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        std::cout << i << std::endl;
-        _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
-        _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
+        if (i == 0) {
+            _player_pos.first = _recv_buf[0].spriteDatas[0].coords.first;
+            _player_pos.second = _recv_buf[0].spriteDatas[0].coords.second;
+        } else {
+            others_pos.push_back({_recv_buf[0].spriteDatas[i].coords.first,
+            _recv_buf[0].spriteDatas[i].coords.second});
+        }
     }
+    _others_pos = others_pos;
 }
 
 void Client::asyncReceiveData(void)
@@ -131,6 +137,11 @@ boost::uuids::uuid Client::getUuid(void)
 std::pair<float, float> Client::getPlayerPos(void)
 {
     return _player_pos;
+}
+
+std::vector<std::pair<float, float>> Client::getOthersPos(void)
+{
+    return _others_pos;
 }
 
 void Client::handleThread(void)

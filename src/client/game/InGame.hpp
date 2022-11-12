@@ -31,6 +31,7 @@ class InGame {
         ~InGame();
 
         void handleInGame(sf::RenderWindow &window, State &state, Client &client);
+        void handleOthers(Client &client);
         //Events / handle player input
         void handleEvents(sf::RenderWindow &window, Client &client);
         void handleKeyPressed(sf::Event &event);
@@ -44,6 +45,8 @@ class InGame {
         Game::Image img;
         Game::Image background;
         Game::Player _player;
+        Game::Player _other;
+        std::vector<Game::Player> _others;
         // Music _music;
         Game::Paralax _background_paralax;
         enum Input _key_pressed;

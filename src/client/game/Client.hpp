@@ -50,6 +50,7 @@ class Client {
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
+        std::vector<std::pair<float, float>> getOthersPos(void);
 
         /**
          * @brief our image list
@@ -68,5 +69,6 @@ class Client {
         boost::uuids::uuid _empty_uuid;
         union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
         std::pair<float, float> _player_pos;
+        std::vector<std::pair<float, float>> _others_pos;
         bool _canReceiveData;
 };

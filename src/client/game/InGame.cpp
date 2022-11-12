@@ -7,7 +7,7 @@
 
 #include "InGame.hpp"
 
-InGame::InGame(): _key_pressed(NONE)
+InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 17)
 {
     initInGame();
 }
@@ -16,12 +16,23 @@ InGame::~InGame()
 {
 }
 
+void InGame::handleOthers(Client &client)
+{
+    std::vector<Game::Player> others;
+    for (auto other_pos : client.getOthersPos()) {
+        _other.setPos(other_pos.first, other_pos.second);
+        others.push_back(_other);
+    }
+    _others = others;
+}
+
 void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
     _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+    handleOthers(client);
     handleEvents(window, client);
     window.clear();
     displayInGame(window, state);
@@ -34,6 +45,9 @@ void InGame::displayInGame(sf::RenderWindow &window, State &state)
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
     _player.draw(window);
+    for (auto other : _others) {
+        other.draw(window);
+    }
     // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
     // _player._shoot.draw(window);
     // _ennemy.run();

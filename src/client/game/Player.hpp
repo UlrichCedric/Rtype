@@ -14,7 +14,7 @@
 namespace Game {
     class Player {
         public:
-            Player(void);
+            Player(int x, int y, int width, int height);
 
             void setPos(float x, float y);
             void draw(sf::RenderWindow &window);
