@@ -169,6 +169,15 @@ void Menu::Menu::initSettings()
     _settings_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
     _settings_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
     _settings_sounds_volume_progression_bar.setPosition(163, 373);
+    
+    //init fps 
+    _fps = {30, 60, 144};
+    _fps_index = 1;
+    _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+    _settings_fps.setFontSize(30);
+    _settings_fps.setFontColor(sf::Color::White);
+    _settings_fps.setFontStyle(sf::Text::Bold);
+    _settings_fps.setPos(140, 450);
 
 }
 
