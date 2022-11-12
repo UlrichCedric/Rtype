@@ -8,11 +8,11 @@
 #include "Player.hpp"
 
 namespace Game {
-    Player::Player(void) {
+    Player::Player(int x, int y, int width, int height) {
         _player.setTexture(Config::ExecutablePath + "assets/player.png");
         _player.setScale(3.0, 3.0);
         _player.setPos(100, 100);
-        _player.setRect(0, 0, 33, 17);
+        _player.setRect(x, y, width, height);
         _health = Health({60, 10}, 0, 0, 100);
     }
 

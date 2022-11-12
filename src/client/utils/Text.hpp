@@ -22,22 +22,17 @@ namespace Game {
             Text() {};
             Text(std::string path);
             /// @brief  set the position of the text
-            void setPos(int x, int y) {_item.setPosition(static_cast<float>(x), static_cast<float>(y)); };
+            void setPos(int x, int y) {_item.setPosition(x, y);};
             /// @brief  set the the text
             void SetText(std::string text);
             /// @brief  set the the font
             void setFont(std::string path);
             /// @brief  set the the size of the text
-            void setFontSize(int size) { _item.setCharacterSize(size); };
+            void setFontSize(int size) {_item.setCharacterSize(size);};
             /// @brief  set the the color of the text
-            void setFontColor(sf::Color color) { _item.setFillColor(color); };
+            void setFontColor(sf::Color color) {_item.setFillColor(color);};
             /// @brief  set the the style of the text
-            void setFontStyle(sf::Text::Style style) { _item.setStyle(style); };
-            /// @brief get the Text object
-            sf::Text &getText(void) { return _item; }
-            /// @brief draw the text object to the given window
-            void draw(sf::RenderWindow &win) { win.draw(_item); }
-
+            void setFontStyle(sf::Text::Style style) {_item.setStyle(style);};
             ~Text() {};
             sf::Font _font;
             sf::Text _item;

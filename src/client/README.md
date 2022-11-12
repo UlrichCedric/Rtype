@@ -171,6 +171,8 @@ class Windows {
             void Display_menu();
             //Draw the pause menu
             void Display_pause();
+            //get the event of the menu
+            void Events();
             //get the event of the game
             void Events_game();
             //get the event of the pause menu

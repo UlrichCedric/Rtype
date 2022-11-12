@@ -8,10 +8,12 @@
 #ifndef INGAME_HPP_
 #define INGAME_HPP_
 
-#include "../../Common.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <string>
+
+#include "../../Common.hpp"
 #include "../utils/Image.hpp"
 #include "../utils/Button.hpp"
 #include "../utils/Text.hpp"
@@ -19,41 +21,39 @@
 #include "../utils/Config.hpp"
 #include "../utils/Music.hpp"
 #include "../utils/Paralax.hpp"
-#include "./Client.hpp"
-#include <string>
+#include "../game/Client.hpp"
+#include "Player.hpp"
+#include "Ennemy.hpp"
 
 class InGame {
     public:
-    InGame();
-    ~InGame();
+        InGame();
+        ~InGame();
 
-    void handleInGame(sf::RenderWindow &, State &, Client &);
-    // Events / handle player input
-    void handleEvents(sf::RenderWindow &, Client &);
-    void handleKeyPressed(sf::Event &);
-    void handleKeyReleased(sf::Event &);
-    void initInGame(void);
-    void setScore(int newScore) { _score = newScore; }
-    int getScore(void) { return _score; }
+        void handleInGame(sf::RenderWindow &window, State &state, Client &client);
+        void handleOthers(Client &client);
+        //Events / handle player input
+        void handleEvents(sf::RenderWindow &window, Client &client);
+        void handleKeyPressed(sf::Event &event);
+        void handleKeyReleased(sf::Event &event);
+        void initInGame();
+        void displayInGame(sf::RenderWindow &window, State &state);
 
-    void drawScoreText(sf::RenderWindow &win) { _score_text.draw(win); }
-    void drawButton(sf::RenderWindow &win) { win.draw(_button._image.get_sprite()); }
 
-    Menu::Button &getButton(void) { return _button; }
-    Game::Text &getText(void) { return _score_text; }
-    void displayInGame(sf::RenderWindow &, Client &);
-
+    protected:
     private:
-    Game::Image _img;
-    Game::Image _background;
-    // Game::Player _player;
-    // Music _music;
-    Game::Paralax _background_paralax;
-    enum Input _key_pressed;
-    Menu::Button _button;
-    // Game::Ennemy _ennemy;
-    Game::Text _score_text;
-    int _score;
+        Game::Image img;
+        Game::Image background;
+        Game::Player _player;
+        Game::Player _other;
+        std::vector<Game::Player> _others;
+        // Music _music;
+        Game::Paralax _background_paralax;
+        enum Input _key_pressed;
+        // Menu::Button _button;
+        Game::Ennemy _ennemy;
+        Game::Text _score_text;
+        int _score;
 };
 
 #endif /* !INGAME_HPP_ */

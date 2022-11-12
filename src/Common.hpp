@@ -18,10 +18,10 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 enum State {
-        MENU,
-        GAME,
-        PAUSE,
-        END,
+    MENU,
+    GAME,
+    PAUSE,
+    END,
 };
 
 enum Input {
@@ -59,6 +59,10 @@ struct SpriteData {
     std::pair<float, float> coords;
     int health;
 };
+/**
+   *  coords: pair of coords of the sprite (x, y)
+   *  id: the id of the sprite
+*/
 
 /**
  * @brief Struct to init a sprite
@@ -75,7 +79,7 @@ struct InitSpriteData {
      * @brief Path of the texture
      *
      */
-    char path[128];
+    std::string path;
 
     /**
      * @brief Spawn coordinates
@@ -93,7 +97,7 @@ struct InitSpriteData {
      * @brief Max size of the rect
      *
      */
-    std::pair<float, float> rectSize;
+    std::pair<float, float> maxSize;
 
     /**
      * @brief Health of the entity
@@ -109,7 +113,7 @@ inline auto operator==(const InitSpriteData &e1, const InitSpriteData &e2) -> bo
         e1.path == e2.path &&
         e1.coords == e2.coords &&
         e1.scale == e2.scale &&
-        e1.rectSize == e2.rectSize
+        e1.maxSize == e2.maxSize
     );
 }
 
@@ -118,11 +122,17 @@ enum Status {
     CLOSE
 };
 
+enum Response {
+    FORBIDDEN,
+    OK
+};
+
 typedef struct Lobby {
     boost::uuids::uuid player_uuid;
+    bool askForLobbies;
     bool create;
     bool join;
-    std::string name;
+    std::array<char, 64> name;
     std::size_t nb_players;
     std::size_t size;
     boost::uuids::uuid lobby_uuid;
@@ -130,10 +140,10 @@ typedef struct Lobby {
 } Lobby;
 
 enum Type {
-    INITSPRITEDATATYPE,
-    SPRITEDATATYPE,
-    LOBBYTYPE,
-    LOOSE
+    InitSpriteDataType,
+    SpriteDataType,
+    LobbyType,
+    Loose
 };
 
 struct Data {

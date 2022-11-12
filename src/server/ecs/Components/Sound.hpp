@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../AComponent.hpp"
+#include "../IComponent.hpp"
 #include "../constants.hpp"
 
 
 /** Sound
  *@path of the sound file
  */
-class Sound: public AComponent {
+class Sound: public IComponent {
 
     public:
 

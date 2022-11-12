@@ -11,57 +11,52 @@
 
 #include "../../Common.hpp"
 #include "../utils/Image.hpp"
-#include "Image.hpp"
-
-#include <memory>
-#include <fstream>
 
 class Client {
     public:
-        Client(const std::string ip, const std::size_t port):
-            _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
-            _udp_socket(_io_context),
-            _tcp_socket(_io_context),
-            _player_pos({0, 0}),
-            _ip(ip),
-            _port(port)
+        Client(std::string ip, std::size_t port)
+        : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
+            _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0}), _empty_uuid({})
         {
-            // TCP
-            _tcp_socket.connect(
-                boost::asio::ip::tcp::endpoint(
-                    boost::asio::ip::address::from_string("127.0.0.1"),
-                    1234
-                )
-            );
-
-            // UDP
-            _udp_socket.open(boost::asio::ip::udp::v4());
             _uuid = boost::uuids::random_generator()();
-            std::thread thread(&Client::handleThread, this);
-            thread.detach();
-        }
 
+            // TCP:
+            try {
+                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+            } catch (const boost::system::system_error& error) {
+                std::cout << "Impossible de se connecter au serveur" << std::endl;
+                return;
+            }
+        }
         void sendData(enum Input action);
         void asyncSendData(enum Input action);
-        void handleSendData(const boost::system::error_code &, std::size_t);
+        void handleSendData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void receiveData(void);
         void handleInitSpriteData(void);
         void handleSpriteData(void);
         void asyncReceiveData(void);
-        void handleReceiveData(const boost::system::error_code &, std::size_t);
+        void handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/);
         void handleThread(void);
-        void createLobby(std::string, std::size_t);
-        void joinLobby(boost::uuids::uuid);
-        void writeData(void);
+        void setCanReceiveData(bool canReceiveData);
+        void createLobby(std::string name);
+        void joinLobby(boost::uuids::uuid uuid);
+        void writeLobbyData(bool ask, bool create, bool join, std::string name = "", std::size_t nb_players = 0, std::size_t size = 0, boost::uuids::uuid lobby_uuid = {});
         void readData(void);
         std::vector<Lobby> getLobbies(void);
-        void setCanReceiveData(bool);
+        void asyncGetLobbies(void);
+        void handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred);
 
         ~Client() {  };
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
-        std::vector<std::shared_ptr<Game::Image>> _images;
+        std::vector<std::pair<float, float>> getOthersPos(void);
+
+        /**
+         * @brief our image list
+         *
+         */
+        std::vector<Game::Image> _images;
 
     private:
         boost::asio::io_context _io_context;
@@ -71,7 +66,9 @@ class Client {
         std::string _ip;
         std::size_t _port;
         boost::uuids::uuid _uuid;
+        boost::uuids::uuid _empty_uuid;
         union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
-        std::pair<float, float> _player_pos = { 0.0, 0.0 };
-        bool _canReceiveData = true;
+        std::pair<float, float> _player_pos;
+        std::vector<std::pair<float, float>> _others_pos;
+        bool _canReceiveData;
 };

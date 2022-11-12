@@ -7,45 +7,51 @@
 
 #include "InGame.hpp"
 
-InGame::InGame()
+InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 17)
 {
     initInGame();
-
-    // Sets default score text
-    _score_text = Game::Text("assets/police.ttf");
-    _score_text.SetText("Score : 0");
-    _score_text.setPos(0, 0);
-    _score_text.setFontSize(50);
 }
 
-InGame::~InGame() = default;
+InGame::~InGame()
+{
+}
+
+void InGame::handleOthers(Client &client)
+{
+    std::vector<Game::Player> others;
+    for (auto other_pos : client.getOthersPos()) {
+        _other.setPos(other_pos.first, other_pos.second);
+        others.push_back(_other);
+    }
+    _others = others;
+}
 
 void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
-    handleEvents(window, client);
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
-    // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-    // if (_state == END) {
-    //     client.setCanReceiveData(false);
-    // }
+    _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+    handleOthers(client);
+    handleEvents(window, client);
     window.clear();
-    displayInGame(window, client);
+    displayInGame(window, state);
     window.display();
-    _score_text.SetText("Score : " + std::to_string(_score));
 }
 
-void InGame::displayInGame(sf::RenderWindow &window, Client &client)
+void InGame::displayInGame(sf::RenderWindow &window, State &state)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
-    // _player.draw(_window);
+    _player.draw(window);
+    for (auto other : _others) {
+        other.draw(window);
+    }
     // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-    // _player._shoot.draw(_window);
+    // _player._shoot.draw(window);
     // _ennemy.run();
-    // _ennemy.draw(_window);
+    // _ennemy.draw(window);
     // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
     //     _ennemy.respawn();
     //     _player.bullet_reset();
@@ -54,16 +60,16 @@ void InGame::displayInGame(sf::RenderWindow &window, Client &client)
     // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
     //     _player.setLife(_player._health.getHealth() - 10);
     //     if (_player._health.getHealth() <= 0) {
-    //         _state = MENU;
+    //         state = MENU;
     //         _player.setLife(100);
     //     }
     // }
-    for (auto img: client._images) {
-        img->draw(window);
-    }
+    // for (auto img: client._images) {
+    //     img.draw(_window);
+    // }
 }
 
-void InGame::handleKeyPressed(sf::Event& event)
+void InGame::handleKeyPressed(sf::Event &event)
 {
     if (_key_pressed != NONE) {
         return;
@@ -85,7 +91,7 @@ void InGame::handleKeyPressed(sf::Event& event)
     }
 }
 
-void InGame::handleKeyReleased(sf::Event& event)
+void InGame::handleKeyReleased(sf::Event &event)
 {
     switch (event.key.code) {
         // case sf::Keyboard::Escape:
@@ -103,6 +109,11 @@ void InGame::handleKeyReleased(sf::Event& event)
         case sf::Keyboard::Down:
             _key_pressed == DOWN ? _key_pressed = NONE : false;
             break;
+        case sf::Keyboard::M:
+            _score += 10;
+            _score_text.SetText("Score " + std::to_string(_score));
+            _score_text.setPos(10, 10);
+            _score_text.setFontSize(40);
         // case sf::Keyboard::Space:
         //     _player.bullet_reset();
         //     break;
@@ -113,7 +124,6 @@ void InGame::handleKeyReleased(sf::Event& event)
 void InGame::handleEvents(sf::RenderWindow &window, Client &client)
 {
     sf::Event event;
-
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::KeyPressed:
@@ -131,10 +141,8 @@ void InGame::handleEvents(sf::RenderWindow &window, Client &client)
     }
 }
 
-
 void InGame::initInGame()
 {
-    _key_pressed = NONE;
     _background_paralax.setSprites(Game::paralax::GAME_PARALAX);
     _score = 0;
     _score_text = Game::Text("assets/menu/fonts/r-type.ttf");
