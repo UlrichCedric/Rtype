@@ -11,14 +11,14 @@ namespace Game {
     Windows::Windows()
     {
         _state = MENU;
-        fps = 60;
+        _fps = 60;
     }
 
     void Windows::init()
     {
         try {
             _window.create(sf::VideoMode(WIDTH, HEIGHT, 32), "R-Type");
-            _window.setFramerateLimit(fps);
+            _window.setFramerateLimit(_fps);
         } catch (std::exception &e) {
             throw WindowCreationError();
         }

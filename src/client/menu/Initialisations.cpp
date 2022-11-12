@@ -18,6 +18,7 @@ void Menu::Menu::initMenu()
     _menu_text_settings = Game::Text("assets/menu/fonts/r-type.ttf");
     _menu_text_top_right01 = Game::Text("assets/menu/fonts/r-type.ttf");
     _menu_text_top_right02 = Game::Text("assets/menu/fonts/r-type.ttf");
+    _menu_text_quit = Game::Text("assets/menu/fonts/r-type.ttf");
     //_text_top_right01
     _menu_text_top_right01.SetText("BLAST OFF AND STRIKE");
     _menu_text_top_right01.setFontSize(20);
@@ -36,6 +37,10 @@ void Menu::Menu::initMenu()
     _menu_text_settings.SetText("SETTINGS");
     _menu_text_settings.setFontSize(30);
     _menu_text_settings.setPos(995, 270);
+    //_text_quit
+    _menu_text_quit.SetText("QUIT");
+    _menu_text_quit.setFontSize(30);
+    _menu_text_quit.setPos(1030, 360);
     //_text_bottom_right
     _menu_text_bottom_right.SetText("Epitech project 2022");
     _menu_text_bottom_right.setFontSize(20);

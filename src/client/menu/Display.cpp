@@ -16,6 +16,7 @@ void Menu::Menu::displayMenu(sf::RenderWindow &window)
     window.draw(_menu_text_multiplayer._item);
     window.draw(_menu_text_settings._item);
     window.draw(_menu_text_bottom_right._item);
+    window.draw(_menu_text_quit._item);
 }
 
 void Menu::Menu::displayLobby(sf::RenderWindow &window)

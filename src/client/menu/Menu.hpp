@@ -55,7 +55,8 @@ namespace Menu {
             //Settings
             void initSettings();
             void displaySettings(sf::RenderWindow &window);
-            int getFps() { return _fps[fps_index]; };
+            int getFps();
+            State_menu getState();
 
         private:
             State_menu _state;
@@ -74,9 +75,10 @@ namespace Menu {
             Game::Text _menu_text_top_right02;
             Game::Text _menu_text_multiplayer;
             Game::Text _menu_text_settings;
+            Game::Text _menu_text_quit;
             Game::Text _menu_text_bottom_right;
             Game::Image _menu_rect_selection;
-            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION};
+            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION , QUIT_SELECTION};
             _selection_possibility_menu _menu_select;
 
             // Lobby
@@ -115,11 +117,12 @@ namespace Menu {
             boost::uuids::uuid get_uuid_of_selected_lobby();
 
             // Settings
-            enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};
+            enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF, FPS_TITLE, FPS_MODIF};
             _selection_possibility_settings _settings_select;
             Game::Text _settings_title;
             Game::Text _settings_music_volume;
             Game::Text _settings_sonds_volume;
+            Game::Text _settings_fps;
             Game::Image _settings_rect_selection;
             sf::RectangleShape _settings_music_volume_bar;
             sf::RectangleShape _settings_music_volume_progression_bar;
