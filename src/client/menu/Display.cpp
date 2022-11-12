@@ -53,7 +53,7 @@ void Menu::Menu::displaySettings(sf::RenderWindow &window)
     //setings title
     window.draw(_settings_title._item);
     //display rect selection
-    if (_settings_select != MUSIC_VOLUME_MODIF && _settings_select != SOUNDS_VOLUME_MODIF)
+    if (_settings_select != MUSIC_VOLUME_MODIF && _settings_select != SOUNDS_VOLUME_MODIF && _settings_select != FPS_MODIF)
         window.draw(_settings_rect_selection.get_sprite());
     //volume bar
     window.draw(_settings_music_volume._item);
@@ -63,4 +63,6 @@ void Menu::Menu::displaySettings(sf::RenderWindow &window)
     window.draw(_settings_sonds_volume._item);
     window.draw(_settings_sounds_volume_bar);
     window.draw(_settings_sounds_volume_progression_bar);
+    //fps
+    window.draw(_settings_fps._item);
 }
