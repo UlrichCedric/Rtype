@@ -11,7 +11,8 @@ class HealthSystem: public ASystem {
     public:
     HealthSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) {
+    //TODO check if this shit work (I'm unsure about remove_if)
+    void run(std::vector<std::shared_ptr<Entity>> &list) override {
         std::remove_if(list.begin(), list.end(), [](const std::shared_ptr<Entity> &e){
             if (!e->has(HEALTH)) {
                 return false;
@@ -21,5 +22,5 @@ class HealthSystem: public ASystem {
         });
     }
 
-    ~HealthSystem(void) = default;
+    ~HealthSystem(void) override = default;
 };

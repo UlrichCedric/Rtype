@@ -16,7 +16,8 @@ typedef enum comp: int {
     REPEATABLE,
     SOUND,
     UUID,
-    SCALE
+    SCALE,
+    HITBOX
 } components;
 
 static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
@@ -32,4 +33,4 @@ static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
     std::make_pair<std::string, int>("NULL", -1)
 };
 
-inline bool betw(int a, int b, int c) { return a < b && b < c; }
+inline bool betw(float a, float b, float c) { return a < b && b < c; }

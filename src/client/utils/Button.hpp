@@ -14,7 +14,8 @@ namespace Menu {
             Button();
             bool IsClicked(sf::Vector2i mousePos);
             void IsHover(sf::Vector2i mousePos);
-            ~Button();
+            ~Button() = default;
+
             Game::Image _image;
             sf::Color _color;
     };

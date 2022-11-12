@@ -6,16 +6,16 @@
 
 /**
  * @brief This is a Movable point component
- * @id : movable
+ * @param movable
  */
 class Movable: public AComponent {
     public:
     Movable(bool movable = true): _movable(movable) {  }
     Movable(Movable &m) { _movable = m._movable; }
     std::string getName(void) { return "movable"; }
-    int getEnum(void) { return MOVABLE; }
+    components getEnum(void) { return MOVABLE; }
     void setMovable(bool movable) { _movable = movable; }
-    ~Movable() {  }
+    ~Movable() = default;
 
     private:
     bool _movable;

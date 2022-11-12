@@ -24,9 +24,7 @@ class Entity {
 
     public:
 
-    Entity(size_t id = 0) {
-        _id = id;
-    }
+    Entity(size_t id = 0): _id(id) {}
 
     Entity(Entity &e) {
         _id = e.getId();
@@ -130,10 +128,11 @@ class Entity {
                 return comp;
             }
         }
+        std::cout << "Component not found: " << c << std::endl;
         throw Error("Couldn't find component");
     }
 
-    ~Entity() {  }
+    ~Entity() = default;
 
     std::list<std::shared_ptr<IComponent>> _comps;
 

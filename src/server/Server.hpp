@@ -11,6 +11,8 @@
 
 #include "ecs/Entity.hpp"
 #include "ecs/Factory.hpp"
+
+#include "ecs/Systems/HitboxSystem.hpp"
 #include "ecs/Systems/DrawSystem.hpp"
 #include "ecs/Systems/HealthSystem.hpp"
 
@@ -18,6 +20,7 @@
 #include <fstream>
 #include <sstream>
 #include <string.h>
+#include <ctime>
 
 #include "../Common.hpp"
 
@@ -38,6 +41,8 @@ class Server {
             parseWaves();
             _d = std::make_unique<DrawSystem>();
             _h = std::make_unique<HealthSystem>();
+            _hit = std::make_unique<HitboxSystem>();
+            _f = std::make_unique<Factory>();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
@@ -46,7 +51,7 @@ class Server {
             acceptClients();
             send();
         */
-            UDP:
+            // UDP:
             handleTimer();
             startReceive();
     }
@@ -119,6 +124,7 @@ class Server {
     // Systems
     std::unique_ptr<DrawSystem> _d;
     std::unique_ptr<HealthSystem> _h;
+    std::unique_ptr<HitboxSystem> _hit;
 
     // List of entities
     std::size_t _currentWave;

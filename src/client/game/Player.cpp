@@ -23,7 +23,7 @@ namespace Game {
     }
 
     void Player::draw(sf::RenderWindow &window) {
-        window.draw(_player.get_sprite());
+        window.draw(_player.getSprite());
         _health.draw(window);
     }
 

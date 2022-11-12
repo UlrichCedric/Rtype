@@ -12,8 +12,7 @@ class DrawSystem: public ASystem {
     public:
     DrawSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) {
-        std::cout << "run draw system" << std::endl;
+    void run(std::vector<std::shared_ptr<Entity>> &list) override {
         if (list.empty()) {
             return;
         }
@@ -29,12 +28,15 @@ class DrawSystem: public ASystem {
                 auto vel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
                 std::pair<int, int> v = vel->getVelocity();
 
-                if (betw(-15, p.first + v.first, 1115) || betw(-15, p.second + v.second, 870)) {
+                float x = p.first + static_cast<float>(v.first);
+                float y = p.second + static_cast<float>(v.second);
+
+                if (betw(-15.0, x, 1115.0) || betw(-15.0, y, 870.0)) {
                     pos->setPos(p.first + static_cast<float>(v.first), p.second + static_cast<float>(v.second));
-                    std::cout << "drawsystem run: " << pos->getPos().first << " :: " << pos->getPos().second << std::endl;
                 }
-            } catch (std::exception & e) {
-                std::cout << "y'a une couille wolah" << std::endl;
+
+            } catch (Error &e) {
+                std::cerr << e.what() << std::endl;
             }
         }
     }

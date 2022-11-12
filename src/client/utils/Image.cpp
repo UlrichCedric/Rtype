@@ -8,37 +8,37 @@
 #include "Image.hpp"
 
 namespace Game {
-	Image::Image(
-		std::size_t id,
-		std::string path,
-		std::pair<float, float> pos,
-		std::pair<float, float> scale,
-		std::pair<float, float> rect,
-		int health
-	):
-		_id(id),
-		_path(path),
-		_isHealth(health != -1),
-		_isAlive(health > 0)
-	{
-		setTexture(path);
-		setPos(pos);
-		setScale(scale);
-		_rectX = rect.first;
-		_rectY = rect.second;
+    Image::Image(
+        std::size_t id,
+        std::string path,
+        std::pair<float, float> pos,
+        std::pair<float, float> scale,
+        std::pair<float, float> rect,
+        int health
+    ):
+        _id(id),
+        _path(path),
+        _rectX(rect.first),
+        _rectY(rect.second),
+        _isHealth(health != -1),
+        _isAlive(health > 0)
+    {
+        setTexture(path);
+        setPos(pos);
+        setScale(scale);
 
-		if (_rectX != -1.0 && _rectY != -1.0) {
-			setRect(0, 0, static_cast<int>(rect.first), static_cast<int>(rect.second));
-		}
+        if (_rectX != -1.0 && _rectY != -1.0) {
+            setRect(0, 0, static_cast<int>(rect.first), static_cast<int>(rect.second));
+        }
 
-		_health = Health({ 60, 10 }, pos.first, pos.second, health);
-	}
+        _health = Health({ 60, 10 }, pos.first, pos.second, health);
+    }
 
-	void Image::setTexture(std::string path)
-	{
-		_path = path;
-		if (!_texture.loadFromFile(_path))
-			std::cout << "Loading texture failed: " << _path << std::endl;
-		_sprite.setTexture(_texture);
-	}
+    void Image::setTexture(std::string path)
+    {
+        _path = path;
+        if (!_texture.loadFromFile(_path))
+            std::cout << "Loading texture failed: " << _path << std::endl;
+        _sprite.setTexture(_texture);
+    }
 }

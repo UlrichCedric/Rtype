@@ -17,7 +17,7 @@ class Sound: public AComponent {
     void setSound(std::string path = "NONE") { _path = path == "NONE" ? _path : path; }
     std::string getPath(void) { return _path; }
     std::string getName(void) { return "sound"; }
-    int getEnum(void) { return SOUND; }
+    components getEnum(void) { return SOUND; }
 
     ~Sound() {  };
 

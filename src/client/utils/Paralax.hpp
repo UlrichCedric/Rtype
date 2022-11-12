@@ -17,8 +17,8 @@ namespace Game {
 
     class Paralax {
         public:
-            Paralax(){};
-            ~Paralax();
+            Paralax() = default;
+            ~Paralax() = default;
             void setSprites(paralax which_paralax);
             void update(paralax which_paralax);
             void draw(sf::RenderWindow &window, paralax which_paralax);

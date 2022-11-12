@@ -7,7 +7,7 @@
 
 #include "InGame.hpp"
 
-InGame::InGame()
+InGame::InGame(void)
 {
     initInGame();
 
@@ -18,22 +18,19 @@ InGame::InGame()
     _score_text.setFontSize(50);
 }
 
-InGame::~InGame() = default;
-
 void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
     handleEvents(window, client);
+
+    //TODO Remove the 'if' statement if you wanna keep the shuttle motionless
+    //TODO when you do not press any key
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
-    // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-    // if (_state == END) {
-    //     client.setCanReceiveData(false);
-    // }
     window.clear();
+    _score_text.SetText("Score : " + std::to_string(_score));
     displayInGame(window, client);
     window.display();
-    _score_text.SetText("Score : " + std::to_string(_score));
 }
 
 void InGame::displayInGame(sf::RenderWindow &window, Client &client)
@@ -122,7 +119,8 @@ void InGame::handleEvents(sf::RenderWindow &window, Client &client)
                 handleKeyPressed(event);
                 break;
             case sf::Event::KeyReleased:
-                handleKeyReleased(event);
+                // handleKeyReleased(event);
+                _key_pressed = NONE;
                 break;
             case sf::Event::Closed:
                 client.setCanReceiveData(false);

@@ -22,7 +22,7 @@ namespace Game {
     void Windows::Display_pause()
     {
         _window.clear();
-        _window.draw(_background.get_sprite());
+        _window.draw(_background.getSprite());
         _window.display();
     }
 
@@ -40,7 +40,7 @@ namespace Game {
     void Windows::Display_menu()
     {
         _window.clear();
-        _window.draw(_background.get_sprite());
+        _window.draw(_background.getSprite());
         _in_game.drawButton(_window);
         _window.display();
     }

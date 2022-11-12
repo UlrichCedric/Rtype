@@ -11,7 +11,7 @@ class Velocity: public AComponent {
     Velocity(Velocity &v): _x(v._x), _y(v._y) {  }
 
     std::string getName(void) { return "velocity"; }
-    int getEnum(void) { return VELOCITY; };
+    components getEnum(void) { return VELOCITY; };
     void setVelocity(int x, int y) { _x = x; _y = y; }
     void setXVelocity(int x) { _x = x; }
     void setYVelocity(int y) { _y = y; }

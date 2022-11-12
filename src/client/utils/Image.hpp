@@ -41,10 +41,12 @@ namespace Game {
             );
 
             void setTexture(std::string path);
-            std::string &get_path() { return _path; }
-            void set_path(std::string path) { _path = path; }
-            sf::Sprite &get_sprite() { return _sprite; }
+
+            std::string &getPath() { return _path; }
+            void setPath(std::string path) { _path = path; }
+            sf::Sprite &getSprite() { return _sprite; }
             void setPos(float posX = 0, float posY = 0) { _sprite.setPosition(posX, posY); }
+
             void setPos(std::pair<float, float> pos) {
                 _sprite.setPosition(pos.first, pos.second);
             }

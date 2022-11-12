@@ -18,19 +18,16 @@ namespace Menu {
 
     bool Button::IsClicked(sf::Vector2i mousePos)
     {
-        if (_image.get_sprite().getGlobalBounds().contains(mousePos.x, mousePos.y))
+        if (_image.getSprite().getGlobalBounds().contains(mousePos.x, mousePos.y))
             return true;
         return false;
     }
 
     void Button::IsHover(sf::Vector2i mousePos)
     {
-        if (_image.get_sprite().getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+        if (_image.getSprite().getGlobalBounds().contains(mousePos.x, mousePos.y)) {
             _image.setColor(sf::Color(255, 255, 255, 100));
         }
         _image.setColor(_color);
-    }
-    Button::~Button()
-    {
     }
 }

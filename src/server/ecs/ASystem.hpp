@@ -2,12 +2,12 @@
 
 #include "ISystem.hpp"
 #include "Entity.hpp"
-#include <list>
+#include <vector>
 #include <memory>
 
 class ASystem : public ISystem {
     public:
-    ASystem(void) {  };
+    ASystem(void) = default;
     virtual void run(std::vector<std::shared_ptr<Entity>> &) = 0;
-    ~ASystem(void) {  };
+    ~ASystem(void) = default;
 };

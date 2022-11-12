@@ -25,7 +25,7 @@
 class InGame {
     public:
     InGame();
-    ~InGame();
+    ~InGame() = default;
 
     void handleInGame(sf::RenderWindow &, State &, Client &);
     // Events / handle player input
@@ -37,7 +37,7 @@ class InGame {
     int getScore(void) { return _score; }
 
     void drawScoreText(sf::RenderWindow &win) { _score_text.draw(win); }
-    void drawButton(sf::RenderWindow &win) { win.draw(_button._image.get_sprite()); }
+    void drawButton(sf::RenderWindow &win) { win.draw(_button._image.getSprite()); }
 
     Menu::Button &getButton(void) { return _button; }
     Game::Text &getText(void) { return _score_text; }

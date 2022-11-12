@@ -95,7 +95,6 @@ class tcp_server {
                     std::cout << "vector sockets empty" << std::endl;
                 }
             } else {
-                std::cout << "data received from client" << std::endl;
                 if (_lobby_buf[0].type == LobbyType) {
                     std::size_t j = findIndexFromSocket(socket);
                     if (j != -1) {

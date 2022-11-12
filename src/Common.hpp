@@ -138,8 +138,8 @@ enum Type {
 
 struct Data {
     enum Type type;
-    boost::array<SpriteData, 16> spriteDatas;
-    boost::array<InitSpriteData, 16> initSpriteDatas;
+    boost::array<SpriteData, 128> spriteDatas;
+    boost::array<InitSpriteData, 128> initSpriteDatas;
     boost::array<Lobby, 16> lobbies;
 };
 

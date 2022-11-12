@@ -17,7 +17,7 @@ class Position: public AComponent {
     Position(Position &p): _x(p._x), _y(p._y) {  };
 
     std::string getName(void) { return "position"; }
-    int getEnum(void) { return POSITION; };
+    components getEnum(void) { return POSITION; };
     void setXPos(float x) { _x = x; };
     void setYPos(float y) { _y = y; };
     void setPos(float x, float y) {

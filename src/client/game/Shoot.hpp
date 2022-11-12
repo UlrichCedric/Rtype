@@ -13,7 +13,7 @@ namespace Game {
         public:
             Shoot();
             void setPos(float x, float y);
-            void draw(sf::RenderWindow &window) {window.draw(_bullet.get_sprite());};
+            void draw(sf::RenderWindow &window) {window.draw(_bullet.getSprite());};
             sf::Vector2f getPos() {return _bullet.getPos();};
             ~Shoot();
             Image _bullet;

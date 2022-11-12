@@ -10,7 +10,6 @@
 void Client::sendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{ action, _uuid }};
-    std::cout << "sendData" << send_buf[0].input << std::endl;
     _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
 }
 
@@ -85,7 +84,6 @@ void Client::handleInitSpriteData(void)
             std::cerr << "Path " << _recv_buf[0].initSpriteDatas[i].path << " does not exist" << std::endl;
         }
 
-        std::cout << "Created Image with x " << _recv_buf[0].initSpriteDatas[i].coords.first << std::endl;
         std::shared_ptr<Game::Image> img = std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
             _recv_buf[0].initSpriteDatas[i].path,
@@ -104,20 +102,17 @@ void Client::handleInitSpriteData(void)
  */
 void Client::handleSpriteData(void)
 {
-    std::cout << "handleSpriteData" << std::endl;
     std::shared_ptr<Game::Image> img;
 
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        std::cout << "je passe dans la boucle for tkt bro" << std::endl;
         try {
             img = getImageById(_recv_buf[0].spriteDatas[i].id);
         } catch (Error &e) {
             std::cerr << "No image with id " << _recv_buf[0].spriteDatas[i].id << std::endl;
         }
 
-        std::cout << "received coords: " << _recv_buf[0].spriteDatas[i].coords.first << std::endl;
-        img->setPos(_recv_buf[0].spriteDatas[i].coords);
         try {
+            img->setPos(_recv_buf[0].spriteDatas[i].coords);
             img->setHp(
                 _recv_buf[0].spriteDatas[i].health,
                 _recv_buf[0].spriteDatas[i].coords
@@ -134,7 +129,6 @@ void Client::handleSpriteData(void)
  */
 void Client::asyncReceiveData(void)
 {
-    std::cout << "Async receive Data" << std::endl;
     boost::asio::ip::udp::endpoint sender_endpoint;
     _udp_socket.async_receive_from(
         boost::asio::buffer(_recv_buf),
@@ -148,11 +142,13 @@ void Client::asyncReceiveData(void)
     );
 }
 
-void Client::handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
+/**
+ * @brief Verifying what you received
+ *
+ */
+void Client::handleReceiveData(const boost::system::error_code &error, std::size_t receivedSize)
 {
-    std::cout << "handleReceiveData" << std::endl;
     for (int i = 0; _recv_buf[0].initSpriteDatas[i].id != 0; i++) {
-        std::cout << "x: " << _recv_buf[0].initSpriteDatas[i].coords.first << " / y: " << _recv_buf[0].initSpriteDatas[i].coords.second << std::endl;
         _player_pos.first = _recv_buf[0].initSpriteDatas[i].coords.first;
         _player_pos.second = _recv_buf[0].initSpriteDatas[i].coords.second;
     }
