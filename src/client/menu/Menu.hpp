@@ -54,6 +54,7 @@ namespace Menu {
             //Settings
             void initSettings();
             void displaySettings(sf::RenderWindow &window);
+            int getFps() { return _fps[fps_index]; };
 
         private:
             State_menu _state;
