@@ -29,6 +29,7 @@ namespace Menu {
         LOBBY,
         SETTINGS,
         GAME,
+        CLOSE,
     };
 
     class Menu {
