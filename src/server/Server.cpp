@@ -138,7 +138,7 @@ void Server::customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t i
 {
     int j = -1;
 
-    for (std::size_t i = 0; i < send_buf[0].spriteDatas.size(); i++) {
+    for (std::size_t i = 0; i < send_buf[0].spriteDatas[i].id != 0; i++) {
         if (send_buf[0].spriteDatas[i].id == idSprite) {
             j = i;
             break;
@@ -153,28 +153,52 @@ void Server::customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t i
     }
 }
 
-void Server::sendSprites(void)
+std::vector<std::size_t> Server::getSpritesIdFromPlayersUuid(std::vector<boost::uuids::uuid> players_uuid)
 {
-    SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
-    boost::array<SpriteData, 16> array_buf = { endArray };
-    for (int i = 0; i <= _sprites.size(); i++) {
-        if (i == 15) {
-            /*
-                Provisoire, c'est au cas où il y ait + que 16 sprites, pour éviter le crash
-            */
-            std::cout << "/!\\ Agrandir la boost::array SpriteData /!\\" << std::endl;
-            array_buf[i] = endArray;
-            break;
-        }
-        if (i == _sprites.size()) {
-            array_buf[i] = endArray;
-        } else {
-            array_buf[i] = _sprites[i];
+    std::vector<std::size_t> idSprites;
+
+    for (auto player : _players) {
+        for (auto uuid : players_uuid) {
+            if (player.uuid == uuid) {
+                idSprites.push_back(player.idSprite);
+            }
         }
     }
-    Data data = {SpriteDataType, array_buf, {}, {}};
-    boost::array<Data, 1> send_buf = {data};
+    return idSprites;
+}
+
+boost::array<SpriteData, 16> Server::getLobbySpriteData(boost::uuids::uuid player_uuid)
+{
+    boost::uuids::uuid lobby_uuid = getLobbyUuidFromPlayerUuid(player_uuid);
+    std::vector<boost::uuids::uuid> lobby_players_uuid;
+    for (auto players_in_lobby : _players_in_lobbies) {
+        if (players_in_lobby.first == lobby_uuid) {
+            lobby_players_uuid = players_in_lobby.second;
+        }
+    }
+    std::vector<std::size_t> idSprites = getSpritesIdFromPlayersUuid(lobby_players_uuid);
+    SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
+    boost::array<SpriteData, 16> array_buf = { endArray };
+    for (int i = 0, j = 0; i <= _sprites.size(); i++) {
+        if (j == idSprites.size() || i == _sprites.size() || i == 15) {
+            array_buf[j] = endArray;
+            break;
+        }
+        for (auto idSprite : idSprites) {
+            if (_sprites[i].id == idSprite) {
+                array_buf[j++] = _sprites[i];
+            }
+        }
+    }
+    return array_buf;
+}
+
+void Server::sendSprites(void)
+{
     for (Player player : _players) {
+        boost::array<SpriteData, 16> array_buf = getLobbySpriteData(player.uuid);
+        Data data = {SpriteDataType, array_buf, {}, {}};
+        boost::array<Data, 1> send_buf = {data};
         customizedSpriteData(send_buf, player.idSprite);
         _udp_socket.async_send_to(
             boost::asio::buffer(send_buf), player.endpoint,
@@ -217,7 +241,7 @@ void Server::handleSend(
     } else if (send_buf[0].type == SpriteDataType) {
         type = "SpriteData";
     }
-    std::cout << type << " sent to " << uuidReceiver << std::endl;
+    // std::cout << type << " sent to " << uuidReceiver << std::endl;
 }
 
 // TCP
