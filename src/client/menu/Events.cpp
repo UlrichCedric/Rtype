@@ -282,6 +282,12 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 _settings_sonds_volume.setFontColor(sf::Color::Black);
                 _settings_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
             }
+            else if (_settings_select == FPS_MODIF) {
+                _validate_sound.play();
+                _settings_select = FPS_TITLE;
+                _settings_fps.setFontStyle(sf::Text::Bold);
+                _settings_fps.setFontColor(sf::Color::Black);
+            }
             else {
                 _validate_sound.play();
                 _state = State_menu::MENU;
@@ -297,6 +303,16 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 _settings_sonds_volume.setFontStyle(sf::Text::Regular);
                 _settings_sonds_volume.setFontColor(sf::Color::White);
             }
+            else if (_settings_select == FPS_TITLE) {
+                _navigation_sound.play();
+                _settings_select = SOUNDS_VOLUME_TITLE;
+                _settings_rect_selection.setRect(0, 0, 390, 45);
+                _settings_rect_selection.setPos(130, 315);
+                _settings_sonds_volume.setFontStyle(sf::Text::Bold);
+                _settings_sonds_volume.setFontColor(sf::Color::Black);
+                _settings_fps.setFontStyle(sf::Text::Regular);
+                _settings_fps.setFontColor(sf::Color::White);
+            }
         }
         else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
             if (_settings_select == MUSIC_VOLUME_TITLE) {
@@ -307,6 +323,16 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 _settings_sonds_volume.setFontColor(sf::Color::Black);
                 _settings_music_volume.setFontStyle(sf::Text::Regular);
                 _settings_music_volume.setFontColor(sf::Color::White);
+            }
+            if (_settings_select == SOUNDS_VOLUME_TITLE) {
+                _navigation_sound.play();
+                _settings_select = FPS_TITLE;
+                _settings_rect_selection.setRect(0, 0, 400, 45);
+                _settings_rect_selection.setPos(130, 445);
+                _settings_fps.setFontStyle(sf::Text::Bold);
+                _settings_fps.setFontColor(sf::Color::Black);
+                _settings_sonds_volume.setFontStyle(sf::Text::Regular);
+                _settings_sonds_volume.setFontColor(sf::Color::White);
             }
         }
         else if (event.key.code == sf::Keyboard::Return) {
@@ -323,6 +349,10 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 _settings_sonds_volume.setFontStyle(sf::Text::Regular);
                 _settings_sonds_volume.setFontColor(sf::Color::White);
                 _settings_sounds_volume_progression_bar.setFillColor(sf::Color(128, 128, 128));
+            }
+            else if (_settings_select == FPS_TITLE) {
+                _validate_sound.play();
+                _settings_select = FPS_MODIF;
             }
         }
         else if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Left) {
@@ -341,6 +371,14 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                     _validate_sound.setVolume(_sounds_volume);
                 }
             }
+            else if (_settings_select == FPS_MODIF) {
+                _fps_index--;
+                if (_fps_index < 0)
+                    _fps_index = 2;
+                _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                _settings_fps.setFontSize(30);
+                _settings_fps.setPos(140, 450);
+            }
         }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
             if (_settings_select == MUSIC_VOLUME_MODIF) {
@@ -357,6 +395,15 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                     _navigation_sound.setVolume(_sounds_volume);
                     _validate_sound.setVolume(_sounds_volume);
                 }
+            }
+            else if (_settings_select == FPS_MODIF) {
+                _fps_index++;
+                std::cout << _fps_index << std::endl;
+                if (_fps_index > 2)
+                    _fps_index = 0;
+                _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                _settings_fps.setFontSize(30);
+                _settings_fps.setPos(140, 450);
             }
         }
     }
