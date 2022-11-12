@@ -123,6 +123,9 @@ namespace Menu {
             sf::RectangleShape _settings_music_volume_progression_bar;
             sf::RectangleShape _settings_sounds_volume_bar;
             sf::RectangleShape _settings_sounds_volume_progression_bar;
+        
+            std::array<int, 3> _fps;
+            size_t _fps_index;
 
     };
 }
