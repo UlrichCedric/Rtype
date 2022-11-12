@@ -8,11 +8,14 @@
 #include "Player.hpp"
 
 namespace Game {
-    Player::Player(void) {
+    Player::Player(int x, int y, int width, int height) {
+        _width = width;
+        _height = height;
+        _rectPos = {x, y};
         _player.setTexture(Config::ExecutablePath + "assets/player.png");
         _player.setScale(3.0, 3.0);
         _player.setPos(100, 100);
-        _player.setRect(0, 0, 33, 17);
+        _player.setRect(x, y, width, height);
         _health = Health({60, 10}, 0, 0, 100);
     }
 
@@ -20,6 +23,17 @@ namespace Game {
         _player.setPos(x, y);
         _pos = _player.getPos();
         _health.update(x, y, _life);
+    }
+
+    void Player::setRectPosition(int x, int y)
+    {
+        _rectPos = {x, y};
+        _player.setRect(x, y, _width, _height);
+    }
+
+    std::pair<int, int> Player::getRectPositon(void)
+    {
+        return _rectPos;
     }
 
     void Player::draw(sf::RenderWindow &window) {

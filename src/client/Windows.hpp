@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** B-CPP-500-NCY-5-1-rtype-marius.nowak [WSL : Ubuntu-22.04]
+** B-CPP-500-NCY-5-1-rtype-marius.nowak [WSL : Ubuntu-22.04]
 ** File description:
 ** Windows
 */
@@ -33,38 +33,16 @@ namespace Game {
             Windows();
             ~Windows() = default;
             // void Events();
-            void GameLoop();//Client &client);
+            void GameLoop(Client &client);
             void init();
-            Windows(void);
-            void Loop(Client &);
-            void Display_menu(void);
-            void Display_pause(void);
-            void Events(void);
-            void Events_game(void);
-            void Events_pause(void);
-            void handleKeyPressed(sf::Event& event);
-            void handleKeyReleased(sf::Event& event);
-            void handleMenu(void);
-            void handleGame(Client &);
-            void handlePause(void);
-            void handleEnd(void);
-            void init(void);
-            ~Windows(void) = default;
 
         private:
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
-            int _fps;
-
-            Image _img;
-            Image _background;
-            Player _player;
-            Music _music;
-            Paralax _paralax;
-            enum Input _key_pressed;
+            int fps;
             enum State _state;
-
+            
             //Menu
             Menu::Menu _menu;
             //InGame

@@ -17,7 +17,6 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
-#include <string.h>
 
 #include "../Common.hpp"
 
@@ -39,15 +38,8 @@ class Server {
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
-        /*
-            TCP:
-            acceptClients();
-            send();
-
-            UDP:
-            handleTimer();
-            startReceive();
-        */
+        // TCP:
+        acceptClients();
     }
 
     ~Server()
@@ -58,14 +50,7 @@ class Server {
     private:
     void parseWaves(void);
     void sendSprites(void);
-    void handleReceive(const boost::system::error_code &, std::size_t);
 
-    void handleSend(
-        boost::uuids::uuid,
-        const boost::array<Data, 1>,
-        const boost::system::error_code &,
-        std::size_t
-    );
     void handleTimer(void);
     void handleInput(Action action);
     bool isNewUuid(boost::uuids::uuid uuid);
@@ -93,15 +78,27 @@ class Server {
     boost::asio::ip::tcp::acceptor _acceptor;
     std::vector<std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>>> _sockets;
     boost::uuids::uuid _empty_uuid;
-    boost::array<Data, 1> _lobby_buf; // probablement transformable en boost::array<Lobby, 16>
+    boost::array<Lobby, 1> _lobby_buf;
+    std::vector<Lobby> _lobbies;
+    std::vector<std::pair<boost::uuids::uuid, std::vector<boost::uuids::uuid>>> _players_in_lobbies;
 
     void acceptClients(void);
-    void read(void);
     void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     std::size_t findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     void handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         boost::system::error_code const& error, size_t bytes_transferred);
     void send(void);
+    void sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    void createLobby(Lobby &lobby);
+    void joinLobby(Lobby &lobby, std::shared_ptr<boost::asio::ip::tcp::socket> socket);
+    Lobby getLobbyFromUUID(boost::uuids::uuid uuid);
+    void deleteCorrespondingPlayer(boost::uuids::uuid player_uuid);
+    void deleteCorrespondingPlayerFromLobbies(boost::uuids::uuid player_uuid);
+    boost::uuids::uuid getLobbyUuidFromPlayerUuid(boost::uuids::uuid player_uuid);
+    void deleteCorrespondingSprite(std::size_t idSprite);
+    boost::array<SpriteData, 16> getLobbySpriteData(boost::uuids::uuid player_uuid);
+    std::vector<std::size_t> getSpritesIdFromPlayersUuid(std::vector<boost::uuids::uuid> players_uuid);
+    void customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite);
 
     // Data, buffer, timer
 
@@ -111,17 +108,17 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-    void initEcs(boost::uuids::uuid);
+    void initEcs(void);
 
     /**
      * @brief Initialize new wave's sprites
      * @param size_t wave number
      * @throw Error & if size_t is negative or not saved in _waveConf
      */
-    void newWave(std::size_t) {  };
+    void newWave(std::size_t);
     std::size_t getEntityIdByUuid(Action action);
 
     // Factory

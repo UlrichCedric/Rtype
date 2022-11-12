@@ -20,6 +20,8 @@
 #include "../utils/Paralax.hpp"
 #include "GameLobby.hpp"
 #include "../../Common.hpp"
+#include "../game/Client.hpp"
+#include "../utils/TextBox.hpp"
 
 namespace Menu {
     enum State_menu {
@@ -27,7 +29,6 @@ namespace Menu {
         LOBBY,
         SETTINGS,
         GAME,
-        CLOSE,
     };
 
     class Menu {
@@ -35,12 +36,12 @@ namespace Menu {
             Menu();
             ~Menu();
             //Events
-            void handleEvents(sf::RenderWindow &window);
-            void handleEventsMenu(sf::Event &event);
-            void handleEventsLobby(sf::Event &event);
+            void handleEvents(sf::RenderWindow &window, Client &client);
+            void handleEventsMenu(sf::Event &event, Client &client);
+            void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
-            State_menu getState() {return _state;};
-            void handleMenu(sf::RenderWindow &window, State &state);
+
+            void handleMenu(sf::RenderWindow &window, State &state, Client &client);
 
             //Menu
             void initMenu();
@@ -53,7 +54,6 @@ namespace Menu {
             //Settings
             void initSettings();
             void displaySettings(sf::RenderWindow &window);
-            int getFps();
 
         private:
             State_menu _state;
@@ -72,14 +72,13 @@ namespace Menu {
             Game::Text _menu_text_top_right02;
             Game::Text _menu_text_multiplayer;
             Game::Text _menu_text_settings;
-            Game::Text _menu_text_quit;
             Game::Text _menu_text_bottom_right;
             Game::Image _menu_rect_selection;
-            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION, QUIT_SELECTION};
+            enum _selection_possibility_menu {MULTIPLAYER_SELECTION, SETTINGS_SELECTION};
             _selection_possibility_menu _menu_select;
 
             // Lobby
-            enum _selection_possibility_lobby {CREATE_A_LOBBY, REFRESH_ICON, BOX_LIST_LOBBY};
+            enum _selection_possibility_lobby {CREATE_A_LOBBY, REFRESH_ICON, BOX_LIST_LOBBY, CREATE_A_LOBBY_MODAL};
             _selection_possibility_lobby _lobby_select;
             Game::Text _lobby_title;
             Game::Text _lobby_create;
@@ -99,8 +98,19 @@ namespace Menu {
                 std::size_t nb_players;
             };
             void fetchLobbyList();
-            std::vector<_game_lobby> _game_lobby_list;
-
+            std::vector<Lobby> _game_lobby_list;
+            // Create a lobby
+            sf::RectangleShape _create_lobby_modal_alpha;
+            sf::RectangleShape _create_lobby_modal;
+            TextBox _game_name_text_box;
+            Game::Text _game_name_title;
+            Button _validate_create_lobby_button;
+            Game::Image _edit_icon_game_name;
+            sf::RectangleShape _rect_select_create_lobby_modal;
+            enum _selection_possibility_create_lobby_modal {GAME_NAME, WRITING_GAME_NAME, VALIDATE_CREATE_LOBBY};
+            _selection_possibility_create_lobby_modal _create_lobby_modal_select;
+            // Join a lobby
+            boost::uuids::uuid get_uuid_of_selected_lobby();
 
             // Settings
             enum _selection_possibility_settings {MUSIC_VOLUME_TITLE, MUSIC_VOLUME_MODIF, SOUNDS_VOLUME_TITLE, SOUNDS_VOLUME_MODIF};
@@ -108,14 +118,12 @@ namespace Menu {
             Game::Text _settings_title;
             Game::Text _settings_music_volume;
             Game::Text _settings_sonds_volume;
-            Game::Text _settings_fps;
             Game::Image _settings_rect_selection;
             sf::RectangleShape _settings_music_volume_bar;
             sf::RectangleShape _settings_music_volume_progression_bar;
             sf::RectangleShape _settings_sounds_volume_bar;
             sf::RectangleShape _settings_sounds_volume_progression_bar;
-            std::array<int, 3> _fps;
-            size_t _fps_index;
+
     };
 }
 
