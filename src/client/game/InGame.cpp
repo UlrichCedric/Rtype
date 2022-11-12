@@ -26,8 +26,31 @@ void InGame::handleOthers(Client &client)
     _others = others;
 }
 
+void InGame::handleAnimation(void)
+{
+    std::pair<int, int> player_rect = _player.getRectPositon();
+    std::pair<int, int> other_rect = _other.getRectPositon();
+    if (_player._player._clock.getElapsedTime() > sf::milliseconds(100)) {
+        if (_signRect > 0) {
+            _player.setRectPosition(player_rect.first + 33, 0);
+            _other.setRectPosition(other_rect.first + 33, 51);
+            if ((player_rect.first + 33) >= 132) {
+                _signRect = -1;
+            }
+        } else {
+            _player.setRectPosition(player_rect.first - 33, 0);
+            _other.setRectPosition(other_rect.first - 33, 51);
+            if ((player_rect.first - 33) <= 0) {
+                _signRect = 1;
+            }
+        }
+        _player._player._clock.restart();
+    }
+}
+
 void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
+    handleAnimation();
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
@@ -143,6 +166,7 @@ void InGame::handleEvents(sf::RenderWindow &window, Client &client)
 
 void InGame::initInGame()
 {
+    _signRect = 1;
     _background_paralax.setSprites(Game::paralax::GAME_PARALAX);
     _score = 0;
     _score_text = Game::Text("assets/menu/fonts/r-type.ttf");

@@ -65,6 +65,7 @@ namespace Game {
             std::size_t getId(void) { return _id; }
             void draw(sf::RenderWindow &win) { win.draw(_sprite); }
             ~Image() = default;
+            sf::Clock _clock;
 
         private:
             size_t _id;

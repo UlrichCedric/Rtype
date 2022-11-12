@@ -17,6 +17,8 @@ namespace Game {
             Player(int x, int y, int width, int height);
 
             void setPos(float x, float y);
+            void setRectPosition(int x, int y);
+            std::pair<int, int> getRectPositon(void);
             void draw(sf::RenderWindow &window);
             void setLife(int life);
             void bullet_reset() { _shoot.setPos(_player.getPos().x + 33 , _player.getPos().y + 8);};
@@ -29,5 +31,9 @@ namespace Game {
             sf::Vector2f _pos;
             int _life = 100;
             Shoot _shoot;
+        private:
+            int _width;
+            int _height;
+            std::pair<int, int> _rectPos;
     };
 }

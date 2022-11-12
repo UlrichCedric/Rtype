@@ -32,6 +32,7 @@ class InGame {
 
         void handleInGame(sf::RenderWindow &window, State &state, Client &client);
         void handleOthers(Client &client);
+        void handleAnimation(void);
         //Events / handle player input
         void handleEvents(sf::RenderWindow &window, Client &client);
         void handleKeyPressed(sf::Event &event);
@@ -54,6 +55,7 @@ class InGame {
         Game::Ennemy _ennemy;
         Game::Text _score_text;
         int _score;
+        int _signRect;
 };
 
 #endif /* !INGAME_HPP_ */
