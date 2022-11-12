@@ -39,18 +39,7 @@ class Server {
             std::cout << e.what() << std::endl;
         }
         // TCP:
-        // Lobby default_lobby = {{}, false, false, false, "whis", 1, 1, boost::uuids::random_generator()(), OPEN}; // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
-        // _lobbies.push_back(default_lobby); // provisoire
         acceptClients();
-        // send();
-
-        /*
-            UDP:
-            handleTimer();
-            startReceive();
-        */
     }
 
     ~Server()
@@ -103,6 +92,10 @@ class Server {
     void createLobby(Lobby &lobby);
     void joinLobby(Lobby &lobby, std::shared_ptr<boost::asio::ip::tcp::socket> socket);
     Lobby getLobbyFromUUID(boost::uuids::uuid uuid);
+    void deleteCorrespondingPlayer(boost::uuids::uuid player_uuid);
+    void deleteCorrespondingPlayerFromLobbies(boost::uuids::uuid player_uuid);
+    boost::uuids::uuid getLobbyUuidFromPlayerUuid(boost::uuids::uuid player_uuid);
+    void deleteCorrespondingSprite(std::size_t idSprite);
 
     // Data, buffer, timer
 

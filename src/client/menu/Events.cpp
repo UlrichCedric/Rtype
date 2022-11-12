@@ -367,6 +367,7 @@ void Menu::Menu::handleEvents(sf::RenderWindow &window, Client &client)
     sf::Event event;
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
+            client.setCanReceiveData(false);
             window.close();
         }
         switch (_state) {

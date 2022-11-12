@@ -83,10 +83,10 @@ std::size_t Server::setNewSpriteId(std::size_t new_id)
 void Server::moveSprite(SpriteData& sprite, enum Input input)
 {
     switch (input) {
-        case UP: sprite.coords.second -= 10; break;
-        case DOWN: sprite.coords.second += 10; break;
-        case LEFT: sprite.coords.first -= 10; break;
-        case RIGHT: sprite.coords.first += 10; break;
+        case UP: sprite.coords.second -= 12; break;
+        case DOWN: sprite.coords.second += 12; break;
+        case LEFT: sprite.coords.first -= 12; break;
+        case RIGHT: sprite.coords.first += 12; break;
         default: break;
     }
     if (sprite.coords.first < -10) {
@@ -98,8 +98,8 @@ void Server::moveSprite(SpriteData& sprite, enum Input input)
     if (sprite.coords.second < -15) {
         sprite.coords.second = -15;
     }
-    if (sprite.coords.second > 870) {
-        sprite.coords.second = 870;
+    if (sprite.coords.second > 850) {
+        sprite.coords.second = 850;
     }
 }
 
@@ -157,7 +157,6 @@ void Server::sendSprites(void)
     Data data = {SpriteDataType, array_buf};
     boost::array<Data, 1> send_buf = {data};
     for (Player player : _players) {
-        std::cout << "async send to " << player.uuid << std::endl;
         _udp_socket.async_send_to(
             boost::asio::buffer(send_buf), player.endpoint,
             boost::bind(&Server::handleSend, this, player.uuid, send_buf,
@@ -178,7 +177,6 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t)
             _sprites.push_back(player);
         }
         handleInput(_recv_buf[0]);
-        // sendSprites();
     }
     startReceive();
 }
@@ -257,6 +255,73 @@ Lobby Server::getLobbyFromUUID(boost::uuids::uuid uuid)
     return lobby;
 }
 
+boost::uuids::uuid Server::getLobbyUuidFromPlayerUuid(boost::uuids::uuid player_uuid)
+{
+    for (auto players_in_lobby: _players_in_lobbies) {
+        for (auto uuid : players_in_lobby.second) {
+            if (uuid == player_uuid) {
+                return (players_in_lobby.first);
+            }
+        }
+    }
+    return (_empty_uuid);
+}
+
+void Server::deleteCorrespondingPlayerFromLobbies(boost::uuids::uuid player_uuid)
+{
+    boost::uuids::uuid lobby_uuid = getLobbyUuidFromPlayerUuid(player_uuid);
+
+    for (auto &lobby : _lobbies) {
+        if (lobby.lobby_uuid == lobby_uuid) {
+            lobby.nb_players -= 1;
+            if (lobby.nb_players < 0) {
+                lobby.nb_players = 0;
+            }
+        }
+    }
+
+    for (auto &players_in_lobby: _players_in_lobbies) {
+        for (std::size_t i = 0; i < players_in_lobby.second.size(); i++) {
+            if (players_in_lobby.second[i] == player_uuid) {
+                players_in_lobby.second.erase(players_in_lobby.second.begin() + i);
+                break;
+            }
+        }
+    }
+}
+
+void Server::deleteCorrespondingSprite(std::size_t idSprite)
+{
+    std::size_t j = -1;
+
+    for (std::size_t i = 0; i < _sprites.size(); i++) {
+        if (_sprites[i].id == idSprite) {
+            j = i;
+            break;
+        }
+    }
+    if (j != -1) {
+        _sprites.erase(_sprites.begin() + j);
+    }
+}
+
+void Server::deleteCorrespondingPlayer(boost::uuids::uuid player_uuid)
+{
+    std::size_t j = -1;
+
+    for (std::size_t i = 0; i < _players.size(); i++) {
+        if (_players[i].uuid == player_uuid) {
+            j = i;
+            break;
+        }
+    }
+    if (j != -1) {
+        deleteCorrespondingSprite(_players[j].idSprite);
+        _players.erase(_players.begin() + j);
+        deleteCorrespondingPlayerFromLobbies(player_uuid);
+    }
+}
+
 void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     boost::system::error_code const& error, size_t bytes_transferred)
 {
@@ -265,13 +330,14 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
         std::cout << "player disconnected" << std::endl;
         std::size_t j = findIndexFromSocket(socket);
         if (j != -1) {
+            deleteCorrespondingPlayer(_sockets[j].first);
             _sockets.erase(_sockets.begin() + j);
             std::cout << "socket deleted" << std::endl;
         }
         if (_sockets.size() == 0) {
             std::cout << "vector sockets empty" << std::endl;
         }
-    } else {
+    } else if (!error) {
         std::size_t j = findIndexFromSocket(socket);
         Lobby lobby = _lobby_buf[0];
         if (j != -1 && _sockets[j].first == _empty_uuid) {
@@ -377,6 +443,9 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
             std::pair<boost::uuids::uuid, std::vector<boost::uuids::uuid>> new_lobby = {joined_lobby.lobby_uuid, {joined_lobby.player_uuid}};
             _players_in_lobbies.push_back(new_lobby);
         }
+        // UDP:
+        handleTimer();
+        startReceive();
     } else {
         std::cout << "sent response error: " << error.message() << std::endl;
     }

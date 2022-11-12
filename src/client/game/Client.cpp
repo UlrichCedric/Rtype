@@ -10,8 +10,12 @@
 void Client::sendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{action, _uuid}};
-    _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
-    std::cout << "sendData" << std::endl;
+    try {
+        _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
+        std::cout << "send input " << action << std::endl;
+    } catch (const boost::system::system_error& error) {
+        std::cout << "send_to error" << std::endl;
+    }
 }
 
 void Client::asyncSendData(enum Input action)
@@ -32,20 +36,23 @@ void Client::handleSendData(const boost::system::error_code& error, std::size_t 
 void Client::receiveData(void)
 {
     while (_canReceiveData) {
-        boost::asio::ip::udp::endpoint sender_endpoint;
-        std::string type = "undefined";
-        size_t len = _udp_socket.receive_from(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)), sender_endpoint);
-        if (_recv_buf.size() == 0) {
-            continue;
+        try {
+            size_t len = _udp_socket.receive(boost::asio::buffer(_recv_buf, sizeof(boost::array<Data, 1>)));
+            if (len == 0) {
+                std::cout << "Received empty data" << std::endl;
+                return;
+            }
+            if (_recv_buf[0].type == InitSpriteDataType) {
+                handleInitSpriteData();
+            } else if (_recv_buf[0].type == SpriteDataType) {
+                handleSpriteData();
+            } else {
+                std::cout << "Unknown type received" << std::endl;
+            }
+        } catch (const boost::system::system_error& error) {
+            _canReceiveData = false;
+            std::cout << "receive failed (Client probably shut down)" << std::endl;
         }
-        if (_recv_buf[0].type == InitSpriteDataType) {
-            type = "InitSpriteData";
-            handleInitSpriteData();
-        } else if (_recv_buf[0].type == SpriteDataType) {
-            type = "SpriteData";
-            handleSpriteData();
-        }
-        std::cout << type << " data received" << std::endl;
     }
 }
 
@@ -70,48 +77,33 @@ void Client::handleInitSpriteData(void)
 
 void Client::handleSpriteData(void)
 {
-    // for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-    //     _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
-    //     _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
-    // }
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        for (auto img: _images) {
-            if (img.getId() == _recv_buf[0].spriteDatas[i].id) {
-                img.setPos(_recv_buf[0].initSpriteDatas[i].coords);
-                try {
-                    img.setHp(
-                        _recv_buf[0].initSpriteDatas[i].health,
-                        _recv_buf[0].initSpriteDatas[i].coords
-                    );
-                } catch (Error &e) {
-                    std::cerr << "Error: " << e.what() << std::endl;
-                }
-                break;
-            }
-        }
+        std::cout << i << std::endl;
+        _player_pos.first = _recv_buf[0].spriteDatas[i].coords.first;
+        _player_pos.second = _recv_buf[0].spriteDatas[i].coords.second;
     }
 }
 
-/**
- * Le problème de ne pas recevoir de Data quand on est en async vient très probablement du
- * boost::bind car lorsque j'envoie des données en async avec async_send_to, mon serveur
- * reçoit bien des données, cependant la fonction "handleSendData" du boost::bind n'est
- * pas appelé (std::cout << "handleSendData" << std::endl; n'est pas affiché).
- *
- * Etant donné que la gestion des données reçues lors de async_receive_from est géré
- * dans handleReceiveData lui même étant dans boost::bind, handleReceiveData n'est
- * jamais appelé, les données ne sont donc jamais traitées.
- * Pour l'instant résolu avec un système de thread + appel en continu de receiveData dans
- * le thread (c'est donc à part, non bloquant pour le jeu).
- * Autre possibilité de résolution : Etant donné qu'il est très probable que je reçoive
- * bien de la data grâce à async_receive_from et donc que recv_buf est update,
- * mettre _recv_buf comme attribut et update les données en continu grâce à _recv_buf.
- *
- * UPDATE -> en fait ça met pas à jour _recv_buf donc faire un thread à part qui
- * appelle receiveData en boucle est la meilleure solution.
-*/
 void Client::asyncReceiveData(void)
 {
+    /**
+     * Le problème de ne pas recevoir de Data quand on est en async vient très probablement du
+     * boost::bind car lorsque j'envoie des données en async avec async_send_to, mon serveur
+     * reçoit bien des données, cependant la fonction "handleSendData" du boost::bind n'est
+     * pas appelé (std::cout << "handleSendData" << std::endl; n'est pas affiché).
+     *
+     * Etant donné que la gestion des données reçues lors de async_receive_from est géré
+     * dans handleReceiveData lui même étant dans boost::bind, handleReceiveData n'est
+     * jamais appelé, les données ne sont donc jamais traitées.
+     * Pour l'instant résolu avec un système de thread + appel en continu de receiveData dans
+     * le thread (c'est donc à part, non bloquant pour le jeu).
+     * Autre possibilité de résolution : Etant donné qu'il est très probable que je reçoive
+     * bien de la data grâce à async_receive_from et donc que recv_buf est update,
+     * mettre _recv_buf comme attribut et update les données en continu grâce à _recv_buf.
+     *
+     * UPDATE -> en fait ça met pas à jour _recv_buf donc faire un thread à part qui
+     * appelle receiveData en boucle est la meilleure solution.
+    */
     std::cout << "Async receive Data" << std::endl;
     boost::asio::ip::udp::endpoint sender_endpoint;
     _udp_socket.async_receive_from(boost::asio::buffer(_recv_buf), sender_endpoint,
@@ -218,7 +210,11 @@ void Client::joinLobby(boost::uuids::uuid uuid)
     if (!error) {
         if (response_buf[0] == OK) {
             std::cout << "Join accepted in lobby " << uuid << std::endl;
-            // start UDP Game
+            // start UDP Game:
+            _udp_socket.open(boost::asio::ip::udp::v4());
+            _canReceiveData = true;
+            std::thread thread(&Client::handleThread, this);
+            thread.detach();
         } else if (response_buf[0] == FORBIDDEN) {
             throw Error("Join lobby refused");
         }

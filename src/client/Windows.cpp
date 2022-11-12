@@ -25,31 +25,13 @@ namespace Game {
         return;
     }
 
-    // void Windows::Events()
-    // {
-        // sf::Event event;
-        // while (_window.pollEvent(event)) {
-        //     if (event.type == sf::Event::Closed) {
-        //         _state = END;
-        //     } else if (event.type == sf::Event::MouseMoved) {
-        //         _button.IsHover(sf::Mouse::getPosition(_window));
-		//     } else if (event.type == sf::Event::MouseButtonPressed) {
-        //         if (event.mouseButton.button == sf::Mouse::Left) {
-        //             if (_button.IsClicked(sf::Mouse::getPosition(_window))) {
-        //                 _state = GAME;
-        //             }
-        //         }
-        //     }
-        // }
-    // }
-
     void Windows::GameLoop(Client &client)
     {
         while (_window.isOpen()) {
             switch (_state) {
                 case MENU: _menu.handleMenu(_window, _state, client); break;
-                case GAME: _in_game.handleInGame(_window, _state); break;
-                case END: _window.close(); break;
+                case GAME: _in_game.handleInGame(_window, _state, client); break;
+                case END: client.setCanReceiveData(false); _window.close(); break;
                 default: break;
             }
         }

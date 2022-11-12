@@ -27,14 +27,6 @@ class Client {
                 std::cout << "Impossible de se connecter au serveur" << std::endl;
                 return;
             }
-
-            /*
-                UDP:
-                _udp_socket.open(boost::asio::ip::udp::v4());
-                _canReceiveData = true;
-                std::thread thread(&Client::handleThread, this);
-                thread.detach();
-            */
         }
         void sendData(enum Input action);
         void asyncSendData(enum Input action);

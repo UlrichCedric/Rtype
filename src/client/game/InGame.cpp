@@ -7,7 +7,7 @@
 
 #include "InGame.hpp"
 
-InGame::InGame()
+InGame::InGame(): _key_pressed(NONE)
 {
     initInGame();
 }
@@ -16,32 +16,28 @@ InGame::~InGame()
 {
 }
 
-void InGame::handleInGame(sf::RenderWindow &window, State &state)
+void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
 {
-    // if (_key_pressed != NONE) {
-    //     client.sendData(_key_pressed);
-    // }
-    // _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
-    // if (_state == END) {
-    //     client.setCanReceiveData(false);
-    // }
-    handleEvents(window);
+    if (_key_pressed != NONE) {
+        client.sendData(_key_pressed);
+    }
+    _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+    handleEvents(window, client);
     window.clear();
-    displayInGame(window);
+    displayInGame(window, state);
     window.display();
-    // _score == 0 ? _text.SetText("Score : 0") : _text.SetText("Score : " + std::to_string(_score));
 }
 
-void InGame::displayInGame(sf::RenderWindow &window)
+void InGame::displayInGame(sf::RenderWindow &window, State &state)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
-    // _player.draw(_window);
+    _player.draw(window);
     // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-    // _player._shoot.draw(_window);
+    // _player._shoot.draw(window);
     // _ennemy.run();
-    // _ennemy.draw(_window);
+    // _ennemy.draw(window);
     // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
     //     _ennemy.respawn();
     //     _player.bullet_reset();
@@ -50,7 +46,7 @@ void InGame::displayInGame(sf::RenderWindow &window)
     // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
     //     _player.setLife(_player._health.getHealth() - 10);
     //     if (_player._health.getHealth() <= 0) {
-    //         _state = MENU;
+    //         state = MENU;
     //         _player.setLife(100);
     //     }
     // }
@@ -59,57 +55,77 @@ void InGame::displayInGame(sf::RenderWindow &window)
     // }
 }
 
-void InGame::handleEventsOthers(sf::Event &event)
+void InGame::handleKeyPressed(sf::Event &event)
 {
-    if (event.key.code == sf::Keyboard::M) {
-        _score += 10;
-        _score_text.SetText("Score " + std::to_string(_score));
-        _score_text.setPos(10, 10);
-        _score_text.setFontSize(40);
+    if (_key_pressed != NONE) {
+        return;
     }
-}
-
-void InGame::handleEventsMovementPlayer(sf::Event &event)
-{
     switch (event.key.code) {
-        case sf::Keyboard::Left:
+        case (sf::Keyboard::Left):
             _key_pressed = LEFT;
             break;
-        case sf::Keyboard::Right:
+        case (sf::Keyboard::Right):
             _key_pressed = RIGHT;
             break;
-        case sf::Keyboard::Up:
+        case (sf::Keyboard::Up):
             _key_pressed = UP;
             break;
-        case sf::Keyboard::Down:
+        case (sf::Keyboard::Down):
             _key_pressed = DOWN;
             break;
         default: break;
     }
 }
 
-void InGame::handleEvents(sf::RenderWindow &window)
+void InGame::handleKeyReleased(sf::Event &event)
+{
+    switch (event.key.code) {
+        // case sf::Keyboard::Escape:
+        //     _state = PAUSE;
+        //     break;
+        case sf::Keyboard::Left:
+            _key_pressed == LEFT ? _key_pressed = NONE : false;
+            break;
+        case sf::Keyboard::Right:
+            _key_pressed == RIGHT ? _key_pressed = NONE : false;
+            break;
+        case sf::Keyboard::Up:
+            _key_pressed == UP ? _key_pressed = NONE : false;
+            break;
+        case sf::Keyboard::Down:
+            _key_pressed == DOWN ? _key_pressed = NONE : false;
+            break;
+        case sf::Keyboard::M:
+            _score += 10;
+            _score_text.SetText("Score " + std::to_string(_score));
+            _score_text.setPos(10, 10);
+            _score_text.setFontSize(40);
+        // case sf::Keyboard::Space:
+        //     _player.bullet_reset();
+        //     break;
+        default: break;
+    }
+}
+
+void InGame::handleEvents(sf::RenderWindow &window, Client &client)
 {
     sf::Event event;
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            window.close();
-        }
         switch (event.type) {
             case sf::Event::KeyPressed:
-                handleEventsMovementPlayer(event);
+                handleKeyPressed(event);
                 break;
             case sf::Event::KeyReleased:
-                handleEventsOthers(event);
+                handleKeyReleased(event);
                 break;
             case sf::Event::Closed:
+                client.setCanReceiveData(false);
                 window.close();
                 break;
             default: break;
         }
     }
 }
-
 
 void InGame::initInGame()
 {
