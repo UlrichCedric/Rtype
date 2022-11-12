@@ -34,6 +34,9 @@ namespace Game {
                 case END: client.setCanReceiveData(false); _window.close(); break;
                 default: break;
             }
+            if (_menu.getState() == Menu::State_menu::CLOSE)
+                _window.close();
+            _fps = _menu.getFps();
         }
     }
 }
