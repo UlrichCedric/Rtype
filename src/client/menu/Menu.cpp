@@ -30,6 +30,7 @@ Menu::Menu::Menu()
     initMenu();
     initLobby();
     initSettings();
+    iniDeath();
 }
 
 Menu::Menu::~Menu()
