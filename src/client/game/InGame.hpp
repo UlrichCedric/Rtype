@@ -22,6 +22,7 @@
 #include "../utils/Music.hpp"
 #include "../utils/Paralax.hpp"
 #include "../game/Client.hpp"
+#include "../menu/Menu.hpp"
 #include "Player.hpp"
 #include "Ennemy.hpp"
 
@@ -30,7 +31,7 @@ class InGame {
         InGame();
         ~InGame();
 
-        void handleInGame(sf::RenderWindow &window, State &state, Client &client);
+        void handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client);
         void handleOthers(Client &client);
         void handleAnimation(void);
         //Events / handle player input
@@ -38,7 +39,7 @@ class InGame {
         void handleKeyPressed(sf::Event &event);
         void handleKeyReleased(sf::Event &event);
         void initInGame();
-        void displayInGame(sf::RenderWindow &window, State &state);
+        void displayInGame(sf::RenderWindow &window, Menu::State_menu state);
 
 
     protected:

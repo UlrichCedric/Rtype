@@ -10,7 +10,7 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = MENU;
+        _state = Menu::State_menu::LOSE;
         _fps = 60;
     }
 
@@ -29,9 +29,10 @@ namespace Game {
     {
         while (_window.isOpen()) {
             switch (_state) {
-                case MENU: _menu.handleMenu(_window, _state, client); break;
-                case GAME: _in_game.handleInGame(_window, _state, client); break;
-                case END: client.setCanReceiveData(false); _window.close(); break;
+                case Menu::State_menu::MENU : _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::GAME : _in_game.handleInGame(_window, _state, client); break;
+                case Menu::State_menu::LOSE: _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::CLOSE: client.setCanReceiveData(false); _window.close(); break;
                 default: break;
             }
             if (_menu.getState() == Menu::State_menu::CLOSE)

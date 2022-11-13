@@ -48,7 +48,7 @@ void InGame::handleAnimation(void)
     }
 }
 
-void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
+void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client)
 {
     handleAnimation();
     if (_key_pressed != NONE) {
@@ -62,7 +62,7 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client
     window.display();
 }
 
-void InGame::displayInGame(sf::RenderWindow &window, State &state)
+void InGame::displayInGame(sf::RenderWindow &window, Menu::State_menu state)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);

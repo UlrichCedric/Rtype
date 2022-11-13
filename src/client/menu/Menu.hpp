@@ -29,6 +29,8 @@ namespace Menu {
         LOBBY,
         SETTINGS,
         GAME,
+        WIN,
+        LOSE,
         CLOSE,
     };
 
@@ -41,8 +43,10 @@ namespace Menu {
             void handleEventsMenu(sf::Event &event, Client &client);
             void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
+            void handleEventsWin(sf::Event &event);
+            void handleEventsDeath(sf::Event &event);
 
-            void handleMenu(sf::RenderWindow &window, State &state, Client &client);
+            void handleMenu(sf::RenderWindow &window, State_menu state, Client &client);
 
             //Menu
             void initMenu();
@@ -57,6 +61,15 @@ namespace Menu {
             void displaySettings(sf::RenderWindow &window);
             int getFps();
             State_menu getState();
+            void setState(State_menu state) { _state = state; }
+
+            //death screen
+            void iniDeath();
+            void displayDeath(sf::RenderWindow &window);
+
+            //win screen
+            void iniWin();
+            void displayWin(sf::RenderWindow &window);
 
         private:
             State_menu _state;
@@ -128,10 +141,17 @@ namespace Menu {
             sf::RectangleShape _settings_music_volume_progression_bar;
             sf::RectangleShape _settings_sounds_volume_bar;
             sf::RectangleShape _settings_sounds_volume_progression_bar;
-        
             std::array<int, 3> _fps;
             size_t _fps_index;
 
+            //death screen
+            enum _selection_possibility_death {RETRY, QUIT};
+            _selection_possibility_death _death_select;
+            Game::Text _death_title;
+            Game::Text _death_retry;
+            Game::Text _death_quit;
+            Game::Image _death_rect_selection;
+            std::array<std::string, 4> _death_text;
     };
 }
 

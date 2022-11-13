@@ -36,17 +36,19 @@ Menu::Menu::~Menu()
 {
 }
 
-void Menu::Menu::handleMenu(sf::RenderWindow &window, State &state, Client &client)
+void Menu::Menu::handleMenu(sf::RenderWindow &window, State_menu state, Client &client)
 {
-    this->handleEvents(window, client);
+    handleEvents(window, client);
     window.clear();
     _paralax_menu_background.update(Game::MENU_PARALAX);
     _paralax_menu_background.draw(window, Game::MENU_PARALAX);
-    switch (_state) {
+    switch (state) {
         case MENU: displayMenu(window); break;
         case LOBBY: displayLobby(window); break;
         case SETTINGS: displaySettings(window); break;
-        case GAME: state = State::GAME; break;
+        // case WIN: displayWin(window); break;
+        case LOSE: displayDeath(window); break;
+        case GAME: state = State_menu::GAME; break;
         default: break;
     }
     window.display();

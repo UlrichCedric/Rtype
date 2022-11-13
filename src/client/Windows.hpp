@@ -41,7 +41,7 @@ namespace Game {
             std::string _ip;
             sf::Font font;
             int _fps;
-            enum State _state;
+            enum Menu::State_menu _state;
             
             //Menu
             Menu::Menu _menu;

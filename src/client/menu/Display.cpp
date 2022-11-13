@@ -67,3 +67,13 @@ void Menu::Menu::displaySettings(sf::RenderWindow &window)
     //fps
     window.draw(_settings_fps._item);
 }
+
+void Menu::Menu::displayDeath(sf::RenderWindow &window)
+{
+    if (_death_select != RETRY && _death_select != QUIT)
+        window.draw(_death_rect_selection.get_sprite());
+    window.draw(_death_title._item);
+    window.draw(_death_rect_selection.get_sprite());
+    window.draw(_death_retry._item);
+    window.draw(_death_quit._item);
+}

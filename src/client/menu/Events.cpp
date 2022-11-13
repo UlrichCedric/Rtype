@@ -155,7 +155,7 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 _validate_sound.play();
                 try {
-                    client.joinLobby(this->get_uuid_of_selected_lobby());
+                    client.joinLobby(get_uuid_of_selected_lobby());
                     _state = State_menu::GAME;
                 } catch (Error &e) {
                     std::cout << e.what() << std::endl;
@@ -445,6 +445,54 @@ void Menu::Menu::handleEvents(sf::RenderWindow &window, Client &client)
             case LOBBY: handleEventsLobby(event, client); break;
             case SETTINGS: handleEventsSettings(event); break;
         default: break;
+        }
+    }
+}
+
+void Menu::Menu::handleEventsDeath(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            if (_death_select == RETRY) {
+                _state = LOBBY;
+            }
+            else if (_death_select == QUIT) {
+                _state = CLOSE;
+            }
+        }
+        if (event.key.code == sf::Keyboard::Down) {
+            if (_death_select == RETRY) {
+                _navigation_sound.play();
+                _death_select = QUIT;
+                _death_rect_selection.setRect(0, 0, 400, 45);
+                _death_rect_selection.setPos(130, 445);
+                _death_retry.setFontStyle(sf::Text::Bold);
+                _death_retry.setFontColor(sf::Color::Black);
+                _death_quit.setFontStyle(sf::Text::Regular);
+                _death_quit.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Up) {
+            if (_death_select == QUIT) {
+                _navigation_sound.play();
+                _death_select = RETRY;
+                _death_rect_selection.setRect(0, 0, 400, 45);
+                _death_rect_selection.setPos(130, 350);
+                _death_retry.setFontStyle(sf::Text::Regular);
+                _death_retry.setFontColor(sf::Color::White);
+                _death_quit.setFontStyle(sf::Text::Bold);
+                _death_quit.setFontColor(sf::Color::Black);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Return) {
+            if (_death_select == RETRY) {
+                _validate_sound.play();
+                _state = LOBBY;
+            }
+            else if (_death_select == QUIT) {
+                _validate_sound.play();
+                _state = CLOSE;
+            }
         }
     }
 }
