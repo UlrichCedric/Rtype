@@ -12,9 +12,7 @@ InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 1
     initInGame();
 }
 
-InGame::~InGame()
-{
-}
+InGame::~InGame() = default;
 
 void InGame::handleOthers(Client &client)
 {
@@ -157,7 +155,7 @@ void InGame::initInGame()
     _background_paralax.setSprites(Game::paralax::GAME_PARALAX);
     _score = 0;
     _score_text = Game::Text("assets/menu/fonts/r-type.ttf");
-    _score_text.SetText("Score " + std::to_string(_score));
+    updateScore(0);
     _score_text.setPos(10, 10);
     _score_text.setFontSize(40);
 }

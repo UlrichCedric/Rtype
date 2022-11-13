@@ -42,7 +42,7 @@ class InGame {
 
         void updateScore(int addToScore) {
             _score += addToScore;
-            _score_text.SetText("Score: " + std::to_string(_score));
+            _score_text.SetText("Score " + std::to_string(_score));
         }
 
 

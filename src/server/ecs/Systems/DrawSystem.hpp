@@ -5,9 +5,12 @@
 #include "../Components/Velocity.hpp"
 #include "../constants.hpp"
 
+#include <vector>
+#include <memory>
+
 class DrawSystem: public ASystem {
     public:
-    DrawSystem(void) {  }
+    DrawSystem(void) = default;
 
     void run(std::vector<std::shared_ptr<Entity>> &list) override {
         if (list.empty()) {
@@ -25,9 +28,9 @@ class DrawSystem: public ASystem {
             }
 
             try {
-                Position *pos = static_cast<Position *>(e->getComponent("position").get());
+                auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
                 std::pair<float, float> p = pos->getPos();
-                Velocity *vel = static_cast<Velocity *>(e->getComponent("velocity").get());
+                auto vel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
                 std::pair<int, int> v = vel->getVelocity();
 
                 if (betw(-15, p.first + v.first, 1115) || betw(-15, p.second + v.second, 870)) {
@@ -35,11 +38,11 @@ class DrawSystem: public ASystem {
                     p.second += v.second;
                     pos->setPos(p);
                 }
-            } catch (std::exception & e) {
-                std::cout << "y' a une couille wolah" << std::endl;
+            } catch (Error &err) {
+                std::cerr << "Error: " << err.what() << std::endl;
             }
         }
     }
 
-    ~DrawSystem() {  }
+    ~DrawSystem(void) override = default;
 };

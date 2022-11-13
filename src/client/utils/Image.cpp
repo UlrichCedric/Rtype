@@ -23,22 +23,27 @@ namespace Game {
 		_isHealth(health != -1),
 		_isAlive(health > 0)
 	{
-		setTexture(path);
 		setPos(pos);
 		setScale(scale);
 
 		if (_rectX != -1.0 && _rectY != -1.0) {
 			setRect(0, 0, static_cast<int>(rect.first), static_cast<int>(rect.second));
 		}
+		setTexture(path);
 		_health = Health({ 60, 10 }, pos.first, pos.second, health);
 	}
 
 	void Image::setTexture(std::string path)
 	{
 		_path = path;
-		if (!_texture.loadFromFile(_path)) {
-			std::cerr << "Can't find the image: " << _path << std::endl;
+
+		try {
+			if (!_texture.loadFromFile(_path)) {
+				std::cerr << "Error creating the texture: " << _path << std::endl;
+			}
+			_sprite.setTexture(_texture);
+		} catch (std::exception &e) {
+			std::cerr << "SetTexture Error: " << e.what() << std::endl;
 		}
-		_sprite.setTexture(_texture);
 	}
 }

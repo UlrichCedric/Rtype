@@ -44,6 +44,8 @@ void Server::startReceive(void)
 /// @param  No parameter
 void Server::handleTimer(void) {
     sendSprites();
+    _d->run(_entities);
+    _h->run(_entities);
     // Wait for next timeout.
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
     _timer.async_wait(boost::bind(&Server::handleTimer, this));

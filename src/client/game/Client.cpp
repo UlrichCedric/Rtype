@@ -6,6 +6,7 @@
 */
 
 #include "Client.hpp"
+#include "Ennemy.hpp"
 
 void Client::sendData(enum Input action)
 {
@@ -42,7 +43,6 @@ void Client::receiveData(void)
                 return;
             }
             if (_recv_buf[0].type == InitSpriteDataType) {
-                std::cout << "type is initSpriteData" << std::endl;
                 handleInitSpriteData();
             } else if (_recv_buf[0].type == SpriteDataType) {
                 handleSpriteData();
