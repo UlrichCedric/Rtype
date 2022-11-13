@@ -28,7 +28,7 @@ class Health;
 namespace Game {
     class Image {
         public:
-            Image() = default;
+            Image(void) = default;
             Image(const Image &) = default;
             Image(
                 std::size_t id,
@@ -64,7 +64,9 @@ namespace Game {
             void MoveRect(int x, int y, int width, int height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };
             std::size_t getId(void) { return _id; }
             void draw(sf::RenderWindow &win) { win.draw(_sprite); }
-            ~Image() = default;
+
+            ~Image(void) = default;
+
             sf::Clock _clock;
 
         private:

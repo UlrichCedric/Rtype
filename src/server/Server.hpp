@@ -34,6 +34,10 @@ class Server {
         _timer(io_context), _empty_uuid({})
     {
         try {
+            _f = std::make_unique<Factory>();
+            _d = std::make_unique<DrawSystem>();
+            _h = std::make_unique<HealthSystem>();
+
             parseWaves();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
@@ -42,10 +46,7 @@ class Server {
         acceptClients();
     }
 
-    ~Server()
-    {
-        std::cout << "Shut down the server" << std::endl;
-    }
+    ~Server(void) { std::cout << "[-] Shut down the server" << std::endl; }
 
     private:
     void parseWaves(void);
@@ -80,6 +81,8 @@ class Server {
     boost::uuids::uuid _empty_uuid;
     boost::array<Lobby, 1> _lobby_buf;
     std::vector<Lobby> _lobbies;
+
+    // { Lobby UUID, { player1 UUID, player2 UUID... } }
     std::vector<std::pair<boost::uuids::uuid, std::vector<boost::uuids::uuid>>> _players_in_lobbies;
 
     void acceptClients(void);
@@ -108,7 +111,7 @@ class Server {
 
     // ECS
 
-    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
+    std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
     void initEcs(void);

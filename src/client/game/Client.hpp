@@ -46,7 +46,7 @@ class Client {
         void asyncGetLobbies(void);
         void handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred);
 
-        ~Client() {  };
+        ~Client() = default;
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
@@ -56,7 +56,7 @@ class Client {
          * @brief our image list
          *
          */
-        std::vector<Game::Image> _images;
+        std::vector<Game::Image> _ennemies;
 
     private:
         boost::asio::io_context _io_context;
@@ -68,7 +68,7 @@ class Client {
         boost::uuids::uuid _uuid;
         boost::uuids::uuid _empty_uuid;
         union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
-        std::pair<float, float> _player_pos;
-        std::vector<std::pair<float, float>> _others_pos;
+        std::pair<float, float> _player_pos;    // client player position
+        std::vector<std::pair<float, float>> _others_pos;   // other players' position
         bool _canReceiveData;
 };

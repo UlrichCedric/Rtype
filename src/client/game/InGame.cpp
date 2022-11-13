@@ -19,6 +19,7 @@ InGame::~InGame()
 void InGame::handleOthers(Client &client)
 {
     std::vector<Game::Player> others;
+
     for (auto other_pos : client.getOthersPos()) {
         _other.setPos(other_pos.first, other_pos.second);
         others.push_back(_other);
@@ -58,38 +59,24 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client
     handleOthers(client);
     handleEvents(window, client);
     window.clear();
-    displayInGame(window, state);
+    displayInGame(window, state, client);
     window.display();
 }
 
-void InGame::displayInGame(sf::RenderWindow &window, State &state)
+void InGame::displayInGame(sf::RenderWindow &window, State &state, Client &client)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
+    updateScore(1);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
     _player.draw(window);
+
     for (auto other : _others) {
         other.draw(window);
     }
-    // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-    // _player._shoot.draw(window);
-    // _ennemy.run();
-    // _ennemy.draw(window);
-    // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-    //     _ennemy.respawn();
-    //     _player.bullet_reset();
-    //     _score += 1;
-    // }
-    // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-    //     _player.setLife(_player._health.getHealth() - 10);
-    //     if (_player._health.getHealth() <= 0) {
-    //         state = MENU;
-    //         _player.setLife(100);
-    //     }
-    // }
-    // for (auto img: client._images) {
-    //     img.draw(_window);
-    // }
+    for (auto ennemy: client._ennemies) {
+        ennemy.draw(window);
+    }
 }
 
 void InGame::handleKeyPressed(sf::Event &event)

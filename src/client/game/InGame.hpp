@@ -38,7 +38,12 @@ class InGame {
         void handleKeyPressed(sf::Event &event);
         void handleKeyReleased(sf::Event &event);
         void initInGame();
-        void displayInGame(sf::RenderWindow &window, State &state);
+        void displayInGame(sf::RenderWindow &window, State &state, Client &);
+
+        void updateScore(int addToScore) {
+            _score += addToScore;
+            _score_text.SetText("Score: " + std::to_string(_score));
+        }
 
 
     protected:

@@ -18,23 +18,27 @@ namespace Game {
 	):
 		_id(id),
 		_path(path),
+		_rectX(rect.first),
+		_rectY(rect.second),
 		_isHealth(health != -1),
 		_isAlive(health > 0)
 	{
 		setTexture(path);
 		setPos(pos);
 		setScale(scale);
-		_rectX = rect.first;
-		_rectY = rect.second;
-		setRect(0, 0, rect.first, rect.second);
+
+		if (_rectX != -1.0 && _rectY != -1.0) {
+			setRect(0, 0, static_cast<int>(rect.first), static_cast<int>(rect.second));
+		}
 		_health = Health({ 60, 10 }, pos.first, pos.second, health);
 	}
 
 	void Image::setTexture(std::string path)
 	{
 		_path = path;
-		if (!_texture.loadFromFile(_path))
-			std::cout << "Can't find the image: " << _path << std::endl;
+		if (!_texture.loadFromFile(_path)) {
+			std::cerr << "Can't find the image: " << _path << std::endl;
+		}
 		_sprite.setTexture(_texture);
 	}
 }
