@@ -10,7 +10,7 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = Menu::State_menu::LOSE;
+        _state = Menu::State_menu::PAUSE;
         _fps = 60;
     }
 
@@ -33,10 +33,12 @@ namespace Game {
                 case Menu::State_menu::GAME : _in_game.handleInGame(_window, _state, client); break;
                 case Menu::State_menu::LOSE: _menu.handleMenu(_window, _state, client); break;
                 case Menu::State_menu::CLOSE: client.setCanReceiveData(false); _window.close(); break;
+                case Menu::State_menu::PAUSE: _menu.handleMenu(_window, _state, client); break;
                 default: break;
             }
             if (_menu.getState() == Menu::State_menu::CLOSE)
                 _window.close();
+            _state = _in_game.getState();
             _fps = _menu.getFps();
         }
     }

@@ -51,6 +51,7 @@ void InGame::handleAnimation(void)
 void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client)
 {
     handleAnimation();
+    _state = state;
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
@@ -117,9 +118,9 @@ void InGame::handleKeyPressed(sf::Event &event)
 void InGame::handleKeyReleased(sf::Event &event)
 {
     switch (event.key.code) {
-        // case sf::Keyboard::Escape:
-        //     _state = PAUSE;
-        //     break;
+        case sf::Keyboard::Escape:
+            _state = Menu::State_menu::PAUSE;
+            break;
         case sf::Keyboard::Left:
             _key_pressed == LEFT ? _key_pressed = NONE : false;
             break;

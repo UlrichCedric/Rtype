@@ -28,6 +28,7 @@ namespace Menu {
         MENU,
         LOBBY,
         SETTINGS,
+        PAUSE,
         GAME,
         WIN,
         LOSE,
@@ -45,6 +46,7 @@ namespace Menu {
             void handleEventsSettings(sf::Event &event);
             void handleEventsWin(sf::Event &event);
             void handleEventsDeath(sf::Event &event);
+            void handleEventsPause(sf::Event &event);
 
             void handleMenu(sf::RenderWindow &window, State_menu state, Client &client);
 
@@ -70,6 +72,9 @@ namespace Menu {
             //win screen
             void iniWin();
             void displayWin(sf::RenderWindow &window);
+
+            void initPause();
+            void displayPause(sf::RenderWindow &window);
 
         private:
             State_menu _state;
@@ -152,7 +157,22 @@ namespace Menu {
             Game::Text _death_quit;
             Game::Image _death_rect_selection;
             std::array<std::string, 4> _death_text;
-    };
+
+            //pause screen
+            enum _selection_possibility_pause {MUSIC_VOLUME_TITLE_PAUSE, MUSIC_VOLUME_MODIF_PAUSE, SOUNDS_VOLUME_TITLE_PAUSE, SOUNDS_VOLUME_MODIF_PAUSE, FPS_TITLE_PAUSE, FPS_MODIF_PAUSE, RESUME, QUIT_PAUSE};
+            _selection_possibility_pause _pause_select; 
+            Game::Text _settings_pause_title;
+            Game::Text _settings_pause_music_volume;
+            Game::Text _settings_pause_sonds_volume;
+            Game::Text _settings_pause_fps;
+            Game::Text _settings_pause_resume;
+            Game::Text _settings_pause_quit;
+            sf::RectangleShape _settings_pause_music_volume_bar;
+            sf::RectangleShape _settings_pause_music_volume_progression_bar;
+            sf::RectangleShape _settings_pause_sounds_volume_bar;
+            sf::RectangleShape _settings_pause_sounds_volume_progression_bar;
+            Game::Image _settings_pause_rect_selection;
+    };  
 }
 
 #endif /* !MENU_HPP_ */

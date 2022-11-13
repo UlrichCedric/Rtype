@@ -31,6 +31,7 @@ Menu::Menu::Menu()
     initLobby();
     initSettings();
     iniDeath();
+    initPause();
 }
 
 Menu::Menu::~Menu()
@@ -47,6 +48,7 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window, State_menu state, Client &
         case MENU: displayMenu(window); break;
         case LOBBY: displayLobby(window); break;
         case SETTINGS: displaySettings(window); break;
+        case PAUSE: displayPause(window); break;
         // case WIN: displayWin(window); break;
         case LOSE: displayDeath(window); break;
         case GAME: state = State_menu::GAME; break;

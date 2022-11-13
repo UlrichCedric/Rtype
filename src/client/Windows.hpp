@@ -27,6 +27,7 @@
 #include "menu/Menu.hpp"
 #include "game/InGame.hpp"
 
+
 namespace Game {
     class Windows {
         public:

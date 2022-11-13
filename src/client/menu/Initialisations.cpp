@@ -219,3 +219,76 @@ void Menu::Menu::iniDeath()
     _death_retry.setFontStyle(sf::Text::Bold);
     _death_quit.setPos(140, 320);
 }
+
+void Menu::Menu::initPause()
+{
+    _pause_select = MUSIC_VOLUME_TITLE_PAUSE;
+
+    //_rect_selection
+    _settings_pause_rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/white_rect.jpg");
+    _settings_pause_rect_selection.setRect(0, 0, 390, 45);
+    _settings_pause_rect_selection.setPos(130, 175);
+    //fonts
+    _settings_pause_title = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_music_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_sonds_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_fps = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_quit = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_resume = Game::Text("assets/menu/fonts/r-type.ttf");
+
+    //_settings_pause_title
+    _settings_pause_title.SetText("Settings");
+    _settings_pause_title.setFontSize(50);
+    _settings_pause_title.setFontStyle(sf::Text::Bold);
+    _settings_pause_title.setPos(80, 60);
+    //_settings_pause_volume_music
+    _settings_pause_music_volume.SetText("Music Volume");
+    _settings_pause_music_volume.setFontSize(30);
+    _settings_pause_music_volume.setFontColor(sf::Color::Black);
+    _settings_pause_music_volume.setFontStyle(sf::Text::Bold);
+    _settings_pause_music_volume.setPos(140, 180);
+    //_settings_pause_sonds_volume
+    _settings_pause_sonds_volume.SetText("Sonds Volume");
+    _settings_pause_sonds_volume.setFontSize(30);
+    _settings_pause_sonds_volume.setPos(140, 320);
+
+    //music volume bar
+    _settings_pause_music_volume_bar.setSize(sf::Vector2f(875, 50));
+    _settings_pause_music_volume_bar.setOutlineColor(sf::Color::White);
+    _settings_pause_music_volume_bar.setOutlineThickness(2);
+    _settings_pause_music_volume_bar.setFillColor(sf::Color::Black);
+    _settings_pause_music_volume_bar.setPosition(160, 230);
+    _settings_pause_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
+    _settings_pause_music_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_pause_music_volume_progression_bar.setPosition(163, 233);
+    //sonds volume bar
+    _settings_pause_sounds_volume_bar.setSize(sf::Vector2f(875, 50));
+    _settings_pause_sounds_volume_bar.setOutlineColor(sf::Color::White);
+    _settings_pause_sounds_volume_bar.setOutlineThickness(2);
+    _settings_pause_sounds_volume_bar.setFillColor(sf::Color::Black);
+    _settings_pause_sounds_volume_bar.setPosition(160, 370);
+    _settings_pause_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
+    _settings_pause_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_pause_sounds_volume_progression_bar.setPosition(163, 373);
+    
+    //init fps 
+    _settings_pause_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+    _settings_pause_fps.setFontSize(30);
+    _settings_pause_fps.setFontColor(sf::Color::White);
+    _settings_pause_fps.setFontStyle(sf::Text::Bold);
+    _settings_pause_fps.setPos(140, 450);
+
+    //init quit button
+    _settings_pause_quit.SetText("Go back to menu");
+    _settings_pause_quit.setFontSize(30);
+    _settings_pause_quit.setFontColor(sf::Color::White);
+    _settings_pause_quit.setFontStyle(sf::Text::Bold);
+    _settings_pause_quit.setPos(140, 550);
+
+    //init resume button
+    _settings_pause_resume.SetText("Resume");
+    _settings_pause_resume.setFontSize(30);
+    _settings_pause_resume.setFontColor(sf::Color::White);
+    _settings_pause_resume.setFontStyle(sf::Text::Bold);
+    _settings_pause_resume.setPos(140, 650);
+}

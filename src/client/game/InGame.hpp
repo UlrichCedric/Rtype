@@ -40,6 +40,7 @@ class InGame {
         void handleKeyReleased(sf::Event &event);
         void initInGame();
         void displayInGame(sf::RenderWindow &window, Menu::State_menu state);
+        enum Menu::State_menu getState () {return _state;} ;
 
 
     protected:
@@ -57,6 +58,7 @@ class InGame {
         Game::Text _score_text;
         int _score;
         int _signRect;
+        enum Menu::State_menu _state;
 };
 
 #endif /* !INGAME_HPP_ */

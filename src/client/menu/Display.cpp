@@ -77,3 +77,23 @@ void Menu::Menu::displayDeath(sf::RenderWindow &window)
     window.draw(_death_retry._item);
     window.draw(_death_quit._item);
 }
+
+void Menu::Menu::displayPause(sf::RenderWindow &window)
+{
+    window.draw(_settings_pause_title._item);
+    //display rect selection
+    if (_pause_select != MUSIC_VOLUME_MODIF_PAUSE && _pause_select != SOUNDS_VOLUME_MODIF_PAUSE && _pause_select != FPS_MODIF_PAUSE && _pause_select != RESUME && _pause_select != QUIT_PAUSE)
+        window.draw(_settings_pause_rect_selection.get_sprite());
+    //volume bar
+    window.draw(_settings_pause_music_volume._item);
+    window.draw(_settings_pause_music_volume_bar);
+    window.draw(_settings_pause_music_volume_progression_bar);
+    //sounds bar
+    window.draw(_settings_pause_sonds_volume._item);
+    window.draw(_settings_pause_sounds_volume_bar);
+    window.draw(_settings_pause_sounds_volume_progression_bar);
+    //fps
+    window.draw(_settings_pause_fps._item);
+    window.draw(_settings_pause_resume._item);
+    window.draw(_settings_pause_quit._item);
+}
