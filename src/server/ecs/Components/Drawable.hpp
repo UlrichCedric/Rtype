@@ -66,7 +66,7 @@ class Drawable: public AComponent {
      *
      * @return int returns the name of the component as an int
      */
-    int getEnum(void) override { return DRAWABLE; };
+    components getEnum(void) override { return DRAWABLE; };
 
     /**
      * @brief Get the Offset object

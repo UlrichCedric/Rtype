@@ -18,12 +18,13 @@ class DrawSystem: public ASystem {
         }
 
         for (auto element: list) {
+            std::cout << "running DrawSystem for element with id " << element->getId() << std::endl;
             auto e = element.get();
             if (e == nullptr) {
                 continue;
             }
 
-            if (!e->has("draw") || !e->has("position") || !e->has("velocity")) {
+            if (!e->has(DRAWABLE) || !e->has(POSITION) || !e->has(VELOCITY)) {
                 continue;
             }
 
@@ -31,13 +32,17 @@ class DrawSystem: public ASystem {
                 auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
                 std::pair<float, float> p = pos->getPos();
                 auto vel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
-                std::pair<int, int> v = vel->getVelocity();
+                std::pair<float, float> v = vel->getVelocity();
 
-                if (betw(-15, p.first + v.first, 1115) || betw(-15, p.second + v.second, 870)) {
-                    p.first += v.first;
-                    p.second += v.second;
-                    pos->setPos(p);
+                std::cout << "old / new : " << p.first;
+
+                if (betw(-15.0, p.first + v.first, 1115.0) ||
+                    betw(-15.0, p.second + v.second, 870.0)
+                ) {
+                    pos->setXPos(p.first + v.first);
+                    pos->setYPos(p.second + v.second);
                 }
+                std::cout << " / " << pos->getXPos() << std::endl;
             } catch (Error &err) {
                 std::cerr << "Error: " << err.what() << std::endl;
             }

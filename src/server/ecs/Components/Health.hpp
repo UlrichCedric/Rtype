@@ -16,7 +16,7 @@ class Health: public AComponent {
     Health(int hp = 100): _hp(hp) {  }
     Health(Health &h): _hp(h._hp) {  }
     std::string getName(void) override { return "health"; }
-    int getEnum(void) override { return HEALTH; };
+    components getEnum(void) override { return HEALTH; };
     void setHp(int hp) { _hp = hp; }
     int getHp(void) { return _hp; }
     void takeDamage(int damage = 0) { _hp -= damage; }

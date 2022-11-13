@@ -43,9 +43,9 @@ void Server::startReceive(void)
 /// @brief Function called at the start of UDP sending data informations to clients. Recursively call itself every x milliseconds.
 /// @param  No parameter
 void Server::handleTimer(void) {
-    sendSprites();
     _d->run(_entities);
     _h->run(_entities);
+    sendSprites();
     // Wait for next timeout.
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
     _timer.async_wait(boost::bind(&Server::handleTimer, this));
@@ -225,9 +225,9 @@ void Server::sendSprites(void)
         boost::array<SpriteData, 16> array_buf = getLobbySpriteData(player.uuid);
 
         int i = 0;
-        for (i; array_buf[i].id != 0; ++i);
-        for (auto e: _entities) {
-            array_buf[i] = getSpriteData(e);
+        for (i; array_buf[i].id != 0; ++i);     // get the last empty array index
+        for (auto e: _entities) {               // add it the ennemies
+            array_buf[i++] = getSpriteData(e);
         }
 
         Data data = { SpriteDataType, array_buf, {}, {} };
@@ -290,6 +290,7 @@ void Server::handleSend(
     if (send_buf[0].type == InitSpriteDataType) {
         type = "InitSpriteData";
     } else if (send_buf[0].type == SpriteDataType) {
+        std::cout << "Just sent SpriteData" << std::endl;
         type = "SpriteData";
     }
     // std::cout << type << " sent to " << uuidReceiver << std::endl;
@@ -620,13 +621,19 @@ std::shared_ptr<Entity> Server::createEntity(
             eScale->setXScale(scale.first);
             eScale->setYScale(scale.second);
         }
-        if (e->has(POSITION) && position.first != -1 && position.second != -1) {
+        if (e->has(POSITION) && position.first != -1.0 && position.second != -1.0) {
             auto ePos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
             ePos->setXPos(position.first);
             ePos->setYPos(position.second);
         }
-    } catch (Error &e) {
-        std::cout << "Error: " << e.what() << std::endl;
+
+        if (e->has(HITBOX) && size.first != -1.0 && size.second != -1.0) {
+            auto eHit = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));
+            eHit->setSize(size);
+            eHit->setPos(position);
+        }
+    } catch (Error &err) {
+        std::cerr << "Error: " << err.what() << std::endl;
     }
     return e;
 }
@@ -642,7 +649,7 @@ void Server::initEcs(void)
 
     try {
         for (int i = 0; i < 3; ++i) {
-            _entities.push_back(createEntity("Enemy", "assets/sprites/enemy2.png", { -0.1, 0.0 }, { 1100.0 + (i * 30), 300.0 }, { 33.0, 33.0 }, { 3.0, 3.0 }));
+            _entities.push_back(createEntity("Enemy", "assets/sprites/enemy2.png", { -0.1, 0.0 }, { 700.0 + (i * 60), 300.0 + (i * 60) }, { 33.0, 33.0 }, { 3.0, 3.0 }));
         }
 
         std::size_t i = 0;
@@ -650,6 +657,8 @@ void Server::initEcs(void)
         for (auto entity: _entities) {
             // +100 to differenciate ennemies (id > 100) from other players (id < 100)
             entity->setId(entity->getId() + 100);
+            std::cout << std::dynamic_pointer_cast<Position>(entity->getComponent(POSITION))->getXPos() << " : ";
+            std::cout << std::dynamic_pointer_cast<Position>(entity->getComponent(POSITION))->getYPos() << std::endl;
             buffer[i++] = getInitSpriteData(entity);
         }
 
@@ -687,17 +696,18 @@ void Server::initEcs(void)
  * @return SpriteData the new SpriteData object
  */
 SpriteData Server::getSpriteData(std::shared_ptr<Entity> &e) {
-    if (!e.get()->has(DRAWABLE)) {
+    if (!e->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
     }
 
     try {
-        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+        auto health = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
+
         SpriteData s = {
-            e.get()->getId() + 100, // +100 to make a difference between other player (id < 100) and enemies (id > 100)
-            pos.get()->getPos(),
-            health.get()->getHp()
+            e->getId(),
+            pos->getPos(),
+            health->getHp()
         };
 
         return s;

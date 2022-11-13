@@ -73,7 +73,7 @@ void InGame::displayInGame(sf::RenderWindow &window, State &state, Client &clien
         other.draw(window);
     }
     for (auto ennemy: client._ennemies) {
-        ennemy.draw(window);
+        ennemy->draw(window);
     }
 }
 
@@ -82,6 +82,7 @@ void InGame::handleKeyPressed(sf::Event &event)
     if (_key_pressed != NONE) {
         return;
     }
+
     switch (event.key.code) {
         case (sf::Keyboard::Left):
             _key_pressed = LEFT;

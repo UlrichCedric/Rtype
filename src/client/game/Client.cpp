@@ -65,9 +65,9 @@ void Client::handleInitSpriteData(void)
     InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
 
     for (size_t i = 0; _recv_buf[0].initSpriteDatas[i].id != 0; i++) {
-        _ennemies.push_back(Game::Image(
+        _ennemies.push_back(std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
-            _recv_buf[0].initSpriteDatas[i].path,
+            Game::Config::ExecutablePath + _recv_buf[0].initSpriteDatas[i].path,
             _recv_buf[0].initSpriteDatas[i].coords,
             _recv_buf[0].initSpriteDatas[i].scale,
             _recv_buf[0].initSpriteDatas[i].maxSize,
@@ -85,31 +85,39 @@ void Client::handleSpriteData(void)
     std::vector<std::pair<float, float>> others_pos;
 
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
+        std::cout << "received id: " << _recv_buf[0].spriteDatas[i].id;
         if (i == 0) {
+            std::cout << " so I got into the first if statement" << std::endl;
             _player_pos.first = _recv_buf[0].spriteDatas[0].coords.first;
             _player_pos.second = _recv_buf[0].spriteDatas[0].coords.second;
             continue;
         }
+        // If id > 100 then it's an ennemy, else it's another player
         if (_recv_buf[0].spriteDatas[i].id > 100) {
+            std::cout << " so I got into the second if statement" << std::endl;
             for (auto e: _ennemies) {
-                if (e.getId() != _recv_buf[0].spriteDatas[i].id) {
+                if (e->getId() != _recv_buf[0].spriteDatas[i].id) {
                     continue;
                 }
                 SpriteData s = _recv_buf[0].spriteDatas[i];
-                e.setPos(s.coords.first, s.coords.second);
+                std::cout << "old/new xpos : " << e->getPos().x << " / " << s.coords.first << " >> ";
                 try {
-                    e.setHp(s.health, s.coords);
+                    e->setPos(s.coords);
+                    e->setHp(s.health, s.coords);
+                    std::cout << e->getPos().x << std::endl;
                 } catch (Error &e) {
                     std::cerr << e.what() << std::endl;
                 }
             }
         } else {
+            std::cout << " so I got into the third if statement" << std::endl;
             others_pos.push_back({
                 _recv_buf[0].spriteDatas[i].coords.first,
                 _recv_buf[0].spriteDatas[i].coords.second
             });
         }
     }
+    std::cout << "-----------" << std::endl;
     _others_pos = others_pos;
 }
 
@@ -140,9 +148,12 @@ void Client::asyncReceiveData(void)
             boost::asio::placeholders::bytes_transferred));
 }
 
+/**
+ * @brief This one is actually unused
+ *
+ */
 void Client::handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
 {
-    std::cout << "handleReceiveData" << std::endl;
     // for (int i = 0; _recv_buf[i].id != 0; i++) {
     //     std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
     //     _player_pos.first = _recv_buf[i].coords.first;
@@ -151,11 +162,21 @@ void Client::handleReceiveData(const boost::system::error_code& error, std::size
     asyncReceiveData();
 }
 
+/**
+ * @brief Returns the UUID of the client
+ *
+ * @return boost::uuids::uuid the UUID of the client
+ */
 boost::uuids::uuid Client::getUuid(void)
 {
     return _uuid;
 }
 
+/**
+ * @brief Returns the current player position
+ *
+ * @return std::pair<float, float> player position { x, y }
+ */
 std::pair<float, float> Client::getPlayerPos(void)
 {
     return _player_pos;

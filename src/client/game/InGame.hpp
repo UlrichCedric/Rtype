@@ -37,7 +37,7 @@ class InGame {
         void handleEvents(sf::RenderWindow &window, Client &client);
         void handleKeyPressed(sf::Event &event);
         void handleKeyReleased(sf::Event &event);
-        void initInGame();
+        void initInGame(void);
         void displayInGame(sf::RenderWindow &window, State &state, Client &);
 
         void updateScore(int addToScore) {

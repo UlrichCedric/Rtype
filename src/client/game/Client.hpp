@@ -8,6 +8,7 @@
 #pragma once
 
 #include <boost/thread/thread.hpp>
+#include <memory>
 
 #include "../../Common.hpp"
 #include "../utils/Image.hpp"
@@ -56,7 +57,7 @@ class Client {
          * @brief our image list
          *
          */
-        std::vector<Game::Image> _ennemies;
+        std::vector<std::shared_ptr<Game::Image>> _ennemies;
 
     private:
         boost::asio::io_context _io_context;

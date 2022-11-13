@@ -69,16 +69,16 @@ class Factory {
                 continue;
             }
 
-            std::shared_ptr<Entity> e = std::make_shared<Entity>(*custom.second.get());
+            std::shared_ptr<Entity> e = std::make_shared<Entity>(id == 0 || id < _last_id ? _last_id++ : id);
 
             if (e == nullptr) {
                 std::cerr << "Failed to create entity " << name << std::endl;
             }
 
-            try {
-                e->setId(id == 0 || id < _last_id ? _last_id++ : id);
-            } catch (Error &e) {
-                std::cerr << "Error : " << e.what() << std::endl;
+            for (auto c: strToInt) {
+                if (custom.second->has(c.second)) {
+                    e->addComponent(c.second);
+                }
             }
 
             return e;
