@@ -37,7 +37,7 @@ class tcp_server {
                     std::cout << "Failed to accept" << std::endl;
                     return;
                 }
-                std::cout << "New client accepted" << std::endl;
+                std::cout << "[+] New client accepted" << std::endl;
                 std::shared_ptr<boost::asio::ip::tcp::socket> new_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(std::move(new_socket));
                 std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>> pair = {{}, new_socket_ptr};
                 _sockets.push_back(pair);
@@ -62,7 +62,6 @@ class tcp_server {
 
         void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
         {
-            std::cout << "Ready to async read" << std::endl;
             boost::asio::async_read(*(socket.get()), boost::asio::buffer(_lobby_buf),
             boost::bind(&tcp_server::handleRead, this, socket,
                 boost::asio::placeholders::error,
@@ -85,14 +84,14 @@ class tcp_server {
         {
             if ((boost::asio::error::eof == error) ||
                 (boost::asio::error::connection_reset == error)) {
-                std::cout << "player disconnected" << std::endl;
+                std::cout << "[-] Player disconnected" << std::endl;
                 std::size_t j = findIndexFromSocket(socket);
                 if (j != -1) {
                     _sockets.erase(_sockets.begin() + j);
                     std::cout << "socket deleted" << std::endl;
                 }
                 if (_sockets.size() == 0) {
-                    std::cout << "vector sockets empty" << std::endl;
+                    std::cout << "[~] Vector sockets empty" << std::endl;
                 }
             } else {
                 std::cout << "data received from client" << std::endl;

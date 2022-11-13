@@ -26,12 +26,6 @@ void Server::parseWaves(void) {
         std::string name = string.substr(string.find(':', 0), string.length() - 1);
         _waveConf[i++] = std::pair<std::size_t, std::string>(number, name);
     }
-
-    std::cout << "Testing parsing on enemies.conf:" << std::endl;
-    for (auto [key, value]: _waveConf) {
-        std::cout << "For key [" << key << "] = " << value.first << ", " << value.second << std::endl;
-    }
-    std::cout << "Testing finished" << std::endl;
 }
 
 /// @brief Async function to receive data from clients.
@@ -211,9 +205,8 @@ void Server::sendSprites(void)
 void Server::handleReceive(const boost::system::error_code &error, std::size_t)
 {
     if (!error) {
-        std::cout << "Received: " << _recv_buf[0].input << " from " << _recv_buf[0].uuid << std::endl;
         if (isNewUuid(_recv_buf[0].uuid)) {
-            std::cout << "New player !" << std::endl;
+            std::cout << "[+] New player !" << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
             SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
@@ -254,7 +247,7 @@ void Server::acceptClients(void)
             std::cout << "Failed to accept" << std::endl;
             return;
         }
-        std::cout << "New client accepted" << std::endl;
+        std::cout << "[+] New client accepted" << std::endl;
         std::shared_ptr<boost::asio::ip::tcp::socket> new_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(std::move(new_socket));
         std::pair<boost::uuids::uuid, std::shared_ptr<boost::asio::ip::tcp::socket>> pair = {{}, new_socket_ptr};
         _sockets.push_back(pair);
@@ -265,7 +258,6 @@ void Server::acceptClients(void)
 
 void Server::asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
-    std::cout << "Ready to async read" << std::endl;
     boost::asio::async_read(*(socket.get()), boost::asio::buffer(_lobby_buf),
     boost::bind(&Server::handleRead, this, socket,
         boost::asio::placeholders::error,
@@ -370,22 +362,22 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
 {
     if ((boost::asio::error::eof == error) ||
         (boost::asio::error::connection_reset == error)) {
-        std::cout << "player disconnected" << std::endl;
+        std::cout << "[-] Player disconnected" << std::endl;
         int j = findIndexFromSocket(socket);
         if (j != -1) {
             deleteCorrespondingPlayer(_sockets[j].first);
             _sockets.erase(_sockets.begin() + j);
-            std::cout << "socket deleted" << std::endl;
+            std::cout << "[-] socket deleted" << std::endl;
         }
         if (_sockets.size() == 0) {
-            std::cout << "vector sockets empty" << std::endl;
+            std::cout << "[~] Vector sockets empty" << std::endl;
         }
     } else if (!error) {
         int j = findIndexFromSocket(socket);
         Lobby lobby = _lobby_buf[0];
         if (j != -1 && _sockets[j].first == _empty_uuid) {
             _sockets[j].first = lobby.player_uuid;
-            std::cout << "socket linked with player uuid " << lobby.player_uuid << std::endl;
+            // std::cout << "socket linked with player uuid " << lobby.player_uuid << std::endl;
         }
         if (lobby.askForLobbies) {
             sendLobbies(socket);
@@ -421,10 +413,8 @@ void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
     boost::array<Data, 1> send_buf = {data};
     boost::system::error_code error;
     boost::asio::write(*(socket.get()), boost::asio::buffer(send_buf), error);
-    if (!error) {
-        std::cout << "Lobbies sent" << std::endl;
-    } else {
-        std::cout << "send Lobbies error: " << error.message() << std::endl;
+    if (error) {
+        std::cout << "[!] Sending lobbies error: " << error.message() << std::endl;
     }
 }
 
@@ -467,10 +457,10 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
     boost::asio::write(*(joiner_socket.get()), boost::asio::buffer(response), error);
     if (!error) {
         if (!response[0]) {
-            std::cout << "Response FORBIDDEN sent" << std::endl;
+            std::cout << "[-] Response FORBIDDEN sent" << std::endl;
             return;
         }
-        std::cout << "Response OK sent" << std::endl;
+        std::cout << "[+] Response OK sent" << std::endl;
         for (auto &lobby : _lobbies) {
             if (lobby.lobby_uuid == joined_lobby.lobby_uuid) {
                 lobby.nb_players += 1;
@@ -494,7 +484,7 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
         handleTimer();
         startReceive();
     } else {
-        std::cout << "sent response error: " << error.message() << std::endl;
+        std::cerr << "[-] Sent ERROR response: " << error.message() << std::endl;
     }
 }
 

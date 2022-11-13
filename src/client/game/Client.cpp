@@ -12,9 +12,8 @@ void Client::sendData(enum Input action)
     boost::array<Action, 1> send_buf = {{action, _uuid}};
     try {
         _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
-        std::cout << "send input " << action << std::endl;
     } catch (const boost::system::system_error& error) {
-        std::cout << "send_to error" << std::endl;
+        std::cerr << "Error: sending failed" << std::endl;
     }
 }
 
@@ -180,7 +179,7 @@ void Client::createLobby(std::string name)
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "You successfully create a Lobby with a name : " << name << std::endl;
+        std::cout << "[+] " << name << " lobby created sucessfully" << std::endl;
     } else {
         throw Error("Create lobby failed");
     }
@@ -230,7 +229,7 @@ void Client::joinLobby(boost::uuids::uuid uuid)
             throw Error("Join lobby refused");
         }
     } else {
-        std::cout << "read failed: " << error.message() << std::endl;
+        std::cerr << "[-] Read failed: " << error.message() << std::endl;
     }
 }
 
@@ -240,18 +239,16 @@ std::vector<Lobby> Client::getLobbies(void)
     boost::system::error_code error;
     boost::asio::read(_tcp_socket, boost::asio::buffer(_recv_buf), error);
     std::vector<Lobby> lobbies;
+
     if (!error) {
         if (_recv_buf[0].type == LobbyType) {
             for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
                 lobbies.push_back(_recv_buf[0].lobbies[i]);
             }
-            for (auto lobby : lobbies) {
-                std::cout << "+1 lobby" << std::endl;
-            }
         }
     } else {
-        std::cout << "read failed: " << error.message() << std::endl;
-        throw Error("Get lobbies failed");
+        std::cout << "[-] Read failed: " << error.message() << std::endl;
+        throw Error("Failed getting lobbies");
     }
     return lobbies;
 }
@@ -271,9 +268,6 @@ void Client::handleGetLobbies(boost::system::error_code const& error, size_t byt
             std::vector<Lobby> lobbies;
             for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
                 lobbies.push_back(_recv_buf[0].lobbies[i]);
-            }
-            for (auto lobby : lobbies) {
-                std::cout << "+1 lobby" << std::endl;
             }
         }
     } else {
@@ -296,9 +290,9 @@ void Client::writeLobbyData(bool ask, bool create, bool join, std::string name,
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "Client wrote data!" << std::endl;
+        std::cout << "[+] Client wrote data!" << std::endl;
     } else {
-        std::cout << "write failed: " << error.message() << std::endl;
+        std::cerr << "[-] Writing failed: " << error.message() << std::endl;
     }
 }
 
