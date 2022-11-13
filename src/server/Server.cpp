@@ -466,7 +466,11 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
     boost::system::error_code error;
     boost::asio::write(*(joiner_socket.get()), boost::asio::buffer(response), error);
     if (!error) {
-        std::cout << "Response " << response[0] << " sent" << std::endl;
+        if (!response[0]) {
+            std::cout << "Response FORBIDDEN sent" << std::endl;
+            return;
+        }
+        std::cout << "Response OK sent" << std::endl;
         for (auto &lobby : _lobbies) {
             if (lobby.lobby_uuid == joined_lobby.lobby_uuid) {
                 lobby.nb_players += 1;
