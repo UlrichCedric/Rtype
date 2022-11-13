@@ -466,22 +466,21 @@ void Menu::Menu::handleEventsDeath(sf::Event &event)
                 _death_select = QUIT;
                 _death_rect_selection.setRect(0, 0, 400, 45);
                 _death_rect_selection.setPos(130, 445);
-                _death_retry.setFontStyle(sf::Text::Bold);
-                _death_retry.setFontColor(sf::Color::Black);
-                _death_quit.setFontStyle(sf::Text::Regular);
-                _death_quit.setFontColor(sf::Color::White);
+                _death_quit.setFontStyle(sf::Text::Bold);
+                _death_quit.setFontColor(sf::Color::Black);
+                _death_retry.setFontStyle(sf::Text::Regular);
+                _death_retry.setFontColor(sf::Color::White);
             }
         }
         else if (event.key.code == sf::Keyboard::Up) {
-            if (_death_select == QUIT) {
+             if (_death_select == QUIT) {
                 _navigation_sound.play();
                 _death_select = RETRY;
-                _death_rect_selection.setRect(0, 0, 400, 45);
                 _death_rect_selection.setPos(130, 350);
-                _death_retry.setFontStyle(sf::Text::Regular);
-                _death_retry.setFontColor(sf::Color::White);
                 _death_quit.setFontStyle(sf::Text::Bold);
                 _death_quit.setFontColor(sf::Color::Black);
+                _death_retry.setFontStyle(sf::Text::Regular);
+                _death_retry.setFontColor(sf::Color::White);
             }
         }
         else if (event.key.code == sf::Keyboard::Return) {
