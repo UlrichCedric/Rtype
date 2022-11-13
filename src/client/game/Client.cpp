@@ -85,39 +85,32 @@ void Client::handleSpriteData(void)
     std::vector<std::pair<float, float>> others_pos;
 
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
-        std::cout << "received id: " << _recv_buf[0].spriteDatas[i].id;
         if (i == 0) {
-            std::cout << " so I got into the first if statement" << std::endl;
             _player_pos.first = _recv_buf[0].spriteDatas[0].coords.first;
             _player_pos.second = _recv_buf[0].spriteDatas[0].coords.second;
             continue;
         }
         // If id > 100 then it's an ennemy, else it's another player
         if (_recv_buf[0].spriteDatas[i].id > 100) {
-            std::cout << " so I got into the second if statement" << std::endl;
             for (auto e: _ennemies) {
                 if (e->getId() != _recv_buf[0].spriteDatas[i].id) {
                     continue;
                 }
                 SpriteData s = _recv_buf[0].spriteDatas[i];
-                std::cout << "old/new xpos : " << e->getPos().x << " / " << s.coords.first << " >> ";
                 try {
                     e->setPos(s.coords);
                     e->setHp(s.health, s.coords);
-                    std::cout << e->getPos().x << std::endl;
                 } catch (Error &e) {
                     std::cerr << e.what() << std::endl;
                 }
             }
         } else {
-            std::cout << " so I got into the third if statement" << std::endl;
             others_pos.push_back({
                 _recv_buf[0].spriteDatas[i].coords.first,
                 _recv_buf[0].spriteDatas[i].coords.second
             });
         }
     }
-    std::cout << "-----------" << std::endl;
     _others_pos = others_pos;
 }
 

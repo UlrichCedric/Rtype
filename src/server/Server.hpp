@@ -13,6 +13,7 @@
 #include "ecs/Factory.hpp"
 #include "ecs/Systems/DrawSystem.hpp"
 #include "ecs/Systems/HealthSystem.hpp"
+#include "ecs/Systems/HitboxSystem.hpp"
 
 #include <utility>
 #include <fstream>
@@ -35,10 +36,12 @@ class Server {
     {
         try {
             _f = std::make_unique<Factory>();
-            _d = std::make_unique<DrawSystem>();
-            _h = std::make_unique<HealthSystem>();
+            _drawinSystem = std::make_unique<DrawSystem>();
+            _healthSystem = std::make_unique<HealthSystem>();
+            _hitboxSystem = std::make_unique<HitboxSystem>();
 
             parseWaves();
+            initEcs();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
@@ -73,6 +76,10 @@ class Server {
         const boost::system::error_code &,
         std::size_t
     );
+    void sendInitSpriteDatasToNewPlayer(Player &p);
+
+    // this one will store the initSpriteDatas
+    boost::array<Data, 1> send_buf = {  };
 
     // TCP
 
@@ -128,8 +135,9 @@ class Server {
     std::unique_ptr<Factory> _f;
 
     // Systems
-    std::unique_ptr<DrawSystem> _d;
-    std::unique_ptr<HealthSystem> _h;
+    std::unique_ptr<DrawSystem> _drawinSystem;
+    std::unique_ptr<HealthSystem> _healthSystem;
+    std::unique_ptr<HitboxSystem> _hitboxSystem;
 
     // List of entities
     std::size_t _currentWave;

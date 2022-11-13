@@ -8,6 +8,9 @@
 #include "Server.hpp"
 #include "ecs/Components/Velocity.hpp"
 
+//TODO to quick when multiplayer
+//TODO add hitbox on players
+
 void Server::parseWaves(void) {
     std::ifstream file("enemies.conf");
     std::string string = "";
@@ -43,8 +46,9 @@ void Server::startReceive(void)
 /// @brief Function called at the start of UDP sending data informations to clients. Recursively call itself every x milliseconds.
 /// @param  No parameter
 void Server::handleTimer(void) {
-    _d->run(_entities);
-    _h->run(_entities);
+    _drawinSystem->run(_entities);
+    _healthSystem->run(_entities);
+    _hitboxSystem->run(_entities);
     sendSprites();
     // Wait for next timeout.
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
@@ -264,7 +268,7 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t)
             _players.push_back(new_player_info);
             SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
             _sprites.push_back(player);
-            initEcs();
+            sendInitSpriteDatasToNewPlayer(new_player_info);
         }
         handleInput(_recv_buf[0]);
     }
@@ -290,7 +294,6 @@ void Server::handleSend(
     if (send_buf[0].type == InitSpriteDataType) {
         type = "InitSpriteData";
     } else if (send_buf[0].type == SpriteDataType) {
-        std::cout << "Just sent SpriteData" << std::endl;
         type = "SpriteData";
     }
     // std::cout << type << " sent to " << uuidReceiver << std::endl;
@@ -611,23 +614,23 @@ std::shared_ptr<Entity> Server::createEntity(
             eDraw->setSprite(path);
             eDraw->setSize(size);
         }
-        if (e->has(VELOCITY) && velocity.first != 0.0 && velocity.second != 0.0) {
+        if (e->has(VELOCITY) && velocity.first != 0.0 || velocity.second != 0.0) {
             auto eVel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
             eVel->setXVelocity(velocity.first);
             eVel->setYVelocity(velocity.second);
         }
-        if (e->has(SCALE) && scale.first != 1.0 && scale.second != 1.0) {
+        if (e->has(SCALE) && scale.first != 1.0 || scale.second != 1.0) {
             auto eScale = std::dynamic_pointer_cast<Scale>(e->getComponent(SCALE));
             eScale->setXScale(scale.first);
             eScale->setYScale(scale.second);
         }
-        if (e->has(POSITION) && position.first != -1.0 && position.second != -1.0) {
+        if (e->has(POSITION) && position.first != -1.0 || position.second != -1.0) {
             auto ePos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
             ePos->setXPos(position.first);
             ePos->setYPos(position.second);
         }
 
-        if (e->has(HITBOX) && size.first != -1.0 && size.second != -1.0) {
+        if (e->has(HITBOX) && size.first != -1.0 || size.second != -1.0) {
             auto eHit = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));
             eHit->setSize(size);
             eHit->setPos(position);
@@ -648,8 +651,17 @@ void Server::initEcs(void)
     boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
 
     try {
-        for (int i = 0; i < 3; ++i) {
-            _entities.push_back(createEntity("Enemy", "assets/sprites/enemy2.png", { -0.1, 0.0 }, { 700.0 + (i * 60), 300.0 + (i * 60) }, { 33.0, 33.0 }, { 3.0, 3.0 }));
+        for (int i = 0; i < 11; ++i) {
+            int velY = std::rand() % 5;
+
+            _entities.push_back(createEntity(
+                "Enemy",
+                "assets/sprites/enemy2.png",
+                { -3.0, (velY % 2 == 0 ? (-1 * velY) : velY) / 10.0 },
+                { 700.0 + (i * 60), 300.0 + (i * 60) },
+                { 33.0, 33.0 },
+                { 3.0, 3.0 }
+            ));
         }
 
         std::size_t i = 0;
@@ -657,36 +669,35 @@ void Server::initEcs(void)
         for (auto entity: _entities) {
             // +100 to differenciate ennemies (id > 100) from other players (id < 100)
             entity->setId(entity->getId() + 100);
-            std::cout << std::dynamic_pointer_cast<Position>(entity->getComponent(POSITION))->getXPos() << " : ";
-            std::cout << std::dynamic_pointer_cast<Position>(entity->getComponent(POSITION))->getYPos() << std::endl;
             buffer[i++] = getInitSpriteData(entity);
         }
 
         buffer[i] = endArray;
         Data data = { InitSpriteDataType, {  }, buffer, {  } };
-        boost::array<Data, 1> send_buf = { data };
-
-        //* Uncomment the following lines to display the IDs of what you're sending to the client
-        // for (int i = 0; send_buf[0].initSpriteDatas[i].id != 0; ++i) {
-        //     std::cout << "sending id: " << send_buf[0].initSpriteDatas[i].id << std::endl;
-        // }
-
-        for (Player player : _players) {
-            _udp_socket.async_send_to(
-                boost::asio::buffer(send_buf), player.endpoint,
-                boost::bind(
-                    &Server::handleSend,
-                    this,
-                    player.uuid,
-                    send_buf,
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred
-                )
-            );
-        }
+        send_buf = { data };
     } catch (std::exception &e) {
         std::cerr << "[-] Error: " << e.what() << std::endl;
     }
+}
+
+void Server::sendInitSpriteDatasToNewPlayer(Player &p) {
+    //* Uncomment the following lines to display the IDs of what you're sending to the client
+    // for (int i = 0; send_buf[0].initSpriteDatas[i].id != 0; ++i) {
+    //     std::cout << "sending id: " << send_buf[0].initSpriteDatas[i].id << std::endl;
+    // }
+
+    _udp_socket.async_send_to(
+        boost::asio::buffer(send_buf),
+        p.endpoint,
+        boost::bind(
+            &Server::handleSend,
+            this,
+            p.uuid,
+            send_buf,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
 }
 
 /**

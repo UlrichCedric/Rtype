@@ -6,12 +6,13 @@
 class Velocity: public AComponent {
     public:
 
-    Velocity(float x = 0, float y = 0): _x(x), _y(y) {  }
+    Velocity(float x = 0.0, float y = 0.0): _x(x), _y(y) {  }
     Velocity(Velocity &v): _x(v._x), _y(v._y) {  }
 
     std::string getName(void) override { return "velocity"; }
-    components getEnum(void) override { return VELOCITY; };
+    components getEnum(void) override { return VELOCITY; }
     void setVelocity(float x, float y) { _x = x; _y = y; }
+    void setVelocity(std::pair<float, float> vel) { _x = vel.first; _y = vel.second; }
     void setXVelocity(float x) { _x = x; }
     void setYVelocity(float y) { _y = y; }
     float getXVelocity(void) const { return _x; }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../ASystem.hpp"
 #include "../Components/Hitbox.hpp"
 #include "../Components/Position.hpp"
@@ -9,17 +11,21 @@ class HitboxSystem: public ASystem {
 
     HitboxSystem(void) = default;
 
-    //TODO Apparently, this shit doesn't work
     void run(std::vector<std::shared_ptr<Entity>> &list) override {
         if (list.empty()) {
             return;
         }
 
         for (auto &e : list) {
-            if (!e->has(HITBOX)) {
+
+            if (!e->has(HITBOX) || !e->has(POSITION) || !e->has(DRAWABLE)) {
                 continue;
             }
             auto hb = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));
+            auto hp = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+            auto hd = std::dynamic_pointer_cast<Drawable>(e->getComponent(DRAWABLE));
+            hb->setPos(hp->getPos());
+            hb->setSize(hd->getSize());
 
             try {
                 for (auto &el: list) {
@@ -27,16 +33,10 @@ class HitboxSystem: public ASystem {
                         continue;
                     }
                     auto el_hb = std::dynamic_pointer_cast<Hitbox>(el->getComponent(HITBOX));
-                    if (areColliding(hb, el_hb)) {
+                    if (*(el.get()) == *(e.get())) {
                         auto p = std::dynamic_pointer_cast<Position>(el->getComponent(POSITION));
                         auto v = std::dynamic_pointer_cast<Velocity>(el->getComponent(VELOCITY));
-                        if (v->getYVelocity() != 0) {
-                            v->setYVelocity(-1 * v->getYVelocity());
-                        } else if (v->getXVelocity() != 0) {
-                            v->setXVelocity(-1 * v->getXVelocity());
-                        } else {
-                            p->setYPos(p->getYPos() + 40);
-                        }
+                        v->setYVelocity(v->getYVelocity() != 0.0 ? -1.0 * v->getYVelocity() : -1.0);
                     }
                 }
             } catch (Error &e) {
@@ -50,7 +50,6 @@ class HitboxSystem: public ASystem {
     private:
     bool isBetween(float a, float b, float c) { return (a < b && b < c); }
     bool areColliding(std::shared_ptr<Hitbox> h1, std::shared_ptr<Hitbox> h2) {
-        //TODO do not forget to fill this function
-        return true;
+        return h1->isCollidingWith(h2);
     }
 };

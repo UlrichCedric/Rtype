@@ -82,7 +82,6 @@ class Factory {
             }
 
             return e;
-
         }
         throw Error("Entity not found");
     }

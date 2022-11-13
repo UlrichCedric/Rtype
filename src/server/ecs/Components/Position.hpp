@@ -12,8 +12,8 @@
  */
 class Position: public AComponent {
     public:
-    Position(std::pair<float, float> pos): _x(pos.first), _y(pos.second) {  };
-    Position(float x = 0, float y = 0): _x(x), _y(y) {  };
+    explicit Position(std::pair<float, float> pos): _x(pos.first), _y(pos.second) {  };
+    explicit Position(float x = 0, float y = 0): _x(x), _y(y) {  };
     Position(Position &p): _x(p._x), _y(p._y) {  };
 
     std::string getName(void) override { return "position"; }
@@ -31,10 +31,10 @@ class Position: public AComponent {
         _y = pos.second;
     };
 
-    std::pair<float, float> getPos(void) { return std::make_pair(_x, _y); }
+    std::pair<float, float> getPos(void) { return { _x, _y }; }
     float getXPos(void) { return _x; };
     float getYPos(void) { return _y; };
-    ~Position() {  };
+    ~Position() override = default;
 
     private:
     float _x;
