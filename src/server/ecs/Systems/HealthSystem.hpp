@@ -7,7 +7,7 @@
 
 class HealthSystem: public ASystem {
     public:
-    HealthSystem(void) {  };
+    HealthSystem(void) = default;
 
     void run(std::vector<std::shared_ptr<Entity>> &list, std::string) override {
         for (auto element : list) {
@@ -21,5 +21,5 @@ class HealthSystem: public ASystem {
         }
     }
 
-    ~HealthSystem() {  }
+    ~HealthSystem() override = default;
 };
