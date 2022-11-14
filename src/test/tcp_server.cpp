@@ -26,7 +26,7 @@ class tcp_server {
 
         ~tcp_server()
         {
-            std::cout << "Shut down the server" << std::endl;
+            std::cout << "[-] Shut down the server" << std::endl;
         }
 
         void acceptClients(void)
@@ -34,7 +34,7 @@ class tcp_server {
             _acceptor.async_accept(
                 [this] (std::error_code ec, boost::asio::ip::tcp::socket&& new_socket) {
                 if (ec) {
-                    std::cout << "Failed to accept" << std::endl;
+                    std::cerr << "[-] Error: failed to accept connection" << std::endl;
                     return;
                 }
                 std::cout << "[+] New client accepted" << std::endl;
@@ -53,11 +53,11 @@ class tcp_server {
                 boost::asio::read(*(pair.second.get()) , boost::asio::buffer(_lobby_buf));
                 if (_lobby_buf[0].type == LobbyType) {
                     for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
+                        std::cout << "[ ] UUID of Lobby: " << _lobby_buf[0].lobbies[i].lobby_uuid << std::endl;
                     }
                 }
             }
-            std::cout << "Read ended" << std::endl;
+            std::cout << "[~] Read ended" << std::endl;
         }
 
         void asyncRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
@@ -88,24 +88,24 @@ class tcp_server {
                 std::size_t j = findIndexFromSocket(socket);
                 if (j != -1) {
                     _sockets.erase(_sockets.begin() + j);
-                    std::cout << "socket deleted" << std::endl;
+                    std::cout << "[-] Socket deleted" << std::endl;
                 }
                 if (_sockets.size() == 0) {
                     std::cout << "[~] Vector sockets empty" << std::endl;
                 }
             } else {
-                std::cout << "data received from client" << std::endl;
+                std::cout << "[+] Data received from client" << std::endl;
                 if (_lobby_buf[0].type == LobbyType) {
                     std::size_t j = findIndexFromSocket(socket);
                     if (j != -1) {
                         _sockets[j].first = _lobby_buf[0].lobbies[0].player_uuid;
                     }
                     for (int i = 0; _lobby_buf[0].lobbies[i].size != 0; i++) {
-                        std::cout << "Lobby of uuid: " << _lobby_buf[0].lobbies[i].lobby_uuid
+                        std::cout << "[~] UUID of Lobby: " << _lobby_buf[0].lobbies[i].lobby_uuid
                         << "from user " << _lobby_buf[0].lobbies[i].player_uuid << std::endl;
                     }
                 }
-                std::cout << "List of players uuid paired with socket: " << std::endl;
+                std::cout << "[ ] List of players uuid paired with socket: " << std::endl;
                 std::size_t socket_index = 0;
                 for (auto pair : _sockets) {
                     std::cout << socket_index << ": " << pair.first << std::endl;

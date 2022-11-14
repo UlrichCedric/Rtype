@@ -28,7 +28,6 @@ class DrawSystem: public ASystem {
 
         for (auto e: list) {
             std::srand(std::time(nullptr));
-            // std::cout << "running DrawSystem for element with id " << element->getId() << std::endl;
             if (e == nullptr) {
                 continue;
             }
