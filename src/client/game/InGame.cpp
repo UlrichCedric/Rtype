@@ -129,9 +129,9 @@ void InGame::handleKeyReleased(sf::Event &event, Client &client)
             _score_text.SetText("Score " + std::to_string(_score));
             _score_text.setPos(10, 10);
             _score_text.setFontSize(40);
-        case sf::Keyboard::Space:
-            client.sendData(SPACE);
-            break;
+        // case sf::Keyboard::Space:
+        //     client.sendData(SPACE);
+        //     break;
         default: break;
     }
 }

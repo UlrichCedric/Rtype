@@ -66,7 +66,6 @@ class DrawSystem: public ASystem {
                 if (e->getId() < 100 && pos->getXPos() > 1300.0) {
                     auto tmp = std::remove(list.begin(), list.end(), e);
                     list.erase(tmp, list.end());
-                    std::cout << "bullet destroyed" << std::endl;
                 }
             } catch (Error &err) {
                 std::cerr << "Error: " << err.what() << std::endl;

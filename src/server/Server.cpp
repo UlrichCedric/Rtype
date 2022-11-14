@@ -58,11 +58,6 @@ void Server::handleTimer(void) {
         for (int i = 0; i < _sprites.size(); ++i) {
             if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
                 _sprites[i].health = 0;
-                // _sprites[i].health -= _sprites[i].health <= 0 ? 0 : 10;
-                // if (_sprites[i].health < 0) {
-                //     _sprites[i].health = 0;
-                // }
-                // add death screen or quit the game
             }
         }
         sendSprites(lobby_uuid);
@@ -819,7 +814,6 @@ void Server::initEcs(boost::uuids::uuid lobby_uuid)
 
         buffer[i] = endArray;
         Data data = { InitSpriteDataType, {  }, buffer, {  } };
-        std::cout << "intiSpriteData size " << buffer.size() << std::endl;
         _send_buf = { data };
     } catch (std::exception &e) {
         std::cerr << "[-] Error: " << e.what() << std::endl;

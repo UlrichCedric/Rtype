@@ -65,6 +65,7 @@ void Client::handleInitSpriteData(void)
     InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
 
     for (size_t i = 0; _recv_buf[0].initSpriteDatas[i].id != 0; i++) {
+        std::cout << "initSpriteData" << _recv_buf[0].initSpriteDatas[i].id << " : " << _recv_buf[0].initSpriteDatas[i].path << std::endl;
         _ennemies.push_back(std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
             Game::Config::ExecutablePath + _recv_buf[0].initSpriteDatas[i].path,
