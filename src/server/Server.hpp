@@ -127,6 +127,7 @@ class Server {
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
     void initEcs(boost::uuids::uuid);
+    int getBulletNumber(boost::uuids::uuid);
 
     /**
      * @brief Initialize new wave's sprites

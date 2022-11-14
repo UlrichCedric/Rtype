@@ -55,6 +55,11 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client
     }
     _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
     _player.setHp(client.getHp(), { client.getPlayerPos().first, client.getPlayerPos().second });
+    if (_player._health.getHealth() == 0) {
+        client.setCanReceiveData(false);
+        window.close();
+        return;
+    }
     handleOthers(client);
     handleEvents(window, client);
     window.clear();

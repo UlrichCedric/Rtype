@@ -22,7 +22,7 @@ class HitboxSystem: public ASystem {
         Hitbox h = Hitbox(playerSize, playerPos);
 
         for (auto e: list) {
-            if (!e->has(HITBOX)) {
+            if (!e->has(HITBOX) || e->getId() < 100) {
                 continue;
             }
             auto h2 = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));

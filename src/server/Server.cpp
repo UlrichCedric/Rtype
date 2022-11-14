@@ -57,8 +57,11 @@ void Server::handleTimer(void) {
 
         for (int i = 0; i < _sprites.size(); ++i) {
             if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
-                std::cout << "Hit: " << _sprites[i].id << std::endl;
-                _sprites[i].health -= 10;
+                _sprites[i].health = 0;
+                // _sprites[i].health -= _sprites[i].health <= 0 ? 0 : 10;
+                // if (_sprites[i].health < 0) {
+                //     _sprites[i].health = 0;
+                // }
                 // add death screen or quit the game
             }
         }
@@ -163,7 +166,29 @@ Player Server::getPlayerFromPlayerUuid(boost::uuids::uuid playerUuid)
     throw Error("Couldn't find player with UUID");
 }
 
+/**
+ * @brief Returns the number of bullet on the lobby
+ *
+ * @param lobby_uuid lobby to get the bullet number from
+ * @return int number of bullets
+ */
+int Server::getBulletNumber(boost::uuids::uuid lobby_uuid) {
+    int i = 0;
+
+    for (auto entity: _entities[lobby_uuid]) {
+        i += entity->getId() < 100 ? 1 : 0;
+    }
+    return i;
+}
+
+/**
+ * @brief Creates a new bullet
+ *
+ * @param position position of the player (starting posiiton of the bullet)
+ * @param playerUuid player uuid
+ */
 void Server::createBullet(std::pair<float, float> position, boost::uuids::uuid playerUuid) {
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
     std::shared_ptr<Entity> e;
 
     try {
@@ -174,8 +199,7 @@ void Server::createBullet(std::pair<float, float> position, boost::uuids::uuid p
     }
 
     Player player;
-    boost::array<InitSpriteData, 16> initArray = {  };
-    initArray[0] = getInitSpriteData(e);
+    boost::array<InitSpriteData, 16> initArray = { getInitSpriteData(e), endArray };
     boost::array<Data, 1> send_buf = { InitSpriteDataType, {  }, initArray, {  } };
 
     try {
@@ -338,6 +362,9 @@ void Server::sendSprites(boost::uuids::uuid lobby_uuid)
         for (i; array_buf[i].id != 0; ++i);     // get the last empty array index
         for (auto e: _entities[lobby_uuid]) {               // add it the ennemies
             array_buf[i++] = getSpriteData(e);
+            if (i == 15) {  // do not go further than 16 elements
+                break;
+            }
         }
 
         Data data = { SpriteDataType, array_buf, {}, {} };
@@ -398,7 +425,6 @@ void Server::handleSend(
 
     std::string type = "undefined";
     if (send_buf[0].type == InitSpriteDataType) {
-        std::cout << "bloub" << std::endl;
         type = "InitSpriteData";
     } else if (send_buf[0].type == SpriteDataType) {
         type = "SpriteData";
@@ -786,6 +812,9 @@ void Server::initEcs(boost::uuids::uuid lobby_uuid)
             // +100 to differenciate ennemies (id > 100) from other players (id < 100)
             entity->setId(entity->getId() + 100);
             buffer[i++] = getInitSpriteData(entity);
+            if (i == 15) { // do not go further
+                break;
+            }
         }
 
         buffer[i] = endArray;

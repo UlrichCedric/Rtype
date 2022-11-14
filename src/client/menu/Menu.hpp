@@ -30,6 +30,7 @@ namespace Menu {
         SETTINGS,
         GAME,
         CLOSE,
+        END
     };
 
     class Menu {
