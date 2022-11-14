@@ -56,9 +56,9 @@ void Server::handleTimer(void) {
         _hitboxSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
 
         for (int i = 0; i < _sprites.size(); ++i) {
-            if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
-                _sprites[i].health = 0;
-            }
+            // if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
+            //     _sprites[i].health = 0;
+            // }
         }
         sendSprites(lobby_uuid);
     }
@@ -581,6 +581,17 @@ void Server::handleRead(std::shared_ptr<boost::asio::ip::tcp::socket> socket,
     } else if (!error) {
         int j = findIndexFromSocket(socket);
         Lobby lobby = _lobby_buf[0];
+        for (int i = 0; lobby.name[i] && i < 64; i++) {
+            if (lobby.name[i] < 32 || lobby.name[i] > 126) {
+                std::cerr << "Invalid data received -> stop read this client" << std::endl;
+                if (j != -1) {
+                    deleteCorrespondingPlayer(_sockets[j].first);
+                    _sockets.erase(_sockets.begin() + j);
+                    std::cout << "[-] socket deleted" << std::endl;
+                }
+                return;
+            }
+        }
         if (j != -1 && _sockets[j].first == _empty_uuid) {
             _sockets[j].first = lobby.player_uuid;
             // std::cout << "socket linked with player uuid " << lobby.player_uuid << std::endl;
