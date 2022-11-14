@@ -54,6 +54,7 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client
         client.sendData(_key_pressed);
     }
     _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+    _player.setHp(client.getHp(), { client.getPlayerPos().first, client.getPlayerPos().second });
     handleOthers(client);
     handleEvents(window, client);
     window.clear();
@@ -100,7 +101,7 @@ void InGame::handleKeyPressed(sf::Event &event)
     }
 }
 
-void InGame::handleKeyReleased(sf::Event &event)
+void InGame::handleKeyReleased(sf::Event &event, Client &client)
 {
     switch (event.key.code) {
         // case sf::Keyboard::Escape:
@@ -123,9 +124,9 @@ void InGame::handleKeyReleased(sf::Event &event)
             _score_text.SetText("Score " + std::to_string(_score));
             _score_text.setPos(10, 10);
             _score_text.setFontSize(40);
-        // case sf::Keyboard::Space:
-        //     _player.bullet_reset();
-        //     break;
+        case sf::Keyboard::Space:
+            client.sendData(SPACE);
+            break;
         default: break;
     }
 }
@@ -133,13 +134,14 @@ void InGame::handleKeyReleased(sf::Event &event)
 void InGame::handleEvents(sf::RenderWindow &window, Client &client)
 {
     sf::Event event;
+
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::KeyPressed:
                 handleKeyPressed(event);
                 break;
             case sf::Event::KeyReleased:
-                handleKeyReleased(event);
+                handleKeyReleased(event, client);
                 break;
             case sf::Event::Closed:
                 client.setCanReceiveData(false);

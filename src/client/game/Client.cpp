@@ -88,6 +88,7 @@ void Client::handleSpriteData(void)
         if (i == 0) {
             _player_pos.first = _recv_buf[0].spriteDatas[0].coords.first;
             _player_pos.second = _recv_buf[0].spriteDatas[0].coords.second;
+            _health = _recv_buf[0].spriteDatas[0].health;
             continue;
         }
         // If id > 100 then it's an ennemy, else it's another player

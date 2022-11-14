@@ -11,13 +11,34 @@ class HitboxSystem: public ASystem {
 
     HitboxSystem(void) = default;
 
+    bool isPlayerHit(
+        std::pair<float, float> playerPos,
+        std::pair<float, float> playerSize,
+        std::vector<std::shared_ptr<Entity>> &list
+    ) {
+        if (list.empty()) {
+            return false;
+        }
+        Hitbox h = Hitbox(playerSize, playerPos);
+
+        for (auto e: list) {
+            if (!e->has(HITBOX)) {
+                continue;
+            }
+            auto h2 = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));
+            if (h.isCollidingWith(h2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void run(std::vector<std::shared_ptr<Entity>> &list, std::string) override {
         if (list.empty()) {
             return;
         }
 
         for (auto &e : list) {
-
             if (!e->has(HITBOX) || !e->has(POSITION) || !e->has(DRAWABLE)) {
                 continue;
             }

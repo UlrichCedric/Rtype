@@ -110,6 +110,9 @@ class Server {
     std::vector<std::size_t> getSpritesIdFromPlayersUuid(std::vector<boost::uuids::uuid> players_uuid);
     void customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite);
     bool isPlayerInLobby(boost::uuids::uuid, boost::uuids::uuid);
+    std::pair<float, float> getPlayerPositionByUuid(boost::uuids::uuid);
+    Player getPlayerFromPlayerUuid(boost::uuids::uuid playerUuid);
+
 
     // Data, buffer, timer
 
@@ -119,6 +122,7 @@ class Server {
 
     // ECS
 
+    void createBullet(std::pair<float, float> position, boost::uuids::uuid playerUuid);
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
@@ -142,7 +146,6 @@ class Server {
 
     // List of entities
     std::size_t _currentWave;
-    // std::vector<std::shared_ptr<Entity>> _entities; //TODO tableau std::vector<std::pair<boost::uuids::uuid, std::vector<std::shared_ptr<Entity>>>>
     std::map<boost::uuids::uuid, std::vector<std::shared_ptr<Entity>>> _entities;
     std::unordered_map<std::size_t, std::pair<std::size_t, std::string>> _waveConf;
 };

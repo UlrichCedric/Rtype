@@ -54,6 +54,14 @@ void Server::handleTimer(void) {
         _drawinSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
         _healthSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
         _hitboxSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
+
+        for (int i = 0; i < _sprites.size(); ++i) {
+            if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
+                std::cout << "Hit: " << _sprites[i].id << std::endl;
+                _sprites[i].health -= 10;
+                // add death screen or quit the game
+            }
+        }
         sendSprites(lobby_uuid);
     }
     // Wait for next timeout.
@@ -130,6 +138,68 @@ void Server::findPlayerSprite(Action action)
     }
 }
 
+std::pair<float, float> Server::getPlayerPositionByUuid(boost::uuids::uuid player_uuid) {
+    auto ids = getSpritesIdFromPlayersUuid({ player_uuid });
+
+    if (ids.size() == 0) {
+        throw Error("Error: couldn't find UUID for player");
+    }
+
+    for (int i = 0; i < _sprites.size(); ++i) {
+        if (_sprites[i].id == ids[0]) {
+            return _sprites[i].coords;
+        }
+    }
+    throw Error("Couldn't find position for player");
+}
+
+Player Server::getPlayerFromPlayerUuid(boost::uuids::uuid playerUuid)
+{
+    for (auto player: _players) {
+        if (player.uuid == playerUuid) {
+            return player;
+        }
+    }
+    throw Error("Couldn't find player with UUID");
+}
+
+void Server::createBullet(std::pair<float, float> position, boost::uuids::uuid playerUuid) {
+    std::shared_ptr<Entity> e;
+
+    try {
+        e = createEntity("Bullet", "assets/sprites/bullet.png", { 15, 0 }, position, {17, 17}, {1, 1});
+    } catch (Error &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
+    }
+
+    Player player;
+    boost::array<InitSpriteData, 16> initArray = {  };
+    initArray[0] = getInitSpriteData(e);
+    boost::array<Data, 1> send_buf = { InitSpriteDataType, {  }, initArray, {  } };
+
+    try {
+        _entities[getLobbyUuidFromPlayerUuid(playerUuid)].push_back(e);
+        player = getPlayerFromPlayerUuid(playerUuid);
+    } catch (std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
+    }
+
+    _udp_socket.async_send_to(
+        boost::asio::buffer(send_buf),
+        player.endpoint,
+        boost::bind(
+            &Server::handleSend,
+            this,
+            playerUuid,
+            send_buf,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
+}
+
 /**
  * @brief Analyses the player input
  *
@@ -139,7 +209,12 @@ void Server::handleInput(Action action)
 {
     if (action.input != NONE) {
         if (action.input == SPACE) {
-            /* shoot projectile */
+            try {
+                std::pair<float, float> pos = getPlayerPositionByUuid(action.uuid);
+                createBullet(pos, action.uuid);
+            } catch (Error &e) {
+                std::cerr << e.what() << std::endl;
+            }
         } else {
             findPlayerSprite(action);
         }
@@ -297,7 +372,7 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t)
             std::cout << "[+] New player !" << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
-            SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
+            SpriteData player = { new_player_info.idSprite, { 100.0, 400.0 }, 100 };
             _sprites.push_back(player);
             sendInitSpriteDatasToNewPlayer(new_player_info);
         }
@@ -323,6 +398,7 @@ void Server::handleSend(
 
     std::string type = "undefined";
     if (send_buf[0].type == InitSpriteDataType) {
+        std::cout << "bloub" << std::endl;
         type = "InitSpriteData";
     } else if (send_buf[0].type == SpriteDataType) {
         type = "SpriteData";

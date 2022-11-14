@@ -14,8 +14,22 @@ class Hitbox: public AComponent {
 
     Hitbox(
         float sizeX,
-        float size
-    );
+        float sizeY,
+        float posX,
+        float posY
+    ):
+        _sizeX(sizeX),
+        _sizeY(sizeY),
+        _posX(posX),
+        _posY(posY)
+    {  };
+
+    Hitbox(std::pair<float, float> size, std::pair<float, float> pos):
+        _sizeX(size.first),
+        _sizeY(size.second),
+        _posX(pos.first),
+        _posY(pos.second)
+    {  };
 
     Hitbox(Hitbox &h):
         _sizeX(h.getXSize()),

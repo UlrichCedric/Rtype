@@ -46,8 +46,9 @@ class Client {
         std::vector<Lobby> getLobbies(void);
         void asyncGetLobbies(void);
         void handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred);
+        int getHp(void) { return _health; };
 
-        ~Client() = default;
+        ~Client(void) = default;
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
@@ -72,4 +73,5 @@ class Client {
         std::pair<float, float> _player_pos;    // client player position
         std::vector<std::pair<float, float>> _others_pos;   // other players' position
         bool _canReceiveData;
+        int _health;
 };

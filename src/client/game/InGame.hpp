@@ -36,7 +36,7 @@ class InGame {
         //Events / handle player input
         void handleEvents(sf::RenderWindow &window, Client &client);
         void handleKeyPressed(sf::Event &event);
-        void handleKeyReleased(sf::Event &event);
+        void handleKeyReleased(sf::Event &event, Client &client);
         void initInGame(void);
         void displayInGame(sf::RenderWindow &window, State &state, Client &);
 

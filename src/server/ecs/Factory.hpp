@@ -104,7 +104,6 @@ class Factory {
     ~Factory() = default;
 
     private:
-
     std::size_t _last_id = 1;
     std::unordered_map<std::string, std::shared_ptr<Entity>> _customs;
 };
