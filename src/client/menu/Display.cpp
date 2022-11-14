@@ -94,6 +94,8 @@ void Menu::Menu::displayPause(sf::RenderWindow &window)
     window.draw(_settings_pause_sounds_volume_progression_bar);
     //fps
     window.draw(_settings_pause_fps._item);
+    //resume
     window.draw(_settings_pause_resume._item);
+    //quit
     window.draw(_settings_pause_quit._item);
 }
