@@ -7,7 +7,7 @@
 
 class ASystem : public ISystem {
     public:
-    ASystem(void) {  };
-    virtual void run(std::vector<std::shared_ptr<Entity>> &) = 0;
-    ~ASystem(void) {  };
+    ASystem(void) = default;
+    virtual void run(std::vector<std::shared_ptr<Entity>> &, std::string) = 0;
+    ~ASystem(void) = default;
 };

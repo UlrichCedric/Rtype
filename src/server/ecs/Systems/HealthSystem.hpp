@@ -9,7 +9,7 @@ class HealthSystem: public ASystem {
     public:
     HealthSystem(void) {  };
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) override {
+    void run(std::vector<std::shared_ptr<Entity>> &list, std::string) override {
         for (auto element : list) {
             if (element.get()->has(HEALTH)) {
                 auto hp = std::dynamic_pointer_cast<Health>(element.get()->getComponent(HEALTH));

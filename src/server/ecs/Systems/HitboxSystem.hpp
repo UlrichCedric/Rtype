@@ -11,7 +11,7 @@ class HitboxSystem: public ASystem {
 
     HitboxSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) override {
+    void run(std::vector<std::shared_ptr<Entity>> &list, std::string) override {
         if (list.empty()) {
             return;
         }

@@ -41,7 +41,6 @@ class Server {
             _hitboxSystem = std::make_unique<HitboxSystem>();
 
             parseWaves();
-            initEcs();
         } catch (Error &e) {
             std::cout << e.what() << std::endl;
         }
@@ -53,7 +52,7 @@ class Server {
 
     private:
     void parseWaves(void);
-    void sendSprites(void);
+    void sendSprites(boost::uuids::uuid);
 
     void handleTimer(void);
     void handleInput(Action action);
@@ -67,6 +66,7 @@ class Server {
     boost::asio::ip::udp::socket _udp_socket;
     boost::asio::ip::udp::endpoint _remote_endpoint;
     std::vector<Player> _players;
+    bool _isUDPLaunched = false;
 
     void startReceive(void);
     void handleReceive(const boost::system::error_code &, std::size_t);
@@ -79,7 +79,7 @@ class Server {
     void sendInitSpriteDatasToNewPlayer(Player &p);
 
     // this one will store the initSpriteDatas
-    boost::array<Data, 1> send_buf = {  };
+    boost::array<Data, 1> _send_buf = {  };
 
     // TCP
 
@@ -109,6 +109,7 @@ class Server {
     boost::array<SpriteData, 16> getLobbySpriteData(boost::uuids::uuid player_uuid);
     std::vector<std::size_t> getSpritesIdFromPlayersUuid(std::vector<boost::uuids::uuid> players_uuid);
     void customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite);
+    bool isPlayerInLobby(boost::uuids::uuid, boost::uuids::uuid);
 
     // Data, buffer, timer
 
@@ -121,7 +122,7 @@ class Server {
     std::shared_ptr<Entity> createEntity(std::string, std::string, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>, std::pair<float, float>);
     InitSpriteData getInitSpriteData(std::shared_ptr<Entity> &e);
     SpriteData getSpriteData(std::shared_ptr<Entity> &e);
-    void initEcs(void);
+    void initEcs(boost::uuids::uuid);
 
     /**
      * @brief Initialize new wave's sprites
@@ -141,6 +142,7 @@ class Server {
 
     // List of entities
     std::size_t _currentWave;
-    std::vector<std::shared_ptr<Entity>> _entities;
+    // std::vector<std::shared_ptr<Entity>> _entities; //TODO tableau std::vector<std::pair<boost::uuids::uuid, std::vector<std::shared_ptr<Entity>>>>
+    std::map<boost::uuids::uuid, std::vector<std::shared_ptr<Entity>>> _entities;
     std::unordered_map<std::size_t, std::pair<std::size_t, std::string>> _waveConf;
 };

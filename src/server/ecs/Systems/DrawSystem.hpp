@@ -5,6 +5,7 @@
 #include "../Components/Velocity.hpp"
 #include "../constants.hpp"
 
+#include <map>
 #include <vector>
 #include <memory>
 #include <ctime>
@@ -13,15 +14,21 @@ class DrawSystem: public ASystem {
     public:
     DrawSystem(void) = default;
 
-    void run(std::vector<std::shared_ptr<Entity>> &list) override {
+    void addLobby(std::string uuid) { xVelocityMultiplier[uuid] = 1.0; }
+
+    void run(std::vector<std::shared_ptr<Entity>> &list, std::string uuid) override {
         if (list.empty()) {
             return;
         }
 
-        for (auto element: list) {
+        if (xVelocityMultiplier[uuid] == 0.0) {
+            std::cerr << "Error: wrong lobby uuid" << std::endl;
+            return;
+        }
+
+        for (auto e: list) {
             std::srand(std::time(nullptr));
             // std::cout << "running DrawSystem for element with id " << element->getId() << std::endl;
-            auto e = element.get();
             if (e == nullptr) {
                 continue;
             }
@@ -35,6 +42,7 @@ class DrawSystem: public ASystem {
                 std::pair<float, float> p = pos->getPos();
                 auto vel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
                 std::pair<float, float> v = vel->getVelocity();
+                float mult = xVelocityMultiplier[uuid] < 0 ? 1.0F : xVelocityMultiplier[uuid];
 
                 // update position
                 if (betw(-50.0, p.first + v.first, 1115.0) ||
@@ -52,16 +60,21 @@ class DrawSystem: public ASystem {
                     pos->setYPos(static_cast<float>(std::rand() % 700));
                     pos->setXPos(1300.0);
                 }
-                vel->setXVelocity(v.first * xVelocityMultiplier);
+                vel->setXVelocity(v.first * mult);
             } catch (Error &err) {
                 std::cerr << "Error: " << err.what() << std::endl;
             }
         }
-        xVelocityMultiplier = xVelocityMultiplier > 1.00055 ? 1.0 : xVelocityMultiplier + 0.0000001;
+
+        if (xVelocityMultiplier[uuid] > 1.00055 || xVelocityMultiplier[uuid] < 0) {
+            xVelocityMultiplier[uuid] = -1.0;
+        } else {
+            xVelocityMultiplier[uuid] += 0.0000001;
+        }
     }
 
     ~DrawSystem(void) override = default;
 
     private:
-    float xVelocityMultiplier = 1.0;
+    std::map<std::string, float> xVelocityMultiplier = {  };
 };
