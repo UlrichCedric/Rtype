@@ -6,6 +6,10 @@
 */
 
 #include "Server.hpp"
+#include "ecs/Components/Velocity.hpp"
+
+//TODO to quick when multiplayer
+//TODO add hitbox on players
 
 void Server::parseWaves(void) {
     std::ifstream file("enemies.conf");
@@ -42,7 +46,22 @@ void Server::startReceive(void)
 /// @brief Function called at the start of UDP sending data informations to clients. Recursively call itself every x milliseconds.
 /// @param  No parameter
 void Server::handleTimer(void) {
-    sendSprites();
+    boost::uuids::uuid lobby_uuid;
+
+    for (auto pair: _players_in_lobbies) {
+        lobby_uuid = pair.first;
+
+        _drawinSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
+        _healthSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
+        _hitboxSystem->run(_entities[lobby_uuid], boost::uuids::to_string(lobby_uuid));
+
+        for (int i = 0; i < _sprites.size(); ++i) {
+            if (_hitboxSystem->isPlayerHit(_sprites[i].coords, { 30.0, 20.0 }, _entities[lobby_uuid])) {
+                _sprites[i].health = 0;
+            }
+        }
+        sendSprites(lobby_uuid);
+    }
     // Wait for next timeout.
     _timer.expires_from_now(boost::posix_time::milliseconds(10));
     _timer.async_wait(boost::bind(&Server::handleTimer, this));
@@ -117,17 +136,116 @@ void Server::findPlayerSprite(Action action)
     }
 }
 
+std::pair<float, float> Server::getPlayerPositionByUuid(boost::uuids::uuid player_uuid) {
+    auto ids = getSpritesIdFromPlayersUuid({ player_uuid });
+
+    if (ids.size() == 0) {
+        throw Error("Error: couldn't find UUID for player");
+    }
+
+    for (int i = 0; i < _sprites.size(); ++i) {
+        if (_sprites[i].id == ids[0]) {
+            return _sprites[i].coords;
+        }
+    }
+    throw Error("Couldn't find position for player");
+}
+
+Player Server::getPlayerFromPlayerUuid(boost::uuids::uuid playerUuid)
+{
+    for (auto player: _players) {
+        if (player.uuid == playerUuid) {
+            return player;
+        }
+    }
+    throw Error("Couldn't find player with UUID");
+}
+
+/**
+ * @brief Returns the number of bullet on the lobby
+ *
+ * @param lobby_uuid lobby to get the bullet number from
+ * @return int number of bullets
+ */
+int Server::getBulletNumber(boost::uuids::uuid lobby_uuid) {
+    int i = 0;
+
+    for (auto entity: _entities[lobby_uuid]) {
+        i += entity->getId() < 100 ? 1 : 0;
+    }
+    return i;
+}
+
+/**
+ * @brief Creates a new bullet
+ *
+ * @param position position of the player (starting posiiton of the bullet)
+ * @param playerUuid player uuid
+ */
+void Server::createBullet(std::pair<float, float> position, boost::uuids::uuid playerUuid) {
+    InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
+    std::shared_ptr<Entity> e;
+
+    try {
+        e = createEntity("Bullet", "assets/sprites/bullet.png", { 15, 0 }, position, {17, 17}, {1, 1});
+    } catch (Error &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
+    }
+
+    Player player;
+    boost::array<InitSpriteData, 16> initArray = { getInitSpriteData(e), endArray };
+    boost::array<Data, 1> send_buf = { InitSpriteDataType, {  }, initArray, {  } };
+
+    try {
+        _entities[getLobbyUuidFromPlayerUuid(playerUuid)].push_back(e);
+        player = getPlayerFromPlayerUuid(playerUuid);
+    } catch (std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
+    }
+
+    _udp_socket.async_send_to(
+        boost::asio::buffer(send_buf),
+        player.endpoint,
+        boost::bind(
+            &Server::handleSend,
+            this,
+            playerUuid,
+            send_buf,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
+}
+
+/**
+ * @brief Analyses the player input
+ *
+ * @param action { input key the player sent, UUID of the player }
+ */
 void Server::handleInput(Action action)
 {
     if (action.input != NONE) {
         if (action.input == SPACE) {
-            /* shoot projectile */
+            try {
+                std::pair<float, float> pos = getPlayerPositionByUuid(action.uuid);
+                createBullet(pos, action.uuid);
+            } catch (Error &e) {
+                std::cerr << e.what() << std::endl;
+            }
         } else {
             findPlayerSprite(action);
         }
     }
 }
 
+/**
+ * @brief Inverts the main client player with the first object of send_buf
+ *
+ * @param send_buf buffer to be sent
+ * @param idSprite the ID of the sprite you want to be first
+ */
 void Server::customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t idSprite)
 {
     int j = -1;
@@ -147,6 +265,12 @@ void Server::customizedSpriteData(boost::array<Data, 1> &send_buf, std::size_t i
     }
 }
 
+/**
+ * @brief get a vector of sprite id for the other players in the lobby
+ *
+ * @param players_uuid the players in the lobby
+ * @return std::vector<std::size_t> a vector containing every player's sprite id
+ */
 std::vector<std::size_t> Server::getSpritesIdFromPlayersUuid(std::vector<boost::uuids::uuid> players_uuid)
 {
     std::vector<std::size_t> idSprites;
@@ -161,10 +285,17 @@ std::vector<std::size_t> Server::getSpritesIdFromPlayersUuid(std::vector<boost::
     return idSprites;
 }
 
+/**
+ * @brief get spriteData with only the players of the given player lobby
+ *
+ * @param player_uuid player of the lobby
+ * @return boost::array<SpriteData, 16> spriteData from the other players in the lobby
+ */
 boost::array<SpriteData, 16> Server::getLobbySpriteData(boost::uuids::uuid player_uuid)
 {
     boost::uuids::uuid lobby_uuid = getLobbyUuidFromPlayerUuid(player_uuid);
     std::vector<boost::uuids::uuid> lobby_players_uuid;
+
     for (auto players_in_lobby : _players_in_lobbies) {
         if (players_in_lobby.first == lobby_uuid) {
             lobby_players_uuid = players_in_lobby.second;
@@ -173,6 +304,7 @@ boost::array<SpriteData, 16> Server::getLobbySpriteData(boost::uuids::uuid playe
     std::vector<std::size_t> idSprites = getSpritesIdFromPlayersUuid(lobby_players_uuid);
     SpriteData endArray = { 0, { 0.0, 0.0 }, 0 };
     boost::array<SpriteData, 16> array_buf = { endArray };
+
     for (int i = 0, j = 0; i <= _sprites.size(); i++) {
         if (j == idSprites.size() || i == _sprites.size() || i == 15) {
             array_buf[j] = endArray;
@@ -187,21 +319,74 @@ boost::array<SpriteData, 16> Server::getLobbySpriteData(boost::uuids::uuid playe
     return array_buf;
 }
 
-void Server::sendSprites(void)
+/**
+ * @brief checks if the given player is in the given lobby
+ *
+ * @param player_uuid
+ * @param lobby_uuid
+ * @return true if the player is in the given lobby
+ * @return false if not
+ */
+bool Server::isPlayerInLobby(boost::uuids::uuid player_uuid, boost::uuids::uuid lobby_uuid) {
+    for (auto pair: _players_in_lobbies) {
+        if (pair.first != lobby_uuid) {
+            continue;
+        }
+        for (auto playerUuidInLobby: pair.second) {
+            if (playerUuidInLobby == player_uuid) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief send spriteDatas to the client
+ *
+ */
+void Server::sendSprites(boost::uuids::uuid lobby_uuid)
 {
-    for (Player player : _players) {
+    for (Player player: _players) {
+        if (!isPlayerInLobby(player.uuid, lobby_uuid)) {
+            continue;
+        }
         boost::array<SpriteData, 16> array_buf = getLobbySpriteData(player.uuid);
-        Data data = {SpriteDataType, array_buf, {}, {}};
+
+        int i = 0;
+        for (i; array_buf[i].id != 0; ++i);     // get the last empty array index
+        for (auto e: _entities[lobby_uuid]) {               // add it the ennemies
+            array_buf[i++] = getSpriteData(e);
+            if (i == 15) {  // do not go further than 16 elements
+                break;
+            }
+        }
+
+        Data data = { SpriteDataType, array_buf, {}, {} };
         boost::array<Data, 1> send_buf = {data};
+
         customizedSpriteData(send_buf, player.idSprite);
+
         _udp_socket.async_send_to(
-            boost::asio::buffer(send_buf), player.endpoint,
-            boost::bind(&Server::handleSend, this, player.uuid, send_buf,
+            boost::asio::buffer(send_buf),
+            player.endpoint,
+            boost::bind(
+                &Server::handleSend,
+                this,
+                player.uuid,
+                send_buf,
                 boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
+                boost::asio::placeholders::bytes_transferred
+            )
+        );
     }
 }
 
+/**
+ * @brief UDP: receives new players and player input
+ *
+ * @param error if any
+ */
 void Server::handleReceive(const boost::system::error_code &error, std::size_t)
 {
     if (!error) {
@@ -209,14 +394,19 @@ void Server::handleReceive(const boost::system::error_code &error, std::size_t)
             std::cout << "[+] New player !" << std::endl;
             Player new_player_info = {_remote_endpoint, _recv_buf[0].uuid, setNewSpriteId(0)};
             _players.push_back(new_player_info);
-            SpriteData player = { new_player_info.idSprite, { 800.0, 400.0 }, 100 };
+            SpriteData player = { new_player_info.idSprite, { 100.0, 400.0 }, 100 };
             _sprites.push_back(player);
+            sendInitSpriteDatasToNewPlayer(new_player_info);
         }
         handleInput(_recv_buf[0]);
     }
     startReceive();
 }
 
+/**
+ * @brief Verify what you're sending to the client once sent
+ *
+ */
 void Server::handleSend(
     boost::uuids::uuid uuidReceiver,
     const boost::array<Data, 1> send_buf,
@@ -239,6 +429,10 @@ void Server::handleSend(
 
 // TCP
 
+/**
+ * @brief TCP: Accept new clients
+ *
+ */
 void Server::acceptClients(void)
 {
     _acceptor.async_accept(
@@ -275,6 +469,12 @@ std::size_t Server::findIndexFromSocket(std::shared_ptr<boost::asio::ip::tcp::so
     return j;
 }
 
+/**
+ * @brief Get Lobby object from lobby uuid
+ *
+ * @param uuid of the lobby you're looking for
+ * @return Corresponding lobby object
+ */
 Lobby Server::getLobbyFromUUID(boost::uuids::uuid uuid)
 {
     Lobby lobby = {{}, false, false, false, "", 0, 0, uuid, CLOSE};
@@ -290,6 +490,12 @@ Lobby Server::getLobbyFromUUID(boost::uuids::uuid uuid)
     return lobby;
 }
 
+/**
+ * @brief gets Lobby UUID from a UUID of a player in this lobby
+ *
+ * @param player_uuid the player UUID
+ * @return boost::uuids::uuid the UUID of the lobby the player is in
+ */
 boost::uuids::uuid Server::getLobbyUuidFromPlayerUuid(boost::uuids::uuid player_uuid)
 {
     for (auto players_in_lobby: _players_in_lobbies) {
@@ -421,6 +627,8 @@ void Server::sendLobbies(std::shared_ptr<boost::asio::ip::tcp::socket> socket)
 void Server::createLobby(Lobby &lobby)
 {
     _lobbies.push_back(lobby);
+    initEcs(lobby.lobby_uuid);
+    _drawinSystem->addLobby(boost::uuids::to_string(lobby.lobby_uuid));
 }
 
 void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp::socket> joiner_socket)
@@ -447,14 +655,16 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
             }
         }
     }
+
     boost::array<int, 1> response = {lobbyExist && playerExist && lobbyOpen && playerNotInOtherLobby && lobbyFound};
-    if (!lobbyFound) std::cout << "Aucun lobby ne possède cette uuid" << std::endl;
-    else if (!lobbyExist) std::cout << "Tentative de connexion à un lobby inexistant" << std::endl;
-    else if (!playerExist) std::cout << "Joueur inexistant (" << joined_lobby.player_uuid << ") essaie de rejoindre un lobby" << std::endl;
-    else if (!lobbyOpen) std::cout << "Tentative de connexion à un lobby injoignable" << std::endl;
-    else if (!playerNotInOtherLobby) std::cout << "Le joueur est déjà connecté à un autre lobby" << std::endl;
+    if (!lobbyFound) std::cout << "[-] Aucun lobby ne possède cette uuid" << std::endl;
+    else if (!lobbyExist) std::cout << "[-] Tentative de connexion à un lobby inexistant" << std::endl;
+    else if (!playerExist) std::cout << "[-] Joueur inexistant (" << joined_lobby.player_uuid << ") essaie de rejoindre un lobby" << std::endl;
+    else if (!lobbyOpen) std::cout << "[-] Tentative de connexion à un lobby injoignable" << std::endl;
+    else if (!playerNotInOtherLobby) std::cout << "[-] Le joueur est déjà connecté à un autre lobby" << std::endl;
     boost::system::error_code error;
     boost::asio::write(*(joiner_socket.get()), boost::asio::buffer(response), error);
+
     if (!error) {
         if (!response[0]) {
             std::cout << "[-] Response FORBIDDEN sent" << std::endl;
@@ -463,7 +673,7 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
         std::cout << "[+] Response OK sent" << std::endl;
         for (auto &lobby : _lobbies) {
             if (lobby.lobby_uuid == joined_lobby.lobby_uuid) {
-                lobby.nb_players += 1;
+                lobby.nb_players++;
             }
         }
         bool lobbyFound = false;
@@ -481,8 +691,11 @@ void Server::joinLobby(Lobby &joined_lobby, std::shared_ptr<boost::asio::ip::tcp
             _players_in_lobbies.push_back(new_lobby);
         }
         // UDP:
-        handleTimer();
-        startReceive();
+        if (!_isUDPLaunched) {
+            handleTimer();
+            startReceive();
+            _isUDPLaunched = true;
+        }
     } else {
         std::cerr << "[-] Sent ERROR response: " << error.message() << std::endl;
     }
@@ -501,6 +714,7 @@ void Server::send(void)
     array_buf[3] = endArray;
     Data data = {LobbyType, {}, {}, array_buf};
     boost::array<Data, 1> send_buf = {data};
+
     for (auto pair : _sockets) {
         boost::asio::write(*(pair.second.get()), boost::asio::buffer(send_buf));
         std::cout << "data sent to client" << std::endl;
@@ -509,99 +723,142 @@ void Server::send(void)
     _timer.async_wait(boost::bind(&Server::send, this));
 }
 
-// ECS
-
+/**
+ * @brief Creates a new entity with the given parameters
+ *
+ * @param templ template (see src/server/ecs/entities.conf)
+ * @param path texture path
+ * @param velocity { x, y } as float
+ * @param position { x, y } as float
+ * @param scale { x, y } as float
+ * @return std::shared_ptr<Entity> the newly created entity
+ */
 std::shared_ptr<Entity> Server::createEntity(
     std::string templ,
     std::string path,
-    std::pair<float, float> velocity,
+    std::pair<float, float> velocity = { 0.0, 0.0 },
     std::pair<float, float> position = { -1.0, -1.0 },
+    std::pair<float, float> size = { -1.0, -1.0 },
     std::pair<float, float> scale = { 1.0, 1.0 }
 ) {
-    std::shared_ptr<Entity> e = _f.get()->createEntity(templ);
+    std::shared_ptr<Entity> e = _f->createEntity(templ);
 
     try {
-        auto eDraw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
-        if (eDraw != nullptr && !path.empty()) {
+        if (e->has(DRAWABLE) && !path.empty()) {
+            auto eDraw = std::dynamic_pointer_cast<Drawable>(e->getComponent(DRAWABLE));
             eDraw->setSprite(path);
+            eDraw->setSize(size);
         }
-        auto eVel = std::dynamic_pointer_cast<Velocity>(e.get()->getComponent(VELOCITY));
-        if (eVel != nullptr) {
+        if (e->has(VELOCITY) && velocity.first != 0.0 || velocity.second != 0.0) {
+            auto eVel = std::dynamic_pointer_cast<Velocity>(e->getComponent(VELOCITY));
             eVel->setXVelocity(velocity.first);
             eVel->setYVelocity(velocity.second);
         }
-        auto eScale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
-        if (eScale != nullptr) {
+        if (e->has(SCALE) && scale.first != 1.0 || scale.second != 1.0) {
+            auto eScale = std::dynamic_pointer_cast<Scale>(e->getComponent(SCALE));
             eScale->setXScale(scale.first);
             eScale->setYScale(scale.second);
         }
-        auto ePos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        if (ePos != nullptr && position.first != -1 && position.second != -1) {
+        if (e->has(POSITION) && position.first != -1.0 || position.second != -1.0) {
+            auto ePos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
             ePos->setXPos(position.first);
             ePos->setYPos(position.second);
         }
-    } catch (Error &e) {
-        std::cout << "Error: " << e.what() << std::endl;
+
+        if (e->has(HITBOX) && size.first != -1.0 || size.second != -1.0) {
+            auto eHit = std::dynamic_pointer_cast<Hitbox>(e->getComponent(HITBOX));
+            eHit->setSize(size);
+            eHit->setPos(position);
+        }
+    } catch (Error &err) {
+        std::cerr << "Error: " << err.what() << std::endl;
     }
     return e;
 }
 
-void Server::initEcs(void)
+/**
+ * @brief Initializes new player ennemy sprites
+ *
+ */
+void Server::initEcs(boost::uuids::uuid lobby_uuid)
 {
-    _f = std::make_unique<Factory>();
-    _d = std::make_unique<DrawSystem>();
-    _h = std::make_unique<HealthSystem>();
-
     InitSpriteData endArray = { 0, "", { 0.0, 0.0 }, { 0.0, 0.0 }, { 0.0, 0.0 } };
     boost::array<InitSpriteData, 16> buffer = { endArray }; // Initialize send_buf to empty array
 
     try {
-        std::shared_ptr<Entity> e1 = createEntity("Background", "../../assets/paralax/back.png", { -1.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e2 = createEntity("Background", "../../assets/paralax/planet.png", { -2.0, 0.0 }, { 10.0, 10.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e3 = createEntity("Background", "../../assets/paralax/planet.png", { -4.0, 0.0 }, { 10.0, 500.0 }, { 3.0, 4.0 });
-        std::shared_ptr<Entity> e4 = createEntity("Background", "../../assets/paralax/stars.png", { -3.0, 0.0 }, { -1.0, -1.0 }, { 5.0, 6.0 });
-        std::shared_ptr<Entity> e5 = createEntity("Background", "../../assets/paralax/stars.png", { -4.0, 0.0 }, { 0.0, 250.0 }, { 5.0, 6.0 });
+        _entities[lobby_uuid] = {  };
 
-        _entities.push_back(std::move(e1));
-        _entities.push_back(std::move(e2));
-        _entities.push_back(std::move(e3));
-        _entities.push_back(std::move(e4));
-        _entities.push_back(std::move(e5));
+        for (int i = 0; i < 11; ++i) {
+            int velY = std::rand() % 5;
+
+            _entities[lobby_uuid].push_back(createEntity(
+                "Enemy",
+                "assets/sprites/enemy2.png",
+                { -3.0, (velY % 2 == 0 ? (-1 * velY) : velY) / 10.0 },
+                { 700.0 + (i * 60), 300.0 + (i * 60) },
+                { 33.0, 33.0 },
+                { 3.0, 3.0 }
+            ));
+        }
 
         std::size_t i = 0;
 
-        for (auto entity: _entities) {
+        for (auto entity: _entities[lobby_uuid]) {
+            // +100 to differenciate ennemies (id > 100) from other players (id < 100)
+            entity->setId(entity->getId() + 100);
             buffer[i++] = getInitSpriteData(entity);
+            if (i == 15) { // do not go further
+                break;
+            }
         }
+
         buffer[i] = endArray;
-        boost::array<SpriteData, 16> empty_array;
-        Data data = {InitSpriteDataType, empty_array, buffer};
-        boost::array<Data, 1> send_buf = {data};
-        for (Player player : _players) {
-            std::cout << "async send to " << player.uuid << std::endl;
-            _udp_socket.async_send_to(
-                boost::asio::buffer(send_buf), player.endpoint,
-                boost::bind(&Server::handleSend, this, player.uuid, send_buf,
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
-        }
+        Data data = { InitSpriteDataType, {  }, buffer, {  } };
+        _send_buf = { data };
     } catch (std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "[-] Error: " << e.what() << std::endl;
     }
 }
 
-SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
-    if (!e.get()->has(DRAWABLE)) {
+void Server::sendInitSpriteDatasToNewPlayer(Player &p) {
+    //* Uncomment the following lines to display the IDs of what you're sending to the client
+    // for (int i = 0; _send_buf[0].initSpriteDatas[i].id != 0; ++i) {
+    //     std::cout << "sending id: " << _send_buf[0].initSpriteDatas[i].id << std::endl;
+    // }
+
+    _udp_socket.async_send_to(
+        boost::asio::buffer(_send_buf),
+        p.endpoint,
+        boost::bind(
+            &Server::handleSend,
+            this,
+            p.uuid,
+            _send_buf,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred
+        )
+    );
+}
+
+/**
+ * @brief Gets a spriteData object from an Entity
+ *
+ * @param e the given entity
+ * @return SpriteData the new SpriteData object
+ */
+SpriteData Server::getSpriteData(std::shared_ptr<Entity> &e) {
+    if (!e->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
     }
 
     try {
-        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+        auto health = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
+
         SpriteData s = {
-            e.get()->getId(),
-            pos.get()->getPos(),
-            health.get()->getHp()
+            e->getId(),
+            pos->getPos(),
+            health->getHp()
         };
 
         return s;
@@ -610,24 +867,31 @@ SpriteData getSpriteData(std::shared_ptr<Entity> &e) {
     }
 }
 
+/**
+ * @brief Gets a initSpriteData object from an Entity
+ *
+ * @param e the given entity
+ * @return InitSpriteData the new initSpriteData object
+ */
 InitSpriteData Server::getInitSpriteData(std::shared_ptr<Entity> &e) {
-    if (!e.get()->has(DRAWABLE)) {
+    if (!e->has(DRAWABLE)) {
         throw Error("Couldn't find sprite");
     }
 
     try {
-        auto draw = std::dynamic_pointer_cast<Drawable>(e.get()->getComponent(DRAWABLE));
-        auto pos = std::dynamic_pointer_cast<Position>(e.get()->getComponent(POSITION));
-        auto scale = std::dynamic_pointer_cast<Scale>(e.get()->getComponent(SCALE));
-        auto health = std::dynamic_pointer_cast<Health>(e.get()->getComponent(HEALTH));
+        auto draw = std::dynamic_pointer_cast<Drawable>(e->getComponent(DRAWABLE));
+        auto pos = std::dynamic_pointer_cast<Position>(e->getComponent(POSITION));
+        auto scale = std::dynamic_pointer_cast<Scale>(e->getComponent(SCALE));
+        auto health = std::dynamic_pointer_cast<Health>(e->getComponent(HEALTH));
+
         InitSpriteData s = {
-            e.get()->getId(),              // get the id of the sprite
-            draw.get()->getPath(),         // get the path of the texture
-            pos.get()->getPos(),           // get the position of the sprite
-            scale.get()->getScale(),       // get the scale of the sprite
-            draw.get()->getMaxOffset(),    // get the max coordinates of the rect
-            health.get()->getHp(),         // get the health
+            .id = e->getId(),               // get the id of the sprite
+            .coords = pos->getPos(),        // get the position of the sprite
+            .scale = scale->getScale(),     // get the scale of the sprite
+            .maxSize = draw->getSize(),     // get the max coordinates of the rect
+            .health = health->getHp(),      // get the health
         };
+        strcpy(s.path, draw->getPath().c_str());
 
         return s;
     } catch (std::exception &e) {
@@ -645,7 +909,7 @@ std::size_t Server::getEntityIdByUuid(Action action)
 {
     std::shared_ptr<Uuid> u;
 
-    for (auto entity: _entities) {
+    for (auto entity: _entities[getLobbyUuidFromPlayerUuid(action.uuid)]) {
         /*
             If this entity doesn't have any UUID, just continue to the next one
         */

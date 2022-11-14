@@ -46,7 +46,7 @@ namespace Game {
             window.draw(stars.get_sprite());
         }
     }
-        
+
     void Paralax::update(paralax which_paralax)
     {
         if (which_paralax == GAME_PARALAX) {

@@ -12,13 +12,12 @@ InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 1
     initInGame();
 }
 
-InGame::~InGame()
-{
-}
+InGame::~InGame() = default;
 
 void InGame::handleOthers(Client &client)
 {
     std::vector<Game::Player> others;
+
     for (auto other_pos : client.getOthersPos()) {
         _other.setPos(other_pos.first, other_pos.second);
         others.push_back(_other);
@@ -55,41 +54,33 @@ void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client
         client.sendData(_key_pressed);
     }
     _player.setPos(client.getPlayerPos().first, client.getPlayerPos().second);
+    _player.setHp(client.getHp(), { client.getPlayerPos().first, client.getPlayerPos().second });
+    if (_player._health.getHealth() == 0) {
+        client.setCanReceiveData(false);
+        window.close();
+        return;
+    }
     handleOthers(client);
     handleEvents(window, client);
     window.clear();
-    displayInGame(window, state);
+    displayInGame(window, state, client);
     window.display();
 }
 
-void InGame::displayInGame(sf::RenderWindow &window, State &state)
+void InGame::displayInGame(sf::RenderWindow &window, State &state, Client &client)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
+    updateScore(1);
     _background_paralax.draw(window, Game::paralax::GAME_PARALAX);
     window.draw(_score_text._item);
     _player.draw(window);
+
     for (auto other : _others) {
         other.draw(window);
     }
-    // _player._shoot.setPos(_player._shoot.getPos().x + 25, _player._shoot.getPos().y);
-    // _player._shoot.draw(window);
-    // _ennemy.run();
-    // _ennemy.draw(window);
-    // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player._shoot.getPos().x, _player._shoot.getPos().y)) {
-    //     _ennemy.respawn();
-    //     _player.bullet_reset();
-    //     _score += 1;
-    // }
-    // if (_ennemy._ennemy.get_sprite().getGlobalBounds().contains(_player.getPos().x, _player.getPos().y)) {
-    //     _player.setLife(_player._health.getHealth() - 10);
-    //     if (_player._health.getHealth() <= 0) {
-    //         state = MENU;
-    //         _player.setLife(100);
-    //     }
-    // }
-    // for (auto img: client._images) {
-    //     img.draw(_window);
-    // }
+    for (auto ennemy: client._ennemies) {
+        ennemy->draw(window);
+    }
 }
 
 void InGame::handleKeyPressed(sf::Event &event)
@@ -97,6 +88,7 @@ void InGame::handleKeyPressed(sf::Event &event)
     if (_key_pressed != NONE) {
         return;
     }
+
     switch (event.key.code) {
         case (sf::Keyboard::Left):
             _key_pressed = LEFT;
@@ -114,7 +106,7 @@ void InGame::handleKeyPressed(sf::Event &event)
     }
 }
 
-void InGame::handleKeyReleased(sf::Event &event)
+void InGame::handleKeyReleased(sf::Event &event, Client &client)
 {
     switch (event.key.code) {
         // case sf::Keyboard::Escape:
@@ -138,7 +130,7 @@ void InGame::handleKeyReleased(sf::Event &event)
             _score_text.setPos(10, 10);
             _score_text.setFontSize(40);
         // case sf::Keyboard::Space:
-        //     _player.bullet_reset();
+        //     client.sendData(SPACE);
         //     break;
         default: break;
     }
@@ -147,13 +139,14 @@ void InGame::handleKeyReleased(sf::Event &event)
 void InGame::handleEvents(sf::RenderWindow &window, Client &client)
 {
     sf::Event event;
+
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::KeyPressed:
                 handleKeyPressed(event);
                 break;
             case sf::Event::KeyReleased:
-                handleKeyReleased(event);
+                handleKeyReleased(event, client);
                 break;
             case sf::Event::Closed:
                 client.setCanReceiveData(false);
@@ -170,7 +163,7 @@ void InGame::initInGame()
     _background_paralax.setSprites(Game::paralax::GAME_PARALAX);
     _score = 0;
     _score_text = Game::Text("assets/menu/fonts/r-type.ttf");
-    _score_text.SetText("Score " + std::to_string(_score));
+    updateScore(0);
     _score_text.setPos(10, 10);
     _score_text.setFontSize(40);
 }

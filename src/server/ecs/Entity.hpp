@@ -19,15 +19,13 @@
 #include "Components/Sound.hpp"
 #include "Components/Scale.hpp"
 #include "Components/Uuid.hpp"
+#include "Components/Hitbox.hpp"
 
 class Entity {
 
     public:
 
-    Entity(size_t id = 0) {
-        std::cout << "Entity constructor with id " << id << std::endl;
-        _id = id;
-    }
+    Entity(size_t id = 0): _id(id) {  }
 
     Entity(Entity &e) {
         _id = e.getId();
@@ -35,7 +33,6 @@ class Entity {
         for (auto comp: e._comps) {
             _comps.push_back(comp);
         }
-        std::cout << "Entity constructor by copy with id " << _id << std::endl;
     }
 
     size_t getId(void) { return _id; }
@@ -140,7 +137,7 @@ class Entity {
     std::list<std::shared_ptr<IComponent>> _comps;
 
     private:
-    size_t _id;
+    std::size_t _id;
 
     const std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(void)>> strToCmps = {
         { "drawable", [&](void) { return std::make_shared<Drawable>(); } },
@@ -151,7 +148,8 @@ class Entity {
         { "movable", [&](void) { return std::make_shared<Movable>(); } },
         { "sound", [&](void){ return std::make_shared<Sound>(); } },
         { "uuid", [&](void){ return std::make_shared<Uuid>(); } },
-        { "scale", [&](void){ return std::make_shared<Scale>(); } }
+        { "scale", [&](void){ return std::make_shared<Scale>(); } },
+        { "hitbox", [&](void){ return std::make_shared<Hitbox>(); } }
     };
 
     const std::unordered_map<components, std::function<std::shared_ptr<IComponent>(void)>> intToCmps = {
@@ -163,7 +161,8 @@ class Entity {
         { MOVABLE, [&](void) { return std::make_shared<Movable>(); } },
         { SOUND, [&](void) { return std::make_shared<Sound>(); } },
         { SCALE, [&](void) { return std::make_shared<Scale>(); } },
-        { UUID, [&](void) { return std::make_shared<Uuid>(); } }
+        { UUID, [&](void) { return std::make_shared<Uuid>(); } },
+        { HITBOX, [&](void) { return std::make_shared<Hitbox>(); } }
     };
 };
 

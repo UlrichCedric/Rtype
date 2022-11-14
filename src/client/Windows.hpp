@@ -42,7 +42,7 @@ namespace Game {
             sf::Font font;
             int _fps;
             enum State _state;
-            
+
             //Menu
             Menu::Menu _menu;
             //InGame

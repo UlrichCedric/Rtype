@@ -59,14 +59,14 @@ class Drawable: public AComponent {
      *
      * @return std::string returns the name of the component as a string
      */
-    std::string getName(void) { return "drawable"; }
+    std::string getName(void) override { return "drawable"; }
 
     /**
      * @brief Get the name of the component
      *
      * @return int returns the name of the component as an int
      */
-    int getEnum(void) { return DRAWABLE; };
+    components getEnum(void) override { return DRAWABLE; };
 
     /**
      * @brief Get the Offset object
