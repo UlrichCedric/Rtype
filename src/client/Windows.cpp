@@ -10,7 +10,7 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = Menu::State_menu::PAUSE;
+        _state = Menu::State_menu::LOSE;
         _fps = 60;
     }
 
@@ -38,7 +38,8 @@ namespace Game {
             }
             if (_menu.getState() == Menu::State_menu::CLOSE)
                 _window.close();
-            _state = _in_game.getState();
+            if (_state == Menu::State_menu::GAME)
+                _state = _in_game.getState();
             _fps = _menu.getFps();
         }
     }

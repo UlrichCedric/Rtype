@@ -38,13 +38,15 @@ Menu::Menu::~Menu()
 {
 }
 
-void Menu::Menu::handleMenu(sf::RenderWindow &window, State_menu state, Client &client)
+void Menu::Menu::handleMenu(sf::RenderWindow &window, State_menu &state, Client &client)
 {
+    if (state == State_menu::PAUSE || state == State_menu::LOSE)
+        _state = state;
     handleEvents(window, client);
     window.clear();
     _paralax_menu_background.update(Game::MENU_PARALAX);
     _paralax_menu_background.draw(window, Game::MENU_PARALAX);
-    switch (state) {
+    switch (_state) {
         case MENU: displayMenu(window); break;
         case LOBBY: displayLobby(window); break;
         case SETTINGS: displaySettings(window); break;

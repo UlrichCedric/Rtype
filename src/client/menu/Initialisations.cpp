@@ -140,6 +140,7 @@ void Menu::Menu::initSettings()
     _settings_title = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_music_volume = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_sonds_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_fps = Game::Text("assets/menu/fonts/r-type.ttf");
     //_settings_title
     _settings_title.SetText("Settings");
     _settings_title.setFontSize(50);
@@ -209,15 +210,15 @@ void Menu::Menu::iniDeath()
     //_death_retry
     _death_retry.SetText("Retry");
     _death_retry.setFontSize(30);
-    _death_retry.setFontColor(sf::Color::White);
+    _death_retry.setFontColor(sf::Color::Black);
     _death_retry.setFontStyle(sf::Text::Bold);
-    _death_retry.setPos(140, 180);
+    _death_retry.setPos(140, 330);
     //_death_quit
     _death_quit.SetText("Quit");
     _death_quit.setFontSize(30);
     _death_retry.setFontColor(sf::Color::White);
     _death_retry.setFontStyle(sf::Text::Bold);
-    _death_quit.setPos(140, 320);
+    _death_quit.setPos(440, 330);
 }
 
 void Menu::Menu::initPause()

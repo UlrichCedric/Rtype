@@ -48,7 +48,7 @@ namespace Menu {
             void handleEventsDeath(sf::Event &event);
             void handleEventsPause(sf::Event &event);
 
-            void handleMenu(sf::RenderWindow &window, State_menu state, Client &client);
+            void handleMenu(sf::RenderWindow &window, State_menu &state, Client &client);
 
             //Menu
             void initMenu();
