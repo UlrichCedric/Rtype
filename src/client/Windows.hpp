@@ -41,6 +41,7 @@ namespace Game {
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
+            bool _game_start;
             int _fps;
             enum Menu::State_menu _state;
             

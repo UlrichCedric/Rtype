@@ -10,6 +10,7 @@
 InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 17)
 {
     initInGame();
+    _state = Menu::State_menu::GAME;
 }
 
 InGame::~InGame()
@@ -50,6 +51,7 @@ void InGame::handleAnimation(void)
 
 void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client)
 {
+    std::cout << "InGame" << std::endl;
     handleAnimation();
     _state = state;
     if (_key_pressed != NONE) {

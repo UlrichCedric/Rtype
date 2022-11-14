@@ -24,9 +24,6 @@ Menu::Menu::Menu()
     _navigation_sound.setVolume(_sounds_volume);
     _music.play();
 
-    // ici on va devoir créer une class pour communiquer en TCP avec le serv. Il faudra aussi avoir une fonction qui demande une liste de lobby existant
-    // Les infos concernant les lobby sont : nom, status{open, in game}, nbr de joueurs
-    // Ensuite stocker ces infos dans la liste de lobby (côté client)
     initMenu();
     initLobby();
     initSettings();
@@ -51,7 +48,6 @@ void Menu::Menu::handleMenu(sf::RenderWindow &window, State_menu &state, Client 
         case LOBBY: displayLobby(window); break;
         case SETTINGS: displaySettings(window); break;
         case PAUSE: displayPause(window); break;
-        // case WIN: displayWin(window); break;
         case LOSE: displayDeath(window); break;
         case GAME: state = State_menu::GAME; break;
         default: break;

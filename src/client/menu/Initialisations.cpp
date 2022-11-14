@@ -194,14 +194,14 @@ void Menu::Menu::iniDeath()
     //_rect_selection
     _death_rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/white_rect.jpg");
     _death_rect_selection.setRect(0, 0, 390, 45);
-    _death_rect_selection.setPos(130, 175);
+    _death_rect_selection.setPos(130, 330);
     //fonts
     _death_title = Game::Text("assets/menu/fonts/r-type.ttf");
     _death_retry = Game::Text("assets/menu/fonts/r-type.ttf");
     _death_quit = Game::Text("assets/menu/fonts/r-type.ttf");
     //_death_title
     _death_text = { "You died bitch", "You a piece of shit", "Go kill yourself you lose the game", "Love you Matteo" };
-    int random = rand() % 4;
+    int random = rand() % 3;
     _death_title.SetText(_death_text[random]);
     _death_title.setFontSize(50);
     _death_title.setFontStyle(sf::Text::Bold);
@@ -218,7 +218,7 @@ void Menu::Menu::iniDeath()
     _death_quit.setFontSize(30);
     _death_retry.setFontColor(sf::Color::White);
     _death_retry.setFontStyle(sf::Text::Bold);
-    _death_quit.setPos(440, 330);
+    _death_quit.setPos(540, 330);
 }
 
 void Menu::Menu::initPause()

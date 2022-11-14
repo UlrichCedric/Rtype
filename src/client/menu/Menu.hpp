@@ -30,7 +30,6 @@ namespace Menu {
         SETTINGS,
         PAUSE,
         GAME,
-        WIN,
         LOSE,
         CLOSE,
     };
@@ -44,7 +43,6 @@ namespace Menu {
             void handleEventsMenu(sf::Event &event, Client &client);
             void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
-            void handleEventsWin(sf::Event &event);
             void handleEventsDeath(sf::Event &event);
             void handleEventsPause(sf::Event &event);
 
@@ -68,10 +66,6 @@ namespace Menu {
             //death screen
             void iniDeath();
             void displayDeath(sf::RenderWindow &window);
-
-            //win screen
-            void iniWin();
-            void displayWin(sf::RenderWindow &window);
 
             void initPause();
             void displayPause(sf::RenderWindow &window);
@@ -157,6 +151,14 @@ namespace Menu {
             Game::Text _death_quit;
             Game::Image _death_rect_selection;
             std::array<std::string, 4> _death_text;
+
+            //win screen
+            enum _selection_possibility_win {RETRY_WIN, QUIT_WIN};
+            _selection_possibility_win _win_select;
+            Game::Text _win_title;
+            Game::Text _win_retry;
+            Game::Text _win_quit;
+            Game::Image _win_rect_selection;
 
             //pause screen
             enum _selection_possibility_pause {MUSIC_VOLUME_TITLE_PAUSE, MUSIC_VOLUME_MODIF_PAUSE, SOUNDS_VOLUME_TITLE_PAUSE, SOUNDS_VOLUME_MODIF_PAUSE, FPS_TITLE_PAUSE, FPS_MODIF_PAUSE, RESUME, QUIT_PAUSE};
