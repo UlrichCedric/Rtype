@@ -630,7 +630,7 @@ void Menu::Menu::handleEventsPause(sf::Event &event)
             }
             else if (_pause_select == QUIT_PAUSE) {
                 _validate_sound.play();
-                _state = State_menu::CLOSE;
+                _state = State_menu::MENU;
             }
             else if (_pause_select == RESUME) {
                 _validate_sound.play();
