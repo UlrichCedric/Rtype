@@ -155,7 +155,7 @@ void Menu::Menu::handleEventsLobby(sf::Event &event, Client &client)
             else if (_lobby_select == BOX_LIST_LOBBY) {
                 _validate_sound.play();
                 try {
-                    client.joinLobby(this->get_uuid_of_selected_lobby());
+                    client.joinLobby(get_uuid_of_selected_lobby());
                     _state = State_menu::GAME;
                 } catch (Error &e) {
                     std::cout << e.what() << std::endl;
@@ -308,6 +308,8 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
             else if (_settings_select == FPS_MODIF) {
                 _validate_sound.play();
                 _settings_select = FPS_TITLE;
+                _settings_rect_selection.setRect(0, 0, 400, 45);
+                _settings_rect_selection.setPos(130, 445);
                 _settings_fps.setFontStyle(sf::Text::Bold);
                 _settings_fps.setFontColor(sf::Color::Black);
             }
@@ -347,7 +349,7 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 _settings_music_volume.setFontStyle(sf::Text::Regular);
                 _settings_music_volume.setFontColor(sf::Color::White);
             }
-            if (_settings_select == SOUNDS_VOLUME_TITLE) {
+            else if (_settings_select == SOUNDS_VOLUME_TITLE) {
                 _navigation_sound.play();
                 _settings_select = FPS_TITLE;
                 _settings_rect_selection.setRect(0, 0, 400, 45);
@@ -381,6 +383,7 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
         else if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Left) {
             if (_settings_select == MUSIC_VOLUME_MODIF) {
                 if (_music_volume > 0.0f) {
+                    _navigation_sound.play();
                     _music_volume -= 2.0f;
                     _settings_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
                     _music.setVolume(_music_volume);
@@ -388,6 +391,7 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
             }
             else if (_settings_select == SOUNDS_VOLUME_MODIF) {
                 if (_sounds_volume > 0.0f) {
+                    _navigation_sound.play();
                     _sounds_volume -= 2.0f;
                     _settings_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
                     _navigation_sound.setVolume(_sounds_volume);
@@ -395,12 +399,13 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 }
             }
             else if (_settings_select == FPS_MODIF) {
-                _fps_index--;
-                if (_fps_index < 0)
-                    _fps_index = 2;
-                _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
-                _settings_fps.setFontSize(30);
-                _settings_fps.setPos(140, 450);
+                _navigation_sound.play();
+                if (_fps_index > 0) {
+                    _fps_index--;
+                    _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                    _settings_fps.setFontSize(30);
+                    _settings_fps.setPos(140, 450);
+                }
             }
         }
         else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
@@ -420,13 +425,12 @@ void Menu::Menu::handleEventsSettings(sf::Event &event)
                 }
             }
             else if (_settings_select == FPS_MODIF) {
-                _fps_index++;
-                std::cout << _fps_index << std::endl;
-                if (_fps_index > 2)
-                    _fps_index = 0;
-                _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
-                _settings_fps.setFontSize(30);
-                _settings_fps.setPos(140, 450);
+                if (_fps_index < 2) {
+                    _fps_index++;
+                    _settings_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                    _settings_fps.setFontSize(30);
+                    _settings_fps.setPos(140, 450);
+                }
             }
         }
     }
@@ -444,7 +448,247 @@ void Menu::Menu::handleEvents(sf::RenderWindow &window, Client &client)
             case MENU: handleEventsMenu(event, client); break;
             case LOBBY: handleEventsLobby(event, client); break;
             case SETTINGS: handleEventsSettings(event); break;
+            case LOSE: handleEventsDeath(event); break;
+            case PAUSE: handleEventsPause(event); break;
         default: break;
+        }
+    }
+}
+
+void Menu::Menu::handleEventsDeath(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            _state = LOBBY;
+        }
+        else if (event.key.code == sf::Keyboard::Right) {
+            if (_death_select == RETRY) {
+                _navigation_sound.play();
+                _death_select = QUIT;
+                _death_rect_selection.setPos(430, 320);
+                _death_quit.setFontStyle(sf::Text::Bold);
+                _death_quit.setFontColor(sf::Color::Black);
+                _death_retry.setFontStyle(sf::Text::Regular);
+                _death_retry.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Left) {
+             if (_death_select == QUIT) {
+                _navigation_sound.play();
+                _death_select = RETRY;
+                _death_rect_selection.setPos(130, 320);
+                _death_retry.setFontStyle(sf::Text::Bold);
+                _death_retry.setFontColor(sf::Color::Black);
+                _death_quit.setFontStyle(sf::Text::Regular);
+                _death_quit.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Return) {
+            if (_death_select == RETRY) {
+                _validate_sound.play();
+                _state = LOBBY;
+            }
+            else if (_death_select == QUIT) {
+                _validate_sound.play();
+                _state = CLOSE;
+            }
+        }
+    }
+}
+
+void Menu::Menu::handleEventsPause(sf::Event &event)
+{
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Escape) {
+            if (_pause_select == MUSIC_VOLUME_MODIF_PAUSE) {
+                _validate_sound.play();
+                _pause_select = MUSIC_VOLUME_TITLE_PAUSE;
+                _settings_pause_music_volume.setFontStyle(sf::Text::Bold);
+                _settings_pause_music_volume.setFontColor(sf::Color::Black);
+                _settings_pause_music_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+            }
+            else if (_pause_select == SOUNDS_VOLUME_MODIF_PAUSE) {
+                _validate_sound.play();
+                _pause_select = SOUNDS_VOLUME_TITLE_PAUSE;
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Bold);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::Black);
+                _settings_pause_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+            }
+            else if (_pause_select == FPS_MODIF_PAUSE) {
+                _validate_sound.play();
+                _pause_select = FPS_TITLE_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 445);
+                _settings_pause_fps.setFontStyle(sf::Text::Bold);
+                _settings_pause_fps.setFontColor(sf::Color::Black);
+            }
+            else {
+                _validate_sound.play();
+                _state = State_menu::GAME;
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Z || event.key.code == sf::Keyboard::Up) {
+            if (_pause_select == SOUNDS_VOLUME_TITLE_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = MUSIC_VOLUME_TITLE_PAUSE;
+                _settings_pause_rect_selection.setPos(130, 175);
+                _settings_pause_music_volume.setFontStyle(sf::Text::Bold);
+                _settings_pause_music_volume.setFontColor(sf::Color::Black);
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Regular);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == FPS_TITLE_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = SOUNDS_VOLUME_TITLE_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 390, 45);
+                _settings_pause_rect_selection.setPos(130, 315);
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Bold);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::Black);
+                _settings_pause_fps.setFontStyle(sf::Text::Regular);
+                _settings_pause_fps.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == QUIT_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = FPS_TITLE_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 445);
+                _settings_pause_fps.setFontStyle(sf::Text::Bold);
+                _settings_pause_fps.setFontColor(sf::Color::Black);
+                _settings_pause_quit.setFontStyle(sf::Text::Regular);
+                _settings_pause_quit.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == RESUME) {
+                _navigation_sound.play();
+                _pause_select = QUIT_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 555);
+                _settings_pause_quit.setFontStyle(sf::Text::Bold);
+                _settings_pause_quit.setFontColor(sf::Color::Black);
+                _settings_pause_resume.setFontStyle(sf::Text::Regular);
+                _settings_pause_resume.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+            if (_pause_select == MUSIC_VOLUME_TITLE_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = SOUNDS_VOLUME_TITLE_PAUSE;
+                _settings_pause_rect_selection.setPos(130, 315);
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Bold);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::Black);
+                _settings_pause_music_volume.setFontStyle(sf::Text::Regular);
+                _settings_pause_music_volume.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == SOUNDS_VOLUME_TITLE_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = FPS_TITLE_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 445);
+                _settings_pause_fps.setFontStyle(sf::Text::Bold);
+                _settings_pause_fps.setFontColor(sf::Color::Black);
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Regular);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == FPS_TITLE_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = QUIT_PAUSE;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 555);
+                _settings_pause_quit.setFontStyle(sf::Text::Bold);
+                _settings_pause_quit.setFontColor(sf::Color::Black);
+                _settings_pause_fps.setFontStyle(sf::Text::Regular);
+                _settings_pause_fps.setFontColor(sf::Color::White);
+            }
+            else if (_pause_select == QUIT_PAUSE) {
+                _navigation_sound.play();
+                _pause_select = RESUME;
+                _settings_pause_rect_selection.setRect(0, 0, 400, 45);
+                _settings_pause_rect_selection.setPos(130, 645);
+                _settings_pause_resume.setFontStyle(sf::Text::Bold);
+                _settings_pause_resume.setFontColor(sf::Color::Black);
+                _settings_pause_quit.setFontStyle(sf::Text::Regular);
+                _settings_pause_quit.setFontColor(sf::Color::White);
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Return) {
+            if (_pause_select == MUSIC_VOLUME_TITLE_PAUSE) {
+                _validate_sound.play();
+                _pause_select = MUSIC_VOLUME_MODIF_PAUSE;
+                _settings_pause_music_volume.setFontStyle(sf::Text::Regular);
+                _settings_pause_music_volume.setFontColor(sf::Color::White);
+                _settings_pause_music_volume_progression_bar.setFillColor(sf::Color(128, 128, 128));
+            }
+            else if (_pause_select == SOUNDS_VOLUME_TITLE_PAUSE) {
+                _validate_sound.play();
+                _pause_select = SOUNDS_VOLUME_MODIF_PAUSE;
+                _settings_pause_sonds_volume.setFontStyle(sf::Text::Regular);
+                _settings_pause_sonds_volume.setFontColor(sf::Color::White);
+                _settings_pause_sounds_volume_progression_bar.setFillColor(sf::Color(128, 128, 128));
+            }
+            else if (_pause_select == FPS_TITLE_PAUSE) {
+                _validate_sound.play();
+                _pause_select = FPS_MODIF_PAUSE;
+            }
+            else if (_pause_select == QUIT_PAUSE) {
+                _validate_sound.play();
+                _state = State_menu::MENU;
+            }
+            else if (_pause_select == RESUME) {
+                _validate_sound.play();
+                _state = State_menu::GAME;
+            }
+        }
+        else if (event.key.code == sf::Keyboard::Q || event.key.code == sf::Keyboard::Left) {
+            if (_pause_select == MUSIC_VOLUME_MODIF_PAUSE) {
+                if (_music_volume > 0.0f) {
+                    _navigation_sound.play();
+                    _music_volume -= 2.0f;
+                    _settings_pause_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
+                    _music.setVolume(_music_volume);
+                }
+            }
+            else if (_pause_select == SOUNDS_VOLUME_MODIF_PAUSE) {
+                if (_sounds_volume > 0.0f) {
+                    _navigation_sound.play();
+                    _sounds_volume -= 2.0f;
+                    _settings_pause_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
+                    _navigation_sound.setVolume(_sounds_volume);
+                    _validate_sound.setVolume(_sounds_volume);
+                }
+            }
+            else if (_pause_select == FPS_MODIF_PAUSE) {
+                _navigation_sound.play();
+                if (_fps_index > 0) {
+                    _fps_index--;
+                    _settings_pause_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                    _settings_pause_fps.setFontSize(30);
+                    _settings_pause_fps.setPos(140, 450);
+                }
+            }
+        }
+        else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+            if (_pause_select == MUSIC_VOLUME_MODIF_PAUSE) {
+                if (_music_volume < 100.0f) {
+                    _music_volume += 2.0f;
+                    _settings_pause_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
+                    _music.setVolume(_music_volume);
+                }
+            }
+            else if (_pause_select == SOUNDS_VOLUME_MODIF_PAUSE) {
+                if (_sounds_volume < 100.0f) {
+                    _sounds_volume += 2.0f;
+                    _settings_pause_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
+                    _navigation_sound.setVolume(_sounds_volume);
+                    _validate_sound.setVolume(_sounds_volume);
+                }
+            }
+            else if (_pause_select == FPS_MODIF_PAUSE) {
+                if (_fps_index < 2) {
+                    _fps_index++;
+                    _settings_pause_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+                    _settings_pause_fps.setFontSize(30);
+                    _settings_pause_fps.setPos(140, 450);
+                }
+            }
         }
     }
 }

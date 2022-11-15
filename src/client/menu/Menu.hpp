@@ -28,7 +28,9 @@ namespace Menu {
         MENU,
         LOBBY,
         SETTINGS,
+        PAUSE,
         GAME,
+        LOSE,
         CLOSE,
         END
     };
@@ -42,8 +44,10 @@ namespace Menu {
             void handleEventsMenu(sf::Event &event, Client &client);
             void handleEventsLobby(sf::Event &event, Client &client);
             void handleEventsSettings(sf::Event &event);
+            void handleEventsDeath(sf::Event &event);
+            void handleEventsPause(sf::Event &event);
 
-            void handleMenu(sf::RenderWindow &window, State &state, Client &client);
+            void handleMenu(sf::RenderWindow &window, State_menu &state, Client &client);
 
             //Menu
             void initMenu();
@@ -58,6 +62,14 @@ namespace Menu {
             void displaySettings(sf::RenderWindow &window);
             int getFps();
             State_menu getState();
+            void setState(State_menu state) { _state = state; }
+
+            //death screen
+            void iniDeath();
+            void displayDeath(sf::RenderWindow &window);
+
+            void initPause();
+            void displayPause(sf::RenderWindow &window);
 
         private:
             State_menu _state;
@@ -129,11 +141,41 @@ namespace Menu {
             sf::RectangleShape _settings_music_volume_progression_bar;
             sf::RectangleShape _settings_sounds_volume_bar;
             sf::RectangleShape _settings_sounds_volume_progression_bar;
-        
             std::array<int, 3> _fps;
             size_t _fps_index;
 
-    };
+            //death screen
+            enum _selection_possibility_death {RETRY, QUIT};
+            _selection_possibility_death _death_select;
+            Game::Text _death_title;
+            Game::Text _death_retry;
+            Game::Text _death_quit;
+            Game::Image _death_rect_selection;
+            std::array<std::string, 4> _death_text;
+
+            //win screen
+            enum _selection_possibility_win {RETRY_WIN, QUIT_WIN};
+            _selection_possibility_win _win_select;
+            Game::Text _win_title;
+            Game::Text _win_retry;
+            Game::Text _win_quit;
+            Game::Image _win_rect_selection;
+
+            //pause screen
+            enum _selection_possibility_pause {MUSIC_VOLUME_TITLE_PAUSE, MUSIC_VOLUME_MODIF_PAUSE, SOUNDS_VOLUME_TITLE_PAUSE, SOUNDS_VOLUME_MODIF_PAUSE, FPS_TITLE_PAUSE, FPS_MODIF_PAUSE, RESUME, QUIT_PAUSE};
+            _selection_possibility_pause _pause_select; 
+            Game::Text _settings_pause_title;
+            Game::Text _settings_pause_music_volume;
+            Game::Text _settings_pause_sonds_volume;
+            Game::Text _settings_pause_fps;
+            Game::Text _settings_pause_resume;
+            Game::Text _settings_pause_quit;
+            sf::RectangleShape _settings_pause_music_volume_bar;
+            sf::RectangleShape _settings_pause_music_volume_progression_bar;
+            sf::RectangleShape _settings_pause_sounds_volume_bar;
+            sf::RectangleShape _settings_pause_sounds_volume_progression_bar;
+            Game::Image _settings_pause_rect_selection;
+    };  
 }
 
 #endif /* !MENU_HPP_ */

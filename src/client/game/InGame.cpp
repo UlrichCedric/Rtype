@@ -10,6 +10,7 @@
 InGame::InGame(): _key_pressed(NONE), _player(0, 0, 33, 17), _other(0, 51, 33, 17)
 {
     initInGame();
+    _state = Menu::State_menu::GAME;
 }
 
 InGame::~InGame() = default;
@@ -47,9 +48,11 @@ void InGame::handleAnimation(void)
     }
 }
 
-void InGame::handleInGame(sf::RenderWindow &window, State &state, Client &client)
+void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client)
 {
+    std::cout << "InGame" << std::endl;
     handleAnimation();
+    _state = state;
     if (_key_pressed != NONE) {
         client.sendData(_key_pressed);
     }
@@ -109,9 +112,9 @@ void InGame::handleKeyPressed(sf::Event &event)
 void InGame::handleKeyReleased(sf::Event &event, Client &client)
 {
     switch (event.key.code) {
-        // case sf::Keyboard::Escape:
-        //     _state = PAUSE;
-        //     break;
+        case sf::Keyboard::Escape:
+            _state = Menu::State_menu::PAUSE;
+            break;
         case sf::Keyboard::Left:
             _key_pressed == LEFT ? _key_pressed = NONE : false;
             break;

@@ -27,6 +27,7 @@
 #include "menu/Menu.hpp"
 #include "game/InGame.hpp"
 
+
 namespace Game {
     class Windows {
         public:
@@ -40,9 +41,10 @@ namespace Game {
             sf::RenderWindow _window;
             std::string _ip;
             sf::Font font;
+            bool _game_start;
             int _fps;
-            enum State _state;
-
+            enum Menu::State_menu _state;
+            
             //Menu
             Menu::Menu _menu;
             //InGame

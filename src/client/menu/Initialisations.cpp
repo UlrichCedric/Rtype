@@ -140,6 +140,7 @@ void Menu::Menu::initSettings()
     _settings_title = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_music_volume = Game::Text("assets/menu/fonts/r-type.ttf");
     _settings_sonds_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_fps = Game::Text("assets/menu/fonts/r-type.ttf");
     //_settings_title
     _settings_title.SetText("Settings");
     _settings_title.setFontSize(50);
@@ -186,3 +187,109 @@ void Menu::Menu::initSettings()
 
 }
 
+void Menu::Menu::iniDeath()
+{
+    _death_select = _selection_possibility_death::RETRY;
+
+    //_rect_selection
+    _death_rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/white_rect.jpg");
+    _death_rect_selection.setRect(0, 0, 390, 45);
+    _death_rect_selection.setPos(130, 330);
+    //fonts
+    _death_title = Game::Text("assets/menu/fonts/r-type.ttf");
+    _death_retry = Game::Text("assets/menu/fonts/r-type.ttf");
+    _death_quit = Game::Text("assets/menu/fonts/r-type.ttf");
+    //_death_title
+    _death_text = { "You died bitch", "You a piece of shit", "Go kill yourself you lose the game", "Love you Matteo" };
+    int random = rand() % 3;
+    _death_title.SetText(_death_text[random]);
+    _death_title.setFontSize(50);
+    _death_title.setFontStyle(sf::Text::Bold);
+    _death_title.setFontColor(sf::Color::White);
+    _death_title.setPos(80, 60);
+    //_death_retry
+    _death_retry.SetText("Retry");
+    _death_retry.setFontSize(30);
+    _death_retry.setFontColor(sf::Color::Black);
+    _death_retry.setFontStyle(sf::Text::Bold);
+    _death_retry.setPos(140, 330);
+    //_death_quit
+    _death_quit.SetText("Quit");
+    _death_quit.setFontSize(30);
+    _death_retry.setFontColor(sf::Color::White);
+    _death_retry.setFontStyle(sf::Text::Bold);
+    _death_quit.setPos(540, 330);
+}
+
+void Menu::Menu::initPause()
+{
+    _pause_select = MUSIC_VOLUME_TITLE_PAUSE;
+
+    //_rect_selection
+    _settings_pause_rect_selection.setTexture(Game::Config::ExecutablePath + "assets/menu/sprites/white_rect.jpg");
+    _settings_pause_rect_selection.setRect(0, 0, 390, 45);
+    _settings_pause_rect_selection.setPos(130, 175);
+    //fonts
+    _settings_pause_title = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_music_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_sonds_volume = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_fps = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_quit = Game::Text("assets/menu/fonts/r-type.ttf");
+    _settings_pause_resume = Game::Text("assets/menu/fonts/r-type.ttf");
+
+    //_settings_pause_title
+    _settings_pause_title.SetText("Settings");
+    _settings_pause_title.setFontSize(50);
+    _settings_pause_title.setFontStyle(sf::Text::Bold);
+    _settings_pause_title.setPos(80, 60);
+    //_settings_pause_volume_music
+    _settings_pause_music_volume.SetText("Music Volume");
+    _settings_pause_music_volume.setFontSize(30);
+    _settings_pause_music_volume.setFontColor(sf::Color::Black);
+    _settings_pause_music_volume.setFontStyle(sf::Text::Bold);
+    _settings_pause_music_volume.setPos(140, 180);
+    //_settings_pause_sonds_volume
+    _settings_pause_sonds_volume.SetText("Sonds Volume");
+    _settings_pause_sonds_volume.setFontSize(30);
+    _settings_pause_sonds_volume.setPos(140, 320);
+
+    //music volume bar
+    _settings_pause_music_volume_bar.setSize(sf::Vector2f(875, 50));
+    _settings_pause_music_volume_bar.setOutlineColor(sf::Color::White);
+    _settings_pause_music_volume_bar.setOutlineThickness(2);
+    _settings_pause_music_volume_bar.setFillColor(sf::Color::Black);
+    _settings_pause_music_volume_bar.setPosition(160, 230);
+    _settings_pause_music_volume_progression_bar.setSize(sf::Vector2f((869 * (_music_volume / 100)), 44));
+    _settings_pause_music_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_pause_music_volume_progression_bar.setPosition(163, 233);
+    //sonds volume bar
+    _settings_pause_sounds_volume_bar.setSize(sf::Vector2f(875, 50));
+    _settings_pause_sounds_volume_bar.setOutlineColor(sf::Color::White);
+    _settings_pause_sounds_volume_bar.setOutlineThickness(2);
+    _settings_pause_sounds_volume_bar.setFillColor(sf::Color::Black);
+    _settings_pause_sounds_volume_bar.setPosition(160, 370);
+    _settings_pause_sounds_volume_progression_bar.setSize(sf::Vector2f((869 * (_sounds_volume / 100)), 44));
+    _settings_pause_sounds_volume_progression_bar.setFillColor(sf::Color(236, 236, 236));
+    _settings_pause_sounds_volume_progression_bar.setPosition(163, 373);
+    
+    //init fps 
+    _settings_pause_fps.SetText("FPS set to " + std::to_string(_fps[_fps_index]));
+    _settings_pause_fps.setFontSize(30);
+    _settings_pause_fps.setFontColor(sf::Color::White);
+    _settings_pause_fps.setFontStyle(sf::Text::Bold);
+    _settings_pause_fps.setPos(140, 450);
+
+    //init quit button
+    _settings_pause_quit.SetText("Go back to menu");
+    _settings_pause_quit.setFontSize(30);
+    _settings_pause_quit.setFontColor(sf::Color::White);
+    _settings_pause_quit.setFontStyle(sf::Text::Bold);
+    _settings_pause_quit.setPos(140, 550);
+
+    //init resume button
+    _settings_pause_resume.SetText("Resume");
+    _settings_pause_resume.setFontSize(30);
+    _settings_pause_resume.setFontColor(sf::Color::White);
+    _settings_pause_resume.setFontStyle(sf::Text::Bold);
+    _settings_pause_resume.setPos(140, 650);
+}

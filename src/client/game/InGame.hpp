@@ -22,6 +22,7 @@
 #include "../utils/Music.hpp"
 #include "../utils/Paralax.hpp"
 #include "../game/Client.hpp"
+#include "../menu/Menu.hpp"
 #include "Player.hpp"
 #include "Ennemy.hpp"
 
@@ -30,12 +31,14 @@ class InGame {
         InGame();
         ~InGame();
 
-        void handleInGame(sf::RenderWindow &window, State &state, Client &client);
+        void handleInGame(sf::RenderWindow &window, Menu::State_menu state, Client &client);
         void handleOthers(Client &client);
         void handleAnimation(void);
         //Events / handle player input
         void handleEvents(sf::RenderWindow &window, Client &client);
         void handleKeyPressed(sf::Event &event);
+
+        enum Menu::State_menu getState () {return _state;} ;
         void handleKeyReleased(sf::Event &event, Client &client);
         void initInGame(void);
         void displayInGame(sf::RenderWindow &window, State &state, Client &);
@@ -61,6 +64,7 @@ class InGame {
         Game::Text _score_text;
         int _score;
         int _signRect;
+        enum Menu::State_menu _state;
 };
 
 #endif /* !INGAME_HPP_ */

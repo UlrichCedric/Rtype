@@ -21,6 +21,8 @@ enum State {
     MENU,
     GAME,
     PAUSE,
+    LOSE,
+    WIN,
     END,
 };
 

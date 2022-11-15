@@ -10,8 +10,9 @@
 namespace Game {
     Windows::Windows()
     {
-        _state = MENU;
+        _state = Menu::State_menu::MENU;
         _fps = 60;
+        _game_start = false;
     }
 
     void Windows::init()
@@ -29,13 +30,26 @@ namespace Game {
     {
         while (_window.isOpen()) {
             switch (_state) {
-                case MENU: _menu.handleMenu(_window, _state, client); break;
-                case GAME: _in_game.handleInGame(_window, _state, client); break;
-                case END: client.setCanReceiveData(false); _window.close(); break;
+                case Menu::State_menu::MENU : _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::LOSE: _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::GAME: std::cout << "prout" << std::endl; _in_game.handleInGame(_window, _state, client); break;
+                case Menu::State_menu::CLOSE: client.setCanReceiveData(false); _window.close(); break;
+                case Menu::State_menu::PAUSE: _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::SETTINGS: _menu.handleMenu(_window, _state, client); break;
+                case Menu::State_menu::LOBBY: _menu.handleMenu(_window, _state, client); break;
                 default: break;
             }
             if (_menu.getState() == Menu::State_menu::CLOSE)
                 _window.close();
+            std::cout << "State : " << _state << std::endl;
+            if (_state == Menu::State_menu::GAME) {
+                _state = _in_game.getState();
+                continue;
+            }
+            else {
+                _state = _menu.getState();
+                continue;
+            }
             _fps = _menu.getFps();
         }
     }
