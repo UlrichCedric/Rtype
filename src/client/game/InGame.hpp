@@ -41,7 +41,7 @@ class InGame {
         enum Menu::State_menu getState () {return _state;} ;
         void handleKeyReleased(sf::Event &event, Client &client);
         void initInGame(void);
-        void displayInGame(sf::RenderWindow &window, State &state, Client &);
+        void displayInGame(sf::RenderWindow &window, Client &);
 
         void updateScore(int addToScore) {
             _score += addToScore;

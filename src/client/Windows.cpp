@@ -41,7 +41,6 @@ namespace Game {
             }
             if (_menu.getState() == Menu::State_menu::CLOSE)
                 _window.close();
-            std::cout << "State : " << _state << std::endl;
             if (_state == Menu::State_menu::GAME) {
                 _state = _in_game.getState();
                 continue;

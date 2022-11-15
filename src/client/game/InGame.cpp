@@ -66,11 +66,11 @@ void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Clie
     handleOthers(client);
     handleEvents(window, client);
     window.clear();
-    displayInGame(window, state, client);
+    displayInGame(window, client);
     window.display();
 }
 
-void InGame::displayInGame(sf::RenderWindow &window, State &state, Client &client)
+void InGame::displayInGame(sf::RenderWindow &window, Client &client)
 {
     _background_paralax.update(Game::paralax::GAME_PARALAX);
     updateScore(1);
