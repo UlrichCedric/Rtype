@@ -74,24 +74,22 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;../IComponent.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classRepeatable.html">    8</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRepeatable.html">Repeatable</a>: <span class="keyword">public</span> <a class="code" href="classIComponent.html">IComponent</a> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <a class="code" href="classRepeatable.html">Repeatable</a>(<span class="keywordtype">bool</span> isRepeatable = <span class="keyword">true</span>): _isRepeatable(isRepeatable) {  }</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <a class="code" href="classRepeatable.html">Repeatable</a>(<a class="code" href="classRepeatable.html">Repeatable</a> &amp;r): _isRepeatable(r._isRepeatable) {  }</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    std::string getName(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> <span class="stringliteral">&quot;repeatable&quot;</span>; }</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">int</span> getEnum(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> REPEATABLE; };</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> setIfRepeating(<span class="keywordtype">bool</span> isRepeatable) { _isRepeatable = isRepeatable; }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">bool</span> getIfRepeating() { <span class="keywordflow">return</span> _isRepeatable; }</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    ~<a class="code" href="classRepeatable.html">Repeatable</a>() {  }</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> _isRepeatable;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;};</div>
-<div class="ttc" id="aclassIComponent_html"><div class="ttname"><a href="classIComponent.html">IComponent</a></div><div class="ttdef"><b>Definition:</b> IComponent.hpp:5</div></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="classRepeatable.html">Repeatable</a>(<span class="keywordtype">bool</span> isRepeatable = <span class="keyword">true</span>): _isRepeatable(isRepeatable) {  }</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <a class="code" href="classRepeatable.html">Repeatable</a>(<a class="code" href="classRepeatable.html">Repeatable</a> &amp;r): _isRepeatable(r._isRepeatable) {  }</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    std::string getName(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;repeatable&quot;</span>; }</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    components getEnum(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> REPEATABLE; };</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">void</span> setIfRepeating(<span class="keywordtype">bool</span> isRepeatable) { _isRepeatable = isRepeatable; }</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">bool</span> getIfRepeating() { <span class="keywordflow">return</span> _isRepeatable; }</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    ~<a class="code" href="classRepeatable.html">Repeatable</a>() <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">bool</span> _isRepeatable;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
+<div class="ttc" id="aclassIComponent_html"><div class="ttname"><a href="classIComponent.html">IComponent</a></div><div class="ttdef"><b>Definition:</b> IComponent.hpp:6</div></div>
 <div class="ttc" id="aclassRepeatable_html"><div class="ttname"><a href="classRepeatable.html">Repeatable</a></div><div class="ttdoc">Does the sprite have to repeat ? (prallax)</div><div class="ttdef"><b>Definition:</b> Repeatable.hpp:8</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

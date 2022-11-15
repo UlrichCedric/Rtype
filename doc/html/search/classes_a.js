@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['paralax_93',['Paralax',['../classGame_1_1Paralax.html',1,'Game']]],
-  ['pause_94',['Pause',['../classPause.html',1,'']]],
-  ['player_95',['Player',['../classGame_1_1Player.html',1,'Game::Player'],['../structPlayer.html',1,'Player']]],
-  ['position_96',['Position',['../classPosition.html',1,'']]]
+  ['menu_130',['Menu',['../classMenu_1_1Menu.html',1,'Menu']]],
+  ['movable_131',['Movable',['../classMovable.html',1,'']]],
+  ['music_132',['Music',['../classGame_1_1Music.html',1,'Game']]]
 ];

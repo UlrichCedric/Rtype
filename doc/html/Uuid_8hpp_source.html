@@ -75,22 +75,20 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;../constants.hpp&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno"><a class="line" href="classUuid.html">    6</a></span>&#160;<span class="keyword">class </span><a class="code" href="classUuid.html">Uuid</a>: <span class="keyword">public</span> <a class="code" href="classAComponent.html">AComponent</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="classUuid.html">Uuid</a>(std::string uuid = <span class="stringliteral">&quot;NULL&quot;</span>): _uuid(uuid) {  }</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="classUuid.html">Uuid</a>(<a class="code" href="classUuid.html">Uuid</a> &amp;u): _uuid(u._uuid) {  }</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    std::string getUuid(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _uuid; }</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    std::string getName(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;uuid&quot;</span>; }</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">int</span> getEnum(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> UUID; }</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    ~<a class="code" href="classUuid.html">Uuid</a>(<span class="keywordtype">void</span>) {  };</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    std::string _uuid;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <a class="code" href="classUuid.html">Uuid</a>(std::string uuid = <span class="stringliteral">&quot;NULL&quot;</span>): _uuid(uuid) {  }</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="classUuid.html">Uuid</a>(<a class="code" href="classUuid.html">Uuid</a> &amp;u): _uuid(u._uuid) {  }</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    std::string getUuid(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _uuid; }</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    std::string getName(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;uuid&quot;</span>; }</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    components getEnum(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> UUID; }</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    ~<a class="code" href="classUuid.html">Uuid</a>(<span class="keywordtype">void</span>) <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    std::string _uuid;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
 <div class="ttc" id="aclassAComponent_html"><div class="ttname"><a href="classAComponent.html">AComponent</a></div><div class="ttdef"><b>Definition:</b> AComponent.hpp:6</div></div>
 <div class="ttc" id="aclassUuid_html"><div class="ttname"><a href="classUuid.html">Uuid</a></div><div class="ttdef"><b>Definition:</b> Uuid.hpp:6</div></div>
 </div><!-- fragment --></div><!-- contents -->

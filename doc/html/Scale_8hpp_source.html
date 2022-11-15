@@ -83,7 +83,7 @@ $(function() {
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <a class="code" href="classScale.html">Scale</a>(<a class="code" href="classScale.html">Scale</a> &amp;s): _x(s._x), _y(s._y) {  }</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    std::string getName(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;scale&quot;</span>; }</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">int</span> getEnum(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> SCALE; };</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    components getEnum(<span class="keywordtype">void</span>)<span class="keyword"> override </span>{ <span class="keywordflow">return</span> SCALE; };</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">float</span> getXScale(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _x; }</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">float</span> getYScale(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _y; }</div>
@@ -102,7 +102,7 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">void</span> setXScale(<span class="keywordtype">float</span> x) { _x = x; }</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> setYScale(<span class="keywordtype">float</span> y) { _y = y; }</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    ~<a class="code" href="classScale.html">Scale</a>(<span class="keywordtype">void</span>) {  }</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    ~<a class="code" href="classScale.html">Scale</a>(<span class="keywordtype">void</span>) <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>

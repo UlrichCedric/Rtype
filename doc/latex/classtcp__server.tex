@@ -1,0 +1,31 @@
+\hypertarget{classtcp__server}{}\doxysection{tcp\+\_\+server Class Reference}
+\label{classtcp__server}\index{tcp\_server@{tcp\_server}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classtcp__server_a567f7ebecc8167d465568f957189274f}\label{classtcp__server_a567f7ebecc8167d465568f957189274f}} 
+{\bfseries tcp\+\_\+server} (boost\+::asio\+::io\+\_\+context \&io\+\_\+context)
+\item 
+\mbox{\Hypertarget{classtcp__server_a4a75207f5d19b97296d1859f9cada499}\label{classtcp__server_a4a75207f5d19b97296d1859f9cada499}} 
+void {\bfseries accept\+Clients} (void)
+\item 
+\mbox{\Hypertarget{classtcp__server_ad754ed4b34baa748fd2e95358d3ccf85}\label{classtcp__server_ad754ed4b34baa748fd2e95358d3ccf85}} 
+void {\bfseries read} (void)
+\item 
+\mbox{\Hypertarget{classtcp__server_a2e3b0160a3699a3fc8883afe95b52552}\label{classtcp__server_a2e3b0160a3699a3fc8883afe95b52552}} 
+void {\bfseries async\+Read} (std\+::shared\+\_\+ptr$<$ boost\+::asio\+::ip\+::tcp\+::socket $>$ socket)
+\item 
+\mbox{\Hypertarget{classtcp__server_aecaeb036913c7ca738b402f71d7c37cb}\label{classtcp__server_aecaeb036913c7ca738b402f71d7c37cb}} 
+std\+::size\+\_\+t {\bfseries find\+Index\+From\+Socket} (std\+::shared\+\_\+ptr$<$ boost\+::asio\+::ip\+::tcp\+::socket $>$ socket)
+\item 
+\mbox{\Hypertarget{classtcp__server_a5852eb3cb221e00f47faaae059248c00}\label{classtcp__server_a5852eb3cb221e00f47faaae059248c00}} 
+void {\bfseries handle\+Read} (std\+::shared\+\_\+ptr$<$ boost\+::asio\+::ip\+::tcp\+::socket $>$ socket, boost\+::system\+::error\+\_\+code const \&error, size\+\_\+t bytes\+\_\+transferred)
+\item 
+\mbox{\Hypertarget{classtcp__server_a9ab390bc33fce77febcb0d0d02f57424}\label{classtcp__server_a9ab390bc33fce77febcb0d0d02f57424}} 
+void {\bfseries send} (void)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/test/tcp\+\_\+server.\+cpp\end{DoxyCompactItemize}

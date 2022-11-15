@@ -40,35 +40,148 @@ namespace Menu {
             Menu();
             ~Menu();
             //Events
+            /**
+             * @brief Handle the events of all screen menu
+             * 
+             * @param window 
+             * @param client 
+             */
+
             void handleEvents(sf::RenderWindow &window, Client &client);
+
+            /**
+             * @brief Handle the events of the menu
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleEventsMenu(sf::Event &event, Client &client);
+
+            /**
+             * @brief Handle the events of the Lobby
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleEventsLobby(sf::Event &event, Client &client);
+
+            /**
+             * @brief Handle the events of the settings screen
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleEventsSettings(sf::Event &event);
+
+            /**
+             * @brief Handle the events of the Death
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleEventsDeath(sf::Event &event);
+
+            /**
+             * @brief Handle the events of the Pause screen
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleEventsPause(sf::Event &event);
 
+            /**
+             * @brief Handle the events of the menu
+             * 
+             * @param event 
+             * @param client 
+             */
             void handleMenu(sf::RenderWindow &window, State_menu &state, Client &client);
 
             //Menu
+            /**
+             * @brief Init menu component
+             * 
+             */
             void initMenu();
+
+            /**
+             * @brief Display the menu
+             * 
+             * @param window 
+             */
             void displayMenu(sf::RenderWindow &window);
 
             //Lobby
+
+            /**
+             * @brief Init menu lobby component
+             * 
+             */
             void initLobby();
+
+            /**
+             * @brief Display 
+             * 
+             * @param window 
+             */
             void displayLobby(sf::RenderWindow &window);
 
             //Settings
+            /**
+             * @brief Init menu settings component
+             * 
+             */
             void initSettings();
+
+            /**
+             * @brief Display settings
+             * 
+             * @param window 
+             */
             void displaySettings(sf::RenderWindow &window);
+            /**
+             * @brief Get the Fps object
+             * 
+             * @return int 
+             */
             int getFps();
+            /**
+             * @brief Get the State object
+             * 
+             * @return State_menu 
+             */
             State_menu getState();
+            /**
+             * @brief Set the State object
+             * 
+             * @param state 
+             */
             void setState(State_menu state) { _state = state; }
 
             //death screen
+
+            /**
+             * @brief Init menu death component
+             * 
+             */
             void iniDeath();
+            /**
+             * @brief Display death
+             * 
+             * @param window 
+             */
             void displayDeath(sf::RenderWindow &window);
 
+            /**
+             * @brief Init pause menu component
+             * 
+             */
             void initPause();
+            /**
+             * @brief Display Pause
+             * 
+             * @param window 
+             */
             void displayPause(sf::RenderWindow &window);
 
         private:

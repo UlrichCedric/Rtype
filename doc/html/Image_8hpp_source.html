@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>R-Type: src/client/Image.hpp Source File</title>
+<title>R-Type: src/client/utils/Image.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li><li class="navelem"><a class="el" href="dir_4e603c70a04111f621bb3388687f9e47.html">utils</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -71,7 +71,7 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">** EPITECH PROJECT, 2022</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">** B-CPP-500-NCY-5-1-rtype-marius.nowak [WSL : Ubuntu-22.04]</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">** B-CPP-500-NCY-5-1-rtype-marius.nowak [WSL : Ubuntu-22.04]</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">** File description:</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">** Image</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">*/</span></div>
@@ -86,8 +86,8 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;Health.hpp&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;../Errors.hpp&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;../game/Health.hpp&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;../../Errors.hpp&quot;</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;Config.hpp&quot;</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> constexpr <span class="keywordtype">int</span> WIDTH = 1280;</div>
@@ -99,7 +99,7 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">namespace </span>Game {</div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classGame_1_1Image.html">   29</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classGame_1_1Image.html">Image</a> {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <a class="code" href="classGame_1_1Image.html">Image</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <a class="code" href="classGame_1_1Image.html">Image</a>(<span class="keywordtype">void</span>) = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <a class="code" href="classGame_1_1Image.html">Image</a>(<span class="keyword">const</span> <a class="code" href="classGame_1_1Image.html">Image</a> &amp;) = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <a class="code" href="classGame_1_1Image.html">Image</a>(</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                std::size_t <span class="keywordtype">id</span>,</div>
@@ -135,23 +135,26 @@ $(function() {
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="keywordtype">void</span> MoveRect(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height) { _sprite.setTextureRect(sf::IntRect(x, y, width, height)); };</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            std::size_t getId(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _id; }</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            <span class="keywordtype">void</span> draw(sf::RenderWindow &amp;win) { win.draw(_sprite); }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            ~<a class="code" href="classGame_1_1Image.html">Image</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keywordtype">size_t</span> _id;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            std::string _path;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            sf::Texture _texture;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            sf::Sprite _sprite;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            sf::IntRect _rect;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordtype">float</span> _rectX;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordtype">float</span> _rectY;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keywordtype">bool</span> _isHealth;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <a class="code" href="classGame_1_1Health.html">Game::Health</a> _health;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordtype">bool</span> _isAlive;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordtype">int</span> _scene;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    };</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            ~<a class="code" href="classGame_1_1Image.html">Image</a>(<span class="keywordtype">void</span>) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            sf::Clock _clock;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordtype">size_t</span> _id;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            std::string _path;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            sf::Texture _texture;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            sf::Sprite _sprite;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            sf::IntRect _rect;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordtype">float</span> _rectX;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordtype">float</span> _rectY;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordtype">bool</span> _isHealth;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <a class="code" href="classGame_1_1Health.html">Game::Health</a> _health;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordtype">bool</span> _isAlive;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordtype">int</span> _scene;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    };</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
 <div class="ttc" id="aclassError_html"><div class="ttname"><a href="classError.html">Error</a></div><div class="ttdef"><b>Definition:</b> Error.hpp:13</div></div>
 <div class="ttc" id="aclassGame_1_1Health_html"><div class="ttname"><a href="classGame_1_1Health.html">Game::Health</a></div><div class="ttdef"><b>Definition:</b> Health.hpp:23</div></div>
 <div class="ttc" id="aclassGame_1_1Image_html"><div class="ttname"><a href="classGame_1_1Image.html">Game::Image</a></div><div class="ttdef"><b>Definition:</b> Image.hpp:29</div></div>

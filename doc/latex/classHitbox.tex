@@ -1,0 +1,191 @@
+\hypertarget{classHitbox}{}\doxysection{Hitbox Class Reference}
+\label{classHitbox}\index{Hitbox@{Hitbox}}
+
+
+This is a hitbox component.  
+
+
+
+
+{\ttfamily \#include $<$Hitbox.\+hpp$>$}
+
+Inheritance diagram for Hitbox\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classHitbox}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classHitbox_adfeee29b106180f3143af12b88c07254}\label{classHitbox_adfeee29b106180f3143af12b88c07254}} 
+{\bfseries Hitbox} (float sizeX, float sizeY, float posX, float posY)
+\item 
+\mbox{\Hypertarget{classHitbox_a587a1f8c42fa88a9d77ef7b4c0f88e09}\label{classHitbox_a587a1f8c42fa88a9d77ef7b4c0f88e09}} 
+{\bfseries Hitbox} (std\+::pair$<$ float, float $>$ size, std\+::pair$<$ float, float $>$ pos)
+\item 
+\mbox{\Hypertarget{classHitbox_a235a844442c834aea21d2a4dd3b580d1}\label{classHitbox_a235a844442c834aea21d2a4dd3b580d1}} 
+{\bfseries Hitbox} (\mbox{\hyperlink{classHitbox}{Hitbox}} \&h)
+\item 
+\mbox{\Hypertarget{classHitbox_a118aede057b6309d83446c2fe9f0a52c}\label{classHitbox_a118aede057b6309d83446c2fe9f0a52c}} 
+std\+::string {\bfseries get\+Name} (void) override
+\item 
+\mbox{\Hypertarget{classHitbox_aea0ae53e4277258a65884c02aeb4411c}\label{classHitbox_aea0ae53e4277258a65884c02aeb4411c}} 
+components {\bfseries get\+Enum} (void) override
+\item 
+\mbox{\Hypertarget{classHitbox_ab6c22de56c31935b707f4c825d92b824}\label{classHitbox_ab6c22de56c31935b707f4c825d92b824}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Size} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_ab75e3c928a75377b2254df938523fabe}\label{classHitbox_ab75e3c928a75377b2254df938523fabe}} 
+float {\bfseries get\+XSize} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_ad1f87fff76074b5c2a454efef73c73e5}\label{classHitbox_ad1f87fff76074b5c2a454efef73c73e5}} 
+float {\bfseries get\+YSize} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a08464410039ede8d8e37da213c199c17}\label{classHitbox_a08464410039ede8d8e37da213c199c17}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Pos} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_af1320e5a124a4f13aef524bda9496e02}\label{classHitbox_af1320e5a124a4f13aef524bda9496e02}} 
+float {\bfseries get\+XPos} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_aed3e2335fbec8eeacb8da3f1ab4b2c88}\label{classHitbox_aed3e2335fbec8eeacb8da3f1ab4b2c88}} 
+float {\bfseries get\+YPos} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a443e78786d9f8b2bf3cac2495ffd8ce9}\label{classHitbox_a443e78786d9f8b2bf3cac2495ffd8ce9}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Top\+Left} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a143ff8cf8761e3b47434afdd7f3bb66a}\label{classHitbox_a143ff8cf8761e3b47434afdd7f3bb66a}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Bottom\+Left} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a4a0406a7b39bd81581e9797d27529132}\label{classHitbox_a4a0406a7b39bd81581e9797d27529132}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Top\+Right} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a7f341f7843f7ddae4fa5da289f202aa0}\label{classHitbox_a7f341f7843f7ddae4fa5da289f202aa0}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Bottom\+Right} (void)
+\item 
+\mbox{\Hypertarget{classHitbox_a122bc49b167278b550c16f0ad7a76c12}\label{classHitbox_a122bc49b167278b550c16f0ad7a76c12}} 
+std\+::pair$<$ float, float $>$ {\bfseries get\+Middle} (void)
+\item 
+bool \mbox{\hyperlink{classHitbox_aa338ee152b43c60adb25d63e86d700af}{contains}} (std\+::pair$<$ float, float $>$ pos)
+\begin{DoxyCompactList}\small\item\em check if the given point is inside the hitbox \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classHitbox_a6e12fd23d0b552eee554692264caaf09}{contains}} (float x, float y)
+\begin{DoxyCompactList}\small\item\em check if the given point is inside the hitbox \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classHitbox_a5619a20360190aa6f54334011c682556}{is\+Colliding\+With}} (\mbox{\hyperlink{classHitbox}{Hitbox}} \&h2)
+\begin{DoxyCompactList}\small\item\em checks if the given hitbox touches this \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classHitbox_af9e05a74564cf5a6548a7e364a9a8550}{is\+Colliding\+With}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classHitbox}{Hitbox}} $>$ h2)
+\begin{DoxyCompactList}\small\item\em checks if the given hitbox touches this \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classHitbox_a9058eb0c0204b07c7287ed8dcb8d5983}\label{classHitbox_a9058eb0c0204b07c7287ed8dcb8d5983}} 
+void {\bfseries set\+Size} (float sizeX, float sizeY)
+\item 
+\mbox{\Hypertarget{classHitbox_a0e5604882c92977547f9e868fb6067b5}\label{classHitbox_a0e5604882c92977547f9e868fb6067b5}} 
+void {\bfseries set\+Size} (std\+::pair$<$ float, float $>$ size)
+\item 
+\mbox{\Hypertarget{classHitbox_a1ec422a7e52692268d65067d7437c7a5}\label{classHitbox_a1ec422a7e52692268d65067d7437c7a5}} 
+void {\bfseries set\+XSize} (float sizeX)
+\item 
+\mbox{\Hypertarget{classHitbox_ab4bd5cc44acc616c4e17a88c59cc2593}\label{classHitbox_ab4bd5cc44acc616c4e17a88c59cc2593}} 
+void {\bfseries set\+YSize} (float sizeY)
+\item 
+\mbox{\Hypertarget{classHitbox_ab87f00bbcdc77bcfddf9e235e8766d71}\label{classHitbox_ab87f00bbcdc77bcfddf9e235e8766d71}} 
+void {\bfseries set\+Pos} (float posX, float posY)
+\item 
+\mbox{\Hypertarget{classHitbox_ab737df55e035d0078f61fae0f25b95bb}\label{classHitbox_ab737df55e035d0078f61fae0f25b95bb}} 
+void {\bfseries set\+Pos} (std\+::pair$<$ float, float $>$ pos)
+\item 
+\mbox{\Hypertarget{classHitbox_af52804b80a439c517084567d05bff9f7}\label{classHitbox_af52804b80a439c517084567d05bff9f7}} 
+void {\bfseries set\+XPos} (float posX)
+\item 
+\mbox{\Hypertarget{classHitbox_ac1a37ce93fd2b575e95d41a059e8f8e3}\label{classHitbox_ac1a37ce93fd2b575e95d41a059e8f8e3}} 
+void {\bfseries set\+YPos} (float posY)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This is a hitbox component. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classHitbox_a6e12fd23d0b552eee554692264caaf09}\label{classHitbox_a6e12fd23d0b552eee554692264caaf09}} 
+\index{Hitbox@{Hitbox}!contains@{contains}}
+\index{contains@{contains}!Hitbox@{Hitbox}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool Hitbox\+::contains (\begin{DoxyParamCaption}\item[{float}]{x,  }\item[{float}]{y }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+check if the given point is inside the hitbox 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & the given point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the point is inside the hitbox 
+
+false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classHitbox_aa338ee152b43c60adb25d63e86d700af}\label{classHitbox_aa338ee152b43c60adb25d63e86d700af}} 
+\index{Hitbox@{Hitbox}!contains@{contains}}
+\index{contains@{contains}!Hitbox@{Hitbox}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Hitbox\+::contains (\begin{DoxyParamCaption}\item[{std\+::pair$<$ float, float $>$}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+check if the given point is inside the hitbox 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & the given point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the point is inside the hitbox 
+
+false if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classHitbox_a5619a20360190aa6f54334011c682556}\label{classHitbox_a5619a20360190aa6f54334011c682556}} 
+\index{Hitbox@{Hitbox}!isCollidingWith@{isCollidingWith}}
+\index{isCollidingWith@{isCollidingWith}!Hitbox@{Hitbox}}
+\doxysubsubsection{\texorpdfstring{isCollidingWith()}{isCollidingWith()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool Hitbox\+::is\+Colliding\+With (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classHitbox}{Hitbox}} \&}]{h2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+checks if the given hitbox touches this 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h2} & the other hitbox \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they touch 
+
+false if they do not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classHitbox_af9e05a74564cf5a6548a7e364a9a8550}\label{classHitbox_af9e05a74564cf5a6548a7e364a9a8550}} 
+\index{Hitbox@{Hitbox}!isCollidingWith@{isCollidingWith}}
+\index{isCollidingWith@{isCollidingWith}!Hitbox@{Hitbox}}
+\doxysubsubsection{\texorpdfstring{isCollidingWith()}{isCollidingWith()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Hitbox\+::is\+Colliding\+With (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classHitbox}{Hitbox}} $>$}]{h2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+checks if the given hitbox touches this 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h2} & the other hitbox \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if they touch 
+
+false if they do not 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/server/ecs/\+Components/Hitbox.\+hpp\end{DoxyCompactItemize}

@@ -16,9 +16,9 @@ Inheritance diagram for Drawable\+:\begin{figure}[H]
 \begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classDrawable}{Drawable}} object. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classDrawable_ac2721092f5fdf552ef6740e656eab976}{Drawable}} (\mbox{\hyperlink{classDrawable}{Drawable}} \&d)
 \begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classDrawable}{Drawable}} object from an existing one. \end{DoxyCompactList}\item 
-std\+::string \mbox{\hyperlink{classDrawable_a56bb2c12f61ccde180549bcb61633ab5}{get\+Name}} (void)
+std\+::string \mbox{\hyperlink{classDrawable_ae353bb86ec0419c6fe949cb0661ee77b}{get\+Name}} (void) override
 \begin{DoxyCompactList}\small\item\em Get the name of the component. \end{DoxyCompactList}\item 
-int \mbox{\hyperlink{classDrawable_acfb6f026b0c53f652e44896f0376a7ac}{get\+Enum}} (void)
+components \mbox{\hyperlink{classDrawable_a7153fe721d8dba31e58967cf64ecd4b2}{get\+Enum}} (void) override
 \begin{DoxyCompactList}\small\item\em Get the name of the component. \end{DoxyCompactList}\item 
 std\+::pair$<$ float, float $>$ \mbox{\hyperlink{classDrawable_acd0fe4e2321a2a20469cca0215873b17}{get\+Offset}} (void)
 \begin{DoxyCompactList}\small\item\em Get the Offset object. \end{DoxyCompactList}\item 
@@ -74,11 +74,11 @@ Construct a new \mbox{\hyperlink{classDrawable}{Drawable}} object from an existi
 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classDrawable_acfb6f026b0c53f652e44896f0376a7ac}\label{classDrawable_acfb6f026b0c53f652e44896f0376a7ac}} 
+\mbox{\Hypertarget{classDrawable_a7153fe721d8dba31e58967cf64ecd4b2}\label{classDrawable_a7153fe721d8dba31e58967cf64ecd4b2}} 
 \index{Drawable@{Drawable}!getEnum@{getEnum}}
 \index{getEnum@{getEnum}!Drawable@{Drawable}}
 \doxysubsubsection{\texorpdfstring{getEnum()}{getEnum()}}
-{\footnotesize\ttfamily int Drawable\+::get\+Enum (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+{\footnotesize\ttfamily components Drawable\+::get\+Enum (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
 
 
 
@@ -104,11 +104,11 @@ Get the Max Offset object.
 \begin{DoxyReturn}{Returns}
 std\+::pair$<$float, float$>$ returns the offset for the rectangle 
 \end{DoxyReturn}
-\mbox{\Hypertarget{classDrawable_a56bb2c12f61ccde180549bcb61633ab5}\label{classDrawable_a56bb2c12f61ccde180549bcb61633ab5}} 
+\mbox{\Hypertarget{classDrawable_ae353bb86ec0419c6fe949cb0661ee77b}\label{classDrawable_ae353bb86ec0419c6fe949cb0661ee77b}} 
 \index{Drawable@{Drawable}!getName@{getName}}
 \index{getName@{getName}!Drawable@{Drawable}}
 \doxysubsubsection{\texorpdfstring{getName()}{getName()}}
-{\footnotesize\ttfamily std\+::string Drawable\+::get\+Name (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+{\footnotesize\ttfamily std\+::string Drawable\+::get\+Name (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
 
 
 

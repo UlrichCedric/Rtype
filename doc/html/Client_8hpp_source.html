@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>R-Type: src/client/Client.hpp Source File</title>
+<title>R-Type: src/client/game/Client.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li><li class="navelem"><a class="el" href="dir_4e216fde05fea1968aa059559682add7.html">game</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -78,56 +78,78 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;boost/uuid/uuid_generators.hpp&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;boost/thread/thread.hpp&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;boost/thread/thread.hpp&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../Common.hpp&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;Image.hpp&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;../../Common.hpp&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../utils/Image.hpp&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classClient.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classClient.html">Client</a> {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="classClient.html">Client</a>(std::string ip, std::size_t port)</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        : _receiver_endpoint(boost::asio::ip::address::from_string(<span class="stringliteral">&quot;127.0.0.1&quot;</span>), 10001), _socket(_io_context), _player_pos({0, 0})</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            _socket.open(boost::asio::ip::udp::v4());</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        : _receiver_endpoint(boost::asio::ip::address::from_string(ip), 10001),</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0}), _empty_uuid({})</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        {</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            _uuid = boost::uuids::random_generator()();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            _canReceiveData = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            std::thread thread(&amp;Client::handleThread, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="comment">// peut être intéressant pour tcp : boost::thread t = boost::thread(&amp;Client::handleThread, boost::ref(socket));</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            thread.detach();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordtype">void</span> sendData(<span class="keyword">enum</span> Input action);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">void</span> asyncSendData(<span class="keyword">enum</span> Input action);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keywordtype">void</span> handleSendData(<span class="keyword">const</span> boost::system::error_code&amp; error, std::size_t <span class="comment">/*bytes_transferred*/</span>);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">void</span> receiveData(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">void</span> handleInitSpriteData(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordtype">void</span> handleSpriteData(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classClient.html#a56639639d2932796911a6b92c3666910">asyncReceiveData</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">void</span> handleReceiveData(<span class="keyword">const</span> boost::system::error_code&amp; error, std::size_t <span class="comment">/*bytes_transferred*/</span>);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">void</span> handleThread(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">void</span> setCanReceiveData(<span class="keywordtype">bool</span> canReceiveData);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        ~<a class="code" href="classClient.html">Client</a>() {  };</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        boost::uuids::uuid getUuid(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        std::pair&lt;float, float&gt; getPlayerPos(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classClient.html#a43f7a281a9cc2209b48704d0b8df24e6">   48</a></span>&#160;        std::vector&lt;Game::Image&gt; <a class="code" href="classClient.html#a43f7a281a9cc2209b48704d0b8df24e6">_images</a>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        boost::asio::io_context _io_context;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        boost::asio::ip::udp::endpoint _receiver_endpoint;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        boost::asio::ip::udp::socket _socket;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        std::string _ip;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        std::size_t _port;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        boost::uuids::uuid _uuid;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">union </span>{ boost::array&lt;Data, 1&gt; _recv_buf; }; <span class="comment">// avoid Client to try to destroy _recv_buf when destructing</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        std::pair&lt;float, float&gt; _player_pos;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordtype">bool</span> _canReceiveData;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            <span class="comment">// TCP:</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(ip), 1234));</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            } <span class="keywordflow">catch</span> (<span class="keyword">const</span> boost::system::system_error&amp; error) {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                std::cout &lt;&lt; <span class="stringliteral">&quot;Impossible de se connecter au serveur&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordtype">void</span> sendData(<span class="keyword">enum</span> Input action);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordtype">void</span> asyncSendData(<span class="keyword">enum</span> Input action);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordtype">void</span> handleSendData(<span class="keyword">const</span> boost::system::error_code&amp; error, std::size_t <span class="comment">/*bytes_transferred*/</span>);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">void</span> receiveData(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classClient.html#a4a892d65bb93932d56bf935677b2bd3e">handleInitSpriteData</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classClient.html#a8c1063f59084b9218d95e7336a92b3af">handleSpriteData</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classClient.html#a56639639d2932796911a6b92c3666910">asyncReceiveData</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classClient.html#a3b698c0ab77d94c6b433ffb96dbf6208">handleReceiveData</a>(<span class="keyword">const</span> boost::system::error_code&amp; error, std::size_t <span class="comment">/*bytes_transferred*/</span>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">void</span> handleThread(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">void</span> setCanReceiveData(<span class="keywordtype">bool</span> canReceiveData);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">void</span> createLobby(std::string name);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">void</span> joinLobby(boost::uuids::uuid uuid);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">void</span> writeLobbyData(<span class="keywordtype">bool</span> ask, <span class="keywordtype">bool</span> create, <span class="keywordtype">bool</span> join, std::string name = <span class="stringliteral">&quot;&quot;</span>, std::size_t nb_players = 0, std::size_t size = 0, boost::uuids::uuid lobby_uuid = {});</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">void</span> readData(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::vector&lt;Lobby&gt; getLobbies(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordtype">void</span> asyncGetLobbies(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> handleGetLobbies(boost::system::error_code <span class="keyword">const</span>&amp; error, <span class="keywordtype">size_t</span> bytes_transferred);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">int</span> getHp(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span> _health; };</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        ~<a class="code" href="classClient.html">Client</a>(<span class="keywordtype">void</span>) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        boost::uuids::uuid <a class="code" href="classClient.html#ac16900e55248d57d241e4b3717b96c34">getUuid</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        std::pair&lt;float, float&gt; <a class="code" href="classClient.html#a22d7f0a325f51e1fd3d0594ba9261c1c">getPlayerPos</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        std::vector&lt;std::pair&lt;float, float&gt;&gt; getOthersPos(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classClient.html#ad918063119e00b1f9c467a1b09ddeeed">   61</a></span>&#160;        std::vector&lt;std::shared_ptr&lt;Game::Image&gt;&gt; <a class="code" href="classClient.html#ad918063119e00b1f9c467a1b09ddeeed">_ennemies</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        boost::asio::io_context _io_context;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        boost::asio::ip::udp::endpoint _receiver_endpoint;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        boost::asio::ip::udp::socket _udp_socket;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        boost::asio::ip::tcp::socket _tcp_socket;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::string _ip;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        std::size_t _port;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        boost::uuids::uuid _uuid;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        boost::uuids::uuid _empty_uuid;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">union </span>{ boost::array&lt;Data, 1&gt; _recv_buf; }; <span class="comment">// avoid Client to try to destroy _recv_buf when destructing</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        std::pair&lt;float, float&gt; _player_pos;    <span class="comment">// client player position</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        std::vector&lt;std::pair&lt;float, float&gt;&gt; _others_pos;   <span class="comment">// other players&#39; position</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">bool</span> _canReceiveData;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">int</span> _health;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
 <div class="ttc" id="aclassClient_html"><div class="ttname"><a href="classClient.html">Client</a></div><div class="ttdef"><b>Definition:</b> Client.hpp:16</div></div>
-<div class="ttc" id="aclassClient_html_a43f7a281a9cc2209b48704d0b8df24e6"><div class="ttname"><a href="classClient.html#a43f7a281a9cc2209b48704d0b8df24e6">Client::_images</a></div><div class="ttdeci">std::vector&lt; Game::Image &gt; _images</div><div class="ttdoc">our image list</div><div class="ttdef"><b>Definition:</b> Client.hpp:48</div></div>
-<div class="ttc" id="aclassClient_html_a56639639d2932796911a6b92c3666910"><div class="ttname"><a href="classClient.html#a56639639d2932796911a6b92c3666910">Client::asyncReceiveData</a></div><div class="ttdeci">void asyncReceiveData(void)</div><div class="ttdef"><b>Definition:</b> Client.cpp:113</div></div>
+<div class="ttc" id="aclassClient_html_a22d7f0a325f51e1fd3d0594ba9261c1c"><div class="ttname"><a href="classClient.html#a22d7f0a325f51e1fd3d0594ba9261c1c">Client::getPlayerPos</a></div><div class="ttdeci">std::pair&lt; float, float &gt; getPlayerPos(void)</div><div class="ttdoc">Returns the current player position.</div><div class="ttdef"><b>Definition:</b> Client.cpp:174</div></div>
+<div class="ttc" id="aclassClient_html_a3b698c0ab77d94c6b433ffb96dbf6208"><div class="ttname"><a href="classClient.html#a3b698c0ab77d94c6b433ffb96dbf6208">Client::handleReceiveData</a></div><div class="ttdeci">void handleReceiveData(const boost::system::error_code &amp;error, std::size_t)</div><div class="ttdoc">This one is actually unused.</div><div class="ttdef"><b>Definition:</b> Client.cpp:149</div></div>
+<div class="ttc" id="aclassClient_html_a4a892d65bb93932d56bf935677b2bd3e"><div class="ttname"><a href="classClient.html#a4a892d65bb93932d56bf935677b2bd3e">Client::handleInitSpriteData</a></div><div class="ttdeci">void handleInitSpriteData(void)</div><div class="ttdoc">Called when you received a InitSpriteData from the server.</div><div class="ttdef"><b>Definition:</b> Client.cpp:63</div></div>
+<div class="ttc" id="aclassClient_html_a56639639d2932796911a6b92c3666910"><div class="ttname"><a href="classClient.html#a56639639d2932796911a6b92c3666910">Client::asyncReceiveData</a></div><div class="ttdeci">void asyncReceiveData(void)</div><div class="ttdef"><b>Definition:</b> Client.cpp:118</div></div>
+<div class="ttc" id="aclassClient_html_a8c1063f59084b9218d95e7336a92b3af"><div class="ttname"><a href="classClient.html#a8c1063f59084b9218d95e7336a92b3af">Client::handleSpriteData</a></div><div class="ttdeci">void handleSpriteData(void)</div><div class="ttdoc">Called when you received a SpriteData from the server.</div><div class="ttdef"><b>Definition:</b> Client.cpp:83</div></div>
+<div class="ttc" id="aclassClient_html_ac16900e55248d57d241e4b3717b96c34"><div class="ttname"><a href="classClient.html#ac16900e55248d57d241e4b3717b96c34">Client::getUuid</a></div><div class="ttdeci">boost::uuids::uuid getUuid(void)</div><div class="ttdoc">Returns the UUID of the client.</div><div class="ttdef"><b>Definition:</b> Client.cpp:164</div></div>
+<div class="ttc" id="aclassClient_html_ad918063119e00b1f9c467a1b09ddeeed"><div class="ttname"><a href="classClient.html#ad918063119e00b1f9c467a1b09ddeeed">Client::_ennemies</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Game::Image &gt; &gt; _ennemies</div><div class="ttdoc">our image list</div><div class="ttdef"><b>Definition:</b> Client.hpp:61</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

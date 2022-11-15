@@ -91,12 +91,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac2721092f5fdf552ef6740e656eab976"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#ac2721092f5fdf552ef6740e656eab976">Drawable</a> (<a class="el" href="classDrawable.html">Drawable</a> &amp;d)</td></tr>
 <tr class="memdesc:ac2721092f5fdf552ef6740e656eab976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classDrawable.html">Drawable</a> object from an existing one.  <a href="classDrawable.html#ac2721092f5fdf552ef6740e656eab976">More...</a><br /></td></tr>
 <tr class="separator:ac2721092f5fdf552ef6740e656eab976"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56bb2c12f61ccde180549bcb61633ab5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#a56bb2c12f61ccde180549bcb61633ab5">getName</a> (void)</td></tr>
-<tr class="memdesc:a56bb2c12f61ccde180549bcb61633ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the component.  <a href="classDrawable.html#a56bb2c12f61ccde180549bcb61633ab5">More...</a><br /></td></tr>
-<tr class="separator:a56bb2c12f61ccde180549bcb61633ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfb6f026b0c53f652e44896f0376a7ac"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#acfb6f026b0c53f652e44896f0376a7ac">getEnum</a> (void)</td></tr>
-<tr class="memdesc:acfb6f026b0c53f652e44896f0376a7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the component.  <a href="classDrawable.html#acfb6f026b0c53f652e44896f0376a7ac">More...</a><br /></td></tr>
-<tr class="separator:acfb6f026b0c53f652e44896f0376a7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae353bb86ec0419c6fe949cb0661ee77b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#ae353bb86ec0419c6fe949cb0661ee77b">getName</a> (void) override</td></tr>
+<tr class="memdesc:ae353bb86ec0419c6fe949cb0661ee77b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the component.  <a href="classDrawable.html#ae353bb86ec0419c6fe949cb0661ee77b">More...</a><br /></td></tr>
+<tr class="separator:ae353bb86ec0419c6fe949cb0661ee77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7153fe721d8dba31e58967cf64ecd4b2"><td class="memItemLeft" align="right" valign="top">components&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#a7153fe721d8dba31e58967cf64ecd4b2">getEnum</a> (void) override</td></tr>
+<tr class="memdesc:a7153fe721d8dba31e58967cf64ecd4b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the name of the component.  <a href="classDrawable.html#a7153fe721d8dba31e58967cf64ecd4b2">More...</a><br /></td></tr>
+<tr class="separator:a7153fe721d8dba31e58967cf64ecd4b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd0fe4e2321a2a20469cca0215873b17"><td class="memItemLeft" align="right" valign="top">std::pair&lt; float, float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrawable.html#acd0fe4e2321a2a20469cca0215873b17">getOffset</a> (void)</td></tr>
 <tr class="memdesc:acd0fe4e2321a2a20469cca0215873b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the Offset object.  <a href="classDrawable.html#acd0fe4e2321a2a20469cca0215873b17">More...</a><br /></td></tr>
 <tr class="separator:acd0fe4e2321a2a20469cca0215873b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,8 +211,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="acfb6f026b0c53f652e44896f0376a7ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfb6f026b0c53f652e44896f0376a7ac">&#9670;&nbsp;</a></span>getEnum()</h2>
+<a id="a7153fe721d8dba31e58967cf64ecd4b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7153fe721d8dba31e58967cf64ecd4b2">&#9670;&nbsp;</a></span>getEnum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,7 +221,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int Drawable::getEnum </td>
+          <td class="memname">components Drawable::getEnum </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -230,7 +230,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -271,8 +271,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a56bb2c12f61ccde180549bcb61633ab5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56bb2c12f61ccde180549bcb61633ab5">&#9670;&nbsp;</a></span>getName()</h2>
+<a id="ae353bb86ec0419c6fe949cb0661ee77b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae353bb86ec0419c6fe949cb0661ee77b">&#9670;&nbsp;</a></span>getName()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +290,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

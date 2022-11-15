@@ -86,79 +86,114 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;boost/bind/bind.hpp&gt;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;boost/uuid/uuid.hpp&gt;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;boost/uuid/uuid_io.hpp&gt;</span> <span class="comment">// &lt;iostream&gt; for uuid</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">enum</span> Input {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    UP,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    DOWN,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    LEFT,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    RIGHT,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    SPACE,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    NONE</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;};</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structAction.html">   33</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAction.html">Action</a> {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">enum</span> Input input;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    boost::uuids::uuid uuid;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;} <a class="code" href="structAction.html">Action</a>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;boost/uuid/uuid_generators.hpp&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">enum</span> State {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    MENU,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    GAME,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    PAUSE,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    LOSE,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    WIN,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    END,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">enum</span> Input {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    UP,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    DOWN,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    LEFT,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    RIGHT,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    SPACE,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    NONE</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;};</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">    List of sprites that can move:</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">        - Players</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">        - Projectiles</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">        - Ennemies</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structSpriteData.html">   49</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structSpriteData.html">SpriteData</a> {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    std::size_t id;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    std::pair&lt;float, float&gt; coords;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">int</span> health;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structInitSpriteData.html">   63</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structInitSpriteData.html">InitSpriteData</a> {</div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">   68</a></span>&#160;    std::size_t <a class="code" href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">id</a>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#a0afad6e3baaf03aa8d3abbbd8e0ff030">   74</a></span>&#160;    std::string <a class="code" href="structInitSpriteData.html#a0afad6e3baaf03aa8d3abbbd8e0ff030">path</a>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">   80</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">coords</a>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">   86</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">scale</a>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">   92</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">maxSize</a>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">   98</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">health</a>;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> operator==(<span class="keyword">const</span> <a class="code" href="structInitSpriteData.html">InitSpriteData</a> &amp;e1, <span class="keyword">const</span> <a class="code" href="structInitSpriteData.html">InitSpriteData</a> &amp;e2) -&gt; <span class="keywordtype">bool</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;{</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">return</span> (</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        e1.id == e2.id &amp;&amp;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        e1.path == e2.path &amp;&amp;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        e1.coords == e2.coords &amp;&amp;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        e1.scale == e2.scale &amp;&amp;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        e1.maxSize == e2.maxSize</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    );</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">enum</span> Type {</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    InitSpriteDataType,</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    SpriteDataType,</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    Loose</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;};</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="structData.html">  118</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structData.html">Data</a> {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">enum</span> Type type;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    boost::array&lt;SpriteData, 16&gt; spriteDatas;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    boost::array&lt;InitSpriteData, 16&gt; initSpriteDatas;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;};</div>
-<div class="ttc" id="astructAction_html"><div class="ttname"><a href="structAction.html">Action</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:33</div></div>
-<div class="ttc" id="astructData_html"><div class="ttname"><a href="structData.html">Data</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:118</div></div>
-<div class="ttc" id="astructInitSpriteData_html"><div class="ttname"><a href="structInitSpriteData.html">InitSpriteData</a></div><div class="ttdoc">Struct to init a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:63</div></div>
-<div class="ttc" id="astructInitSpriteData_html_a0afad6e3baaf03aa8d3abbbd8e0ff030"><div class="ttname"><a href="structInitSpriteData.html#a0afad6e3baaf03aa8d3abbbd8e0ff030">InitSpriteData::path</a></div><div class="ttdeci">std::string path</div><div class="ttdoc">Path of the texture.</div><div class="ttdef"><b>Definition:</b> Common.hpp:74</div></div>
-<div class="ttc" id="astructInitSpriteData_html_a5b1e414d1c89845c8cce58520f9da889"><div class="ttname"><a href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">InitSpriteData::maxSize</a></div><div class="ttdeci">std::pair&lt; float, float &gt; maxSize</div><div class="ttdoc">Max size of the rect.</div><div class="ttdef"><b>Definition:</b> Common.hpp:92</div></div>
-<div class="ttc" id="astructInitSpriteData_html_abd64acc4e3ed3132987c8d0b3d3c91a8"><div class="ttname"><a href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">InitSpriteData::id</a></div><div class="ttdeci">std::size_t id</div><div class="ttdoc">id of the sprite</div><div class="ttdef"><b>Definition:</b> Common.hpp:68</div></div>
-<div class="ttc" id="astructInitSpriteData_html_ac645e907c69bc173aaa7b38e4935e44a"><div class="ttname"><a href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">InitSpriteData::coords</a></div><div class="ttdeci">std::pair&lt; float, float &gt; coords</div><div class="ttdoc">Spawn coordinates.</div><div class="ttdef"><b>Definition:</b> Common.hpp:80</div></div>
-<div class="ttc" id="astructInitSpriteData_html_acffc2b2ea78913778bfb67c0ca320862"><div class="ttname"><a href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">InitSpriteData::scale</a></div><div class="ttdeci">std::pair&lt; float, float &gt; scale</div><div class="ttdoc">Scale of the sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:86</div></div>
-<div class="ttc" id="astructInitSpriteData_html_afb5604293dcf7870ecfbb19a64fc37d1"><div class="ttname"><a href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">InitSpriteData::health</a></div><div class="ttdeci">int health</div><div class="ttdoc">Health of the entity.</div><div class="ttdef"><b>Definition:</b> Common.hpp:98</div></div>
-<div class="ttc" id="astructSpriteData_html"><div class="ttname"><a href="structSpriteData.html">SpriteData</a></div><div class="ttdoc">Struct to update a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:49</div></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structAction.html">   43</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structAction.html">Action</a> {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">enum</span> Input input;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    boost::uuids::uuid uuid;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;} <a class="code" href="structAction.html">Action</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">    List of sprites that can move:</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">        - Players</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">        - Projectiles</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">        - Ennemies</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structSpriteData.html">   59</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structSpriteData.html">SpriteData</a> {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    std::size_t id;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::pair&lt;float, float&gt; coords;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">int</span> health;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structInitSpriteData.html">   73</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structInitSpriteData.html">InitSpriteData</a> {</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">   78</a></span>&#160;    std::size_t <a class="code" href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">id</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#a0902b823e61b2c1cd68fd31d78c745a0">   84</a></span>&#160;    <span class="keywordtype">char</span> <a class="code" href="structInitSpriteData.html#a0902b823e61b2c1cd68fd31d78c745a0">path</a>[128];</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">   90</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">coords</a>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">   96</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">scale</a>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">  102</a></span>&#160;    std::pair&lt;float, float&gt; <a class="code" href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">maxSize</a>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">  108</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">health</a>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;};</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> operator==(<span class="keyword">const</span> <a class="code" href="structInitSpriteData.html">InitSpriteData</a> &amp;e1, <span class="keyword">const</span> <a class="code" href="structInitSpriteData.html">InitSpriteData</a> &amp;e2) -&gt; <span class="keywordtype">bool</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;{</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">return</span> (</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        e1.id == e2.id &amp;&amp;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        e1.path == e2.path &amp;&amp;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        e1.coords == e2.coords &amp;&amp;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        e1.scale == e2.scale &amp;&amp;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        e1.maxSize == e2.maxSize</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    );</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">enum</span> Status {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    OPEN,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    CLOSE</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;};</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">enum</span> Response {</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    FORBIDDEN,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    OK</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;};</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="structLobby.html">  132</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structLobby.html">Lobby</a> {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    boost::uuids::uuid player_uuid;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">bool</span> askForLobbies;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordtype">bool</span> create;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordtype">bool</span> join;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    std::array&lt;char, 64&gt; name;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    std::size_t nb_players;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    std::size_t size;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    boost::uuids::uuid lobby_uuid;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keyword">enum</span> Status status;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;} <a class="code" href="structLobby.html">Lobby</a>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keyword">enum</span> Type {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    InitSpriteDataType,</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    SpriteDataType,</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    LobbyType,</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    Loose</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;};</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="structData.html">  151</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structData.html">Data</a> {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">enum</span> Type type;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    boost::array&lt;SpriteData, 16&gt; spriteDatas;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    boost::array&lt;InitSpriteData, 16&gt; initSpriteDatas;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    boost::array&lt;Lobby, 16&gt; lobbies;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;};</div>
+<div class="ttc" id="astructAction_html"><div class="ttname"><a href="structAction.html">Action</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:43</div></div>
+<div class="ttc" id="astructData_html"><div class="ttname"><a href="structData.html">Data</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:151</div></div>
+<div class="ttc" id="astructInitSpriteData_html"><div class="ttname"><a href="structInitSpriteData.html">InitSpriteData</a></div><div class="ttdoc">Struct to init a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:73</div></div>
+<div class="ttc" id="astructInitSpriteData_html_a0902b823e61b2c1cd68fd31d78c745a0"><div class="ttname"><a href="structInitSpriteData.html#a0902b823e61b2c1cd68fd31d78c745a0">InitSpriteData::path</a></div><div class="ttdeci">char path[128]</div><div class="ttdoc">Path of the texture.</div><div class="ttdef"><b>Definition:</b> Common.hpp:84</div></div>
+<div class="ttc" id="astructInitSpriteData_html_a5b1e414d1c89845c8cce58520f9da889"><div class="ttname"><a href="structInitSpriteData.html#a5b1e414d1c89845c8cce58520f9da889">InitSpriteData::maxSize</a></div><div class="ttdeci">std::pair&lt; float, float &gt; maxSize</div><div class="ttdoc">Max size of the rect.</div><div class="ttdef"><b>Definition:</b> Common.hpp:102</div></div>
+<div class="ttc" id="astructInitSpriteData_html_abd64acc4e3ed3132987c8d0b3d3c91a8"><div class="ttname"><a href="structInitSpriteData.html#abd64acc4e3ed3132987c8d0b3d3c91a8">InitSpriteData::id</a></div><div class="ttdeci">std::size_t id</div><div class="ttdoc">id of the sprite</div><div class="ttdef"><b>Definition:</b> Common.hpp:78</div></div>
+<div class="ttc" id="astructInitSpriteData_html_ac645e907c69bc173aaa7b38e4935e44a"><div class="ttname"><a href="structInitSpriteData.html#ac645e907c69bc173aaa7b38e4935e44a">InitSpriteData::coords</a></div><div class="ttdeci">std::pair&lt; float, float &gt; coords</div><div class="ttdoc">Spawn coordinates.</div><div class="ttdef"><b>Definition:</b> Common.hpp:90</div></div>
+<div class="ttc" id="astructInitSpriteData_html_acffc2b2ea78913778bfb67c0ca320862"><div class="ttname"><a href="structInitSpriteData.html#acffc2b2ea78913778bfb67c0ca320862">InitSpriteData::scale</a></div><div class="ttdeci">std::pair&lt; float, float &gt; scale</div><div class="ttdoc">Scale of the sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:96</div></div>
+<div class="ttc" id="astructInitSpriteData_html_afb5604293dcf7870ecfbb19a64fc37d1"><div class="ttname"><a href="structInitSpriteData.html#afb5604293dcf7870ecfbb19a64fc37d1">InitSpriteData::health</a></div><div class="ttdeci">int health</div><div class="ttdoc">Health of the entity.</div><div class="ttdef"><b>Definition:</b> Common.hpp:108</div></div>
+<div class="ttc" id="astructLobby_html"><div class="ttname"><a href="structLobby.html">Lobby</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:132</div></div>
+<div class="ttc" id="astructSpriteData_html"><div class="ttname"><a href="structSpriteData.html">SpriteData</a></div><div class="ttdoc">Struct to update a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:59</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>R-Type: src/client/Button.hpp Source File</title>
+<title>R-Type: src/client/utils/Button.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6908ff505388a07996d238c763adbdab.html">client</a></li><li class="navelem"><a class="el" href="dir_4e603c70a04111f621bb3388687f9e47.html">utils</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -77,21 +77,59 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;Image.hpp&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>Menu {</div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classMenu_1_1Button.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classMenu_1_1Button.html">Button</a> {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <a class="code" href="classMenu_1_1Button.html">Button</a>();</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <span class="keywordtype">bool</span> IsClicked(sf::Vector2i mousePos);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordtype">void</span> IsHover(sf::Vector2i mousePos);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            ~<a class="code" href="classMenu_1_1Button.html">Button</a>();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <a class="code" href="classGame_1_1Image.html">Game::Image</a> _image;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            sf::Color _color;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    };</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
-<div class="ttc" id="aclassGame_1_1Image_html"><div class="ttname"><a href="classGame_1_1Image.html">Game::Image</a></div><div class="ttdef"><b>Definition:</b> Image.hpp:29</div></div>
-<div class="ttc" id="aclassMenu_1_1Button_html"><div class="ttname"><a href="classMenu_1_1Button.html">Menu::Button</a></div><div class="ttdef"><b>Definition:</b> Button.hpp:12</div></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics/RenderWindow.hpp&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;SFML/Window/VideoMode.hpp&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;SFML/Window/WindowStyle.hpp&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;../../Errors.hpp&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;SFML/Audio.hpp&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics.hpp&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;Config.hpp&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">// namespace Menu {</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//     class Button {</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//         public:</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">//             Button();</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">//             bool IsClicked(sf::Vector2i mousePos);</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">//             void IsHover(sf::Vector2i mousePos);</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">//             ~Button();</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">//             Game::Image _image;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">//             sf::Color _color;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">//     };</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">// }</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classButton.html">   31</a></span>&#160;<span class="keyword">class </span><a class="code" href="classButton.html">Button</a> {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">enum</span> COLOR_CODE {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            BLACK = 0,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            WHITE = 1,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        };</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <a class="code" href="classButton.html">Button</a>() {};</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        ~<a class="code" href="classButton.html">Button</a>() {};</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#a3062d54bd4d5dee159b8a12159551e94">setColorRect</a>(COLOR_CODE fill_color, COLOR_CODE outline_color, <span class="keywordtype">float</span> outline_thickness);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#a25f2e0e0253468bd45cb370d49d5c899">setPos</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#aad8dccffb2940c1c44d2e515d124143c">setText</a>(std::string text);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#a921372515b997cae1d086098a4894f18">setFont</a>(std::string path);</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classButton.html#acd0957ef6b3f74123b249155511fa083">   48</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#acd0957ef6b3f74123b249155511fa083">setFontSize</a>(<span class="keywordtype">int</span> size) {_item.setCharacterSize(size); _rect.setSize(sf::Vector2f(_data.getSize() * 17 + 20, size + 20));};</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classButton.html#afbbfeb5ea8e713daad5837a01c6aec73">   50</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#afbbfeb5ea8e713daad5837a01c6aec73">setFontColor</a>(sf::Color color) {_item.setFillColor(color);};</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classButton.html#a52cb01374ecce382f2d4deaa0d574ef1">   52</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#a52cb01374ecce382f2d4deaa0d574ef1">setFontStyle</a>(sf::Text::Style style) {_item.setStyle(style);};</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classButton.html#adf65892636ea303a84e1391106ea7cb0">draw</a>(sf::RenderWindow &amp;window);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        sf::Font _font;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        sf::Text _item;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        sf::String _data;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        sf::RectangleShape _rect;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    };</div>
+<div class="ttc" id="aclassButton_html"><div class="ttname"><a href="classButton.html">Button</a></div><div class="ttdef"><b>Definition:</b> Button.hpp:31</div></div>
+<div class="ttc" id="aclassButton_html_a25f2e0e0253468bd45cb370d49d5c899"><div class="ttname"><a href="classButton.html#a25f2e0e0253468bd45cb370d49d5c899">Button::setPos</a></div><div class="ttdeci">void setPos(int x, int y)</div><div class="ttdoc">set the position of the text</div><div class="ttdef"><b>Definition:</b> Button.cpp:65</div></div>
+<div class="ttc" id="aclassButton_html_a3062d54bd4d5dee159b8a12159551e94"><div class="ttname"><a href="classButton.html#a3062d54bd4d5dee159b8a12159551e94">Button::setColorRect</a></div><div class="ttdeci">void setColorRect(COLOR_CODE fill_color, COLOR_CODE outline_color, float outline_thickness)</div><div class="ttdoc">set the color of rect behind</div><div class="ttdef"><b>Definition:</b> Button.cpp:38</div></div>
+<div class="ttc" id="aclassButton_html_a52cb01374ecce382f2d4deaa0d574ef1"><div class="ttname"><a href="classButton.html#a52cb01374ecce382f2d4deaa0d574ef1">Button::setFontStyle</a></div><div class="ttdeci">void setFontStyle(sf::Text::Style style)</div><div class="ttdoc">set the the style of the text</div><div class="ttdef"><b>Definition:</b> Button.hpp:52</div></div>
+<div class="ttc" id="aclassButton_html_a921372515b997cae1d086098a4894f18"><div class="ttname"><a href="classButton.html#a921372515b997cae1d086098a4894f18">Button::setFont</a></div><div class="ttdeci">void setFont(std::string path)</div><div class="ttdoc">set the the font</div><div class="ttdef"><b>Definition:</b> Button.cpp:59</div></div>
+<div class="ttc" id="aclassButton_html_aad8dccffb2940c1c44d2e515d124143c"><div class="ttname"><a href="classButton.html#aad8dccffb2940c1c44d2e515d124143c">Button::setText</a></div><div class="ttdeci">void setText(std::string text)</div><div class="ttdoc">set the the text</div><div class="ttdef"><b>Definition:</b> Button.cpp:53</div></div>
+<div class="ttc" id="aclassButton_html_acd0957ef6b3f74123b249155511fa083"><div class="ttname"><a href="classButton.html#acd0957ef6b3f74123b249155511fa083">Button::setFontSize</a></div><div class="ttdeci">void setFontSize(int size)</div><div class="ttdoc">set the the size of the text</div><div class="ttdef"><b>Definition:</b> Button.hpp:48</div></div>
+<div class="ttc" id="aclassButton_html_adf65892636ea303a84e1391106ea7cb0"><div class="ttname"><a href="classButton.html#adf65892636ea303a84e1391106ea7cb0">Button::draw</a></div><div class="ttdeci">void draw(sf::RenderWindow &amp;window)</div><div class="ttdoc">draw the text with the rect behind</div><div class="ttdef"><b>Definition:</b> Button.cpp:71</div></div>
+<div class="ttc" id="aclassButton_html_afbbfeb5ea8e713daad5837a01c6aec73"><div class="ttname"><a href="classButton.html#afbbfeb5ea8e713daad5837a01c6aec73">Button::setFontColor</a></div><div class="ttdeci">void setFontColor(sf::Color color)</div><div class="ttdoc">set the the color of the text</div><div class="ttdef"><b>Definition:</b> Button.hpp:50</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -3,39 +3,289 @@
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classMenu_1_1Menu_ac419e4e2e2ae422ab689efb2aec970d3}\label{classMenu_1_1Menu_ac419e4e2e2ae422ab689efb2aec970d3}} 
-void {\bfseries handle\+Events} (sf\+::\+Render\+Window \&window)
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_a73af18b37bc9686c003abb2a263cb468}\label{classMenu_1_1Menu_a73af18b37bc9686c003abb2a263cb468}} 
-void {\bfseries handle\+Events\+Menu} (sf\+::\+Event \&event)
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_a3181e5d017884a9b99adb798ceb99263}\label{classMenu_1_1Menu_a3181e5d017884a9b99adb798ceb99263}} 
-void {\bfseries handle\+Events\+Lobby} (sf\+::\+Event \&event)
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_a41bea5177c9a03d483cde3f88b97dfac}\label{classMenu_1_1Menu_a41bea5177c9a03d483cde3f88b97dfac}} 
-void {\bfseries handle\+Events\+Settings} (sf\+::\+Event \&event)
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_acb0642473200d56a96df3be7a4004f04}\label{classMenu_1_1Menu_acb0642473200d56a96df3be7a4004f04}} 
-void {\bfseries handle\+Menu} (sf\+::\+Render\+Window \&window)
-\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_ac6b93559935dd1563f980ceef68e117d}{handle\+Events}} (sf\+::\+Render\+Window \&window, \mbox{\hyperlink{classClient}{Client}} \&client)
+\begin{DoxyCompactList}\small\item\em Handle the events of all screen menu. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_acca9ed589429698fbff643311ec47364}{handle\+Events\+Menu}} (sf\+::\+Event \&event, \mbox{\hyperlink{classClient}{Client}} \&client)
+\begin{DoxyCompactList}\small\item\em Handle the events of the menu. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a5240deabeb7a9c8a7097c2b03c414690}{handle\+Events\+Lobby}} (sf\+::\+Event \&event, \mbox{\hyperlink{classClient}{Client}} \&client)
+\begin{DoxyCompactList}\small\item\em Handle the events of the \mbox{\hyperlink{structLobby}{Lobby}}. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a41bea5177c9a03d483cde3f88b97dfac}{handle\+Events\+Settings}} (sf\+::\+Event \&event)
+\begin{DoxyCompactList}\small\item\em Handle the events of the settings screen. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a45f2e8164e89727745c3721196b3f8b7}{handle\+Events\+Death}} (sf\+::\+Event \&event)
+\begin{DoxyCompactList}\small\item\em Handle the events of the Death. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a800fb04bc0b3cbb239bf7c82053733ea}{handle\+Events\+Pause}} (sf\+::\+Event \&event)
+\begin{DoxyCompactList}\small\item\em Handle the events of the Pause screen. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a2280b4aa9b3d3631e8c37f12bc94cf62}{handle\+Menu}} (sf\+::\+Render\+Window \&window, State\+\_\+menu \&state, \mbox{\hyperlink{classClient}{Client}} \&client)
+\begin{DoxyCompactList}\small\item\em Handle the events of the menu. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classMenu_1_1Menu_ae58b2a64b171c9f08d6dab52a2dd2768}\label{classMenu_1_1Menu_ae58b2a64b171c9f08d6dab52a2dd2768}} 
-void {\bfseries init\+Menu} ()
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_a0d369d081f2298de13771155dc7334b4}\label{classMenu_1_1Menu_a0d369d081f2298de13771155dc7334b4}} 
-void {\bfseries display\+Menu} (sf\+::\+Render\+Window \&window)
-\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_ae58b2a64b171c9f08d6dab52a2dd2768}{init\+Menu}} ()
+\begin{DoxyCompactList}\small\item\em Init menu component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a0d369d081f2298de13771155dc7334b4}{display\+Menu}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Display the menu. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classMenu_1_1Menu_a4d81e14f43f886f90331b317426b1269}\label{classMenu_1_1Menu_a4d81e14f43f886f90331b317426b1269}} 
-void {\bfseries init\+Lobby} ()
-\item 
-\mbox{\Hypertarget{classMenu_1_1Menu_a80b7fe5bd71dbd912323bf0bbd990035}\label{classMenu_1_1Menu_a80b7fe5bd71dbd912323bf0bbd990035}} 
-void {\bfseries display\+Lobby} (sf\+::\+Render\+Window \&window)
-\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a4d81e14f43f886f90331b317426b1269}{init\+Lobby}} ()
+\begin{DoxyCompactList}\small\item\em Init menu lobby component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a80b7fe5bd71dbd912323bf0bbd990035}{display\+Lobby}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Display. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classMenu_1_1Menu_abaedbebdc3bb8cb3af65a82de29e9e4c}\label{classMenu_1_1Menu_abaedbebdc3bb8cb3af65a82de29e9e4c}} 
-void {\bfseries init\+Settings} ()
-\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_abaedbebdc3bb8cb3af65a82de29e9e4c}{init\+Settings}} ()
+\begin{DoxyCompactList}\small\item\em Init menu settings component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a7546a0ac0e2e2b67672df15b57c0d206}{display\+Settings}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Display settings. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classMenu_1_1Menu_a4ae41fee22939098b6a96d44a1dc525b}{get\+Fps}} ()
+\begin{DoxyCompactList}\small\item\em Get the Fps object. \end{DoxyCompactList}\item 
+State\+\_\+menu \mbox{\hyperlink{classMenu_1_1Menu_a564652e198f5781f6a8a11e304061a62}{get\+State}} ()
+\begin{DoxyCompactList}\small\item\em Get the State object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a270049e78ddd62b2fb617b73792d0ebc}{set\+State}} (State\+\_\+menu state)
+\begin{DoxyCompactList}\small\item\em Set the State object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMenu_1_1Menu_af35dbc9feb540d25a86630aca374ed97}\label{classMenu_1_1Menu_af35dbc9feb540d25a86630aca374ed97}} 
+void \mbox{\hyperlink{classMenu_1_1Menu_af35dbc9feb540d25a86630aca374ed97}{ini\+Death}} ()
+\begin{DoxyCompactList}\small\item\em Init menu death component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_a5fb88f42559100031f3a8a50ce0fba1d}{display\+Death}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Display death. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMenu_1_1Menu_a5c4f84926a71cc973fd3147efd36f1e2}\label{classMenu_1_1Menu_a5c4f84926a71cc973fd3147efd36f1e2}} 
+void \mbox{\hyperlink{classMenu_1_1Menu_a5c4f84926a71cc973fd3147efd36f1e2}{init\+Pause}} ()
+\begin{DoxyCompactList}\small\item\em Init pause menu component. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMenu_1_1Menu_ab2b0e1bf06b3e8740a9821edd1a2b4ca}{display\+Pause}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em Display Pause. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMenu_1_1Menu_a5fb88f42559100031f3a8a50ce0fba1d}\label{classMenu_1_1Menu_a5fb88f42559100031f3a8a50ce0fba1d}} 
+\index{Menu::Menu@{Menu::Menu}!displayDeath@{displayDeath}}
+\index{displayDeath@{displayDeath}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{displayDeath()}{displayDeath()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::display\+Death (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Display death. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a80b7fe5bd71dbd912323bf0bbd990035}\label{classMenu_1_1Menu_a80b7fe5bd71dbd912323bf0bbd990035}} 
+\index{Menu::Menu@{Menu::Menu}!displayLobby@{displayLobby}}
+\index{displayLobby@{displayLobby}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{displayLobby()}{displayLobby()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::display\+Lobby (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Display. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a0d369d081f2298de13771155dc7334b4}\label{classMenu_1_1Menu_a0d369d081f2298de13771155dc7334b4}} 
+\index{Menu::Menu@{Menu::Menu}!displayMenu@{displayMenu}}
+\index{displayMenu@{displayMenu}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{displayMenu()}{displayMenu()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::display\+Menu (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Display the menu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_ab2b0e1bf06b3e8740a9821edd1a2b4ca}\label{classMenu_1_1Menu_ab2b0e1bf06b3e8740a9821edd1a2b4ca}} 
+\index{Menu::Menu@{Menu::Menu}!displayPause@{displayPause}}
+\index{displayPause@{displayPause}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{displayPause()}{displayPause()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::display\+Pause (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Display Pause. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{classMenu_1_1Menu_a7546a0ac0e2e2b67672df15b57c0d206}\label{classMenu_1_1Menu_a7546a0ac0e2e2b67672df15b57c0d206}} 
-void {\bfseries display\+Settings} (sf\+::\+Render\+Window \&window)
-\end{DoxyCompactItemize}
+\index{Menu::Menu@{Menu::Menu}!displaySettings@{displaySettings}}
+\index{displaySettings@{displaySettings}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{displaySettings()}{displaySettings()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::display\+Settings (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+Display settings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a4ae41fee22939098b6a96d44a1dc525b}\label{classMenu_1_1Menu_a4ae41fee22939098b6a96d44a1dc525b}} 
+\index{Menu::Menu@{Menu::Menu}!getFps@{getFps}}
+\index{getFps@{getFps}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{getFps()}{getFps()}}
+{\footnotesize\ttfamily int Menu\+::\+Menu\+::get\+Fps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the Fps object. 
+
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMenu_1_1Menu_a564652e198f5781f6a8a11e304061a62}\label{classMenu_1_1Menu_a564652e198f5781f6a8a11e304061a62}} 
+\index{Menu::Menu@{Menu::Menu}!getState@{getState}}
+\index{getState@{getState}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{getState()}{getState()}}
+{\footnotesize\ttfamily Menu\+::\+State\+\_\+menu Menu\+::\+Menu\+::get\+State (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the State object. 
+
+\begin{DoxyReturn}{Returns}
+State\+\_\+menu 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMenu_1_1Menu_ac6b93559935dd1563f980ceef68e117d}\label{classMenu_1_1Menu_ac6b93559935dd1563f980ceef68e117d}} 
+\index{Menu::Menu@{Menu::Menu}!handleEvents@{handleEvents}}
+\index{handleEvents@{handleEvents}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEvents()}{handleEvents()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window,  }\item[{\mbox{\hyperlink{classClient}{Client}} \&}]{client }\end{DoxyParamCaption})}
+
+
+
+Handle the events of all screen menu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a45f2e8164e89727745c3721196b3f8b7}\label{classMenu_1_1Menu_a45f2e8164e89727745c3721196b3f8b7}} 
+\index{Menu::Menu@{Menu::Menu}!handleEventsDeath@{handleEventsDeath}}
+\index{handleEventsDeath@{handleEventsDeath}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEventsDeath()}{handleEventsDeath()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events\+Death (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the Death. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a5240deabeb7a9c8a7097c2b03c414690}\label{classMenu_1_1Menu_a5240deabeb7a9c8a7097c2b03c414690}} 
+\index{Menu::Menu@{Menu::Menu}!handleEventsLobby@{handleEventsLobby}}
+\index{handleEventsLobby@{handleEventsLobby}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEventsLobby()}{handleEventsLobby()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events\+Lobby (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event,  }\item[{\mbox{\hyperlink{classClient}{Client}} \&}]{client }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the \mbox{\hyperlink{structLobby}{Lobby}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_acca9ed589429698fbff643311ec47364}\label{classMenu_1_1Menu_acca9ed589429698fbff643311ec47364}} 
+\index{Menu::Menu@{Menu::Menu}!handleEventsMenu@{handleEventsMenu}}
+\index{handleEventsMenu@{handleEventsMenu}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEventsMenu()}{handleEventsMenu()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events\+Menu (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event,  }\item[{\mbox{\hyperlink{classClient}{Client}} \&}]{client }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the menu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a800fb04bc0b3cbb239bf7c82053733ea}\label{classMenu_1_1Menu_a800fb04bc0b3cbb239bf7c82053733ea}} 
+\index{Menu::Menu@{Menu::Menu}!handleEventsPause@{handleEventsPause}}
+\index{handleEventsPause@{handleEventsPause}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEventsPause()}{handleEventsPause()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events\+Pause (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the Pause screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a41bea5177c9a03d483cde3f88b97dfac}\label{classMenu_1_1Menu_a41bea5177c9a03d483cde3f88b97dfac}} 
+\index{Menu::Menu@{Menu::Menu}!handleEventsSettings@{handleEventsSettings}}
+\index{handleEventsSettings@{handleEventsSettings}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleEventsSettings()}{handleEventsSettings()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Events\+Settings (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the settings screen. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a2280b4aa9b3d3631e8c37f12bc94cf62}\label{classMenu_1_1Menu_a2280b4aa9b3d3631e8c37f12bc94cf62}} 
+\index{Menu::Menu@{Menu::Menu}!handleMenu@{handleMenu}}
+\index{handleMenu@{handleMenu}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{handleMenu()}{handleMenu()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::handle\+Menu (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window,  }\item[{State\+\_\+menu \&}]{state,  }\item[{\mbox{\hyperlink{classClient}{Client}} \&}]{client }\end{DoxyParamCaption})}
+
+
+
+Handle the events of the menu. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & \\
+\hline
+{\em client} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMenu_1_1Menu_a270049e78ddd62b2fb617b73792d0ebc}\label{classMenu_1_1Menu_a270049e78ddd62b2fb617b73792d0ebc}} 
+\index{Menu::Menu@{Menu::Menu}!setState@{setState}}
+\index{setState@{setState}!Menu::Menu@{Menu::Menu}}
+\doxysubsubsection{\texorpdfstring{setState()}{setState()}}
+{\footnotesize\ttfamily void Menu\+::\+Menu\+::set\+State (\begin{DoxyParamCaption}\item[{State\+\_\+menu}]{state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the State object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

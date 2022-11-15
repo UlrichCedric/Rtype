@@ -19,33 +19,58 @@ void {\bfseries handle\+Send\+Data} (const boost\+::system\+::error\+\_\+code \&
 void {\bfseries receive\+Data} (void)
 \item 
 \mbox{\Hypertarget{classClient_a4a892d65bb93932d56bf935677b2bd3e}\label{classClient_a4a892d65bb93932d56bf935677b2bd3e}} 
-void {\bfseries handle\+Init\+Sprite\+Data} (void)
-\item 
+void \mbox{\hyperlink{classClient_a4a892d65bb93932d56bf935677b2bd3e}{handle\+Init\+Sprite\+Data}} (void)
+\begin{DoxyCompactList}\small\item\em Called when you received a \mbox{\hyperlink{structInitSpriteData}{Init\+Sprite\+Data}} from the server. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classClient_a8c1063f59084b9218d95e7336a92b3af}\label{classClient_a8c1063f59084b9218d95e7336a92b3af}} 
-void {\bfseries handle\+Sprite\+Data} (void)
-\item 
+void \mbox{\hyperlink{classClient_a8c1063f59084b9218d95e7336a92b3af}{handle\+Sprite\+Data}} (void)
+\begin{DoxyCompactList}\small\item\em Called when you received a \mbox{\hyperlink{structSpriteData}{Sprite\+Data}} from the server. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classClient_a56639639d2932796911a6b92c3666910}{async\+Receive\+Data}} (void)
 \item 
 \mbox{\Hypertarget{classClient_a3b698c0ab77d94c6b433ffb96dbf6208}\label{classClient_a3b698c0ab77d94c6b433ffb96dbf6208}} 
-void {\bfseries handle\+Receive\+Data} (const boost\+::system\+::error\+\_\+code \&error, std\+::size\+\_\+t)
-\item 
+void \mbox{\hyperlink{classClient_a3b698c0ab77d94c6b433ffb96dbf6208}{handle\+Receive\+Data}} (const boost\+::system\+::error\+\_\+code \&error, std\+::size\+\_\+t)
+\begin{DoxyCompactList}\small\item\em This one is actually unused. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classClient_a9b7fe59091041c1e7620110fcb957745}\label{classClient_a9b7fe59091041c1e7620110fcb957745}} 
 void {\bfseries handle\+Thread} (void)
 \item 
 \mbox{\Hypertarget{classClient_acc136797d9c0cdaa2080d059374a82a4}\label{classClient_acc136797d9c0cdaa2080d059374a82a4}} 
 void {\bfseries set\+Can\+Receive\+Data} (bool can\+Receive\+Data)
 \item 
-\mbox{\Hypertarget{classClient_ac16900e55248d57d241e4b3717b96c34}\label{classClient_ac16900e55248d57d241e4b3717b96c34}} 
-boost\+::uuids\+::uuid {\bfseries get\+Uuid} (void)
+\mbox{\Hypertarget{classClient_adf964f8e469e51d156458c796553ad8e}\label{classClient_adf964f8e469e51d156458c796553ad8e}} 
+void {\bfseries create\+Lobby} (std\+::string name)
 \item 
-\mbox{\Hypertarget{classClient_a22d7f0a325f51e1fd3d0594ba9261c1c}\label{classClient_a22d7f0a325f51e1fd3d0594ba9261c1c}} 
-std\+::pair$<$ float, float $>$ {\bfseries get\+Player\+Pos} (void)
+\mbox{\Hypertarget{classClient_a5da2c984631a23d91439a9ebb3296910}\label{classClient_a5da2c984631a23d91439a9ebb3296910}} 
+void {\bfseries join\+Lobby} (boost\+::uuids\+::uuid uuid)
+\item 
+\mbox{\Hypertarget{classClient_a93a778eff5a133f15b2f20d65a56be51}\label{classClient_a93a778eff5a133f15b2f20d65a56be51}} 
+void {\bfseries write\+Lobby\+Data} (bool ask, bool create, bool join, std\+::string name=\char`\"{}\char`\"{}, std\+::size\+\_\+t nb\+\_\+players=0, std\+::size\+\_\+t size=0, boost\+::uuids\+::uuid lobby\+\_\+uuid=\{\})
+\item 
+\mbox{\Hypertarget{classClient_a3dd1f929a62a7b2869c652c67a527b3a}\label{classClient_a3dd1f929a62a7b2869c652c67a527b3a}} 
+void {\bfseries read\+Data} (void)
+\item 
+\mbox{\Hypertarget{classClient_a666f060df00f4ecc6f885acdeb40db70}\label{classClient_a666f060df00f4ecc6f885acdeb40db70}} 
+std\+::vector$<$ \mbox{\hyperlink{structLobby}{Lobby}} $>$ {\bfseries get\+Lobbies} (void)
+\item 
+\mbox{\Hypertarget{classClient_a622aedec2241e62544c6d876e30ac32c}\label{classClient_a622aedec2241e62544c6d876e30ac32c}} 
+void {\bfseries async\+Get\+Lobbies} (void)
+\item 
+\mbox{\Hypertarget{classClient_a6d301111ab09e9336d00c522b5da1256}\label{classClient_a6d301111ab09e9336d00c522b5da1256}} 
+void {\bfseries handle\+Get\+Lobbies} (boost\+::system\+::error\+\_\+code const \&error, size\+\_\+t bytes\+\_\+transferred)
+\item 
+\mbox{\Hypertarget{classClient_aa08da224d0babac7a88b60d4a8ee6173}\label{classClient_aa08da224d0babac7a88b60d4a8ee6173}} 
+int {\bfseries get\+Hp} (void)
+\item 
+boost\+::uuids\+::uuid \mbox{\hyperlink{classClient_ac16900e55248d57d241e4b3717b96c34}{get\+Uuid}} (void)
+\begin{DoxyCompactList}\small\item\em Returns the UUID of the client. \end{DoxyCompactList}\item 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{classClient_a22d7f0a325f51e1fd3d0594ba9261c1c}{get\+Player\+Pos}} (void)
+\begin{DoxyCompactList}\small\item\em Returns the current player position. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classClient_a23c0cd348db5b533200dd28cbb158f2c}\label{classClient_a23c0cd348db5b533200dd28cbb158f2c}} 
+std\+::vector$<$ std\+::pair$<$ float, float $>$ $>$ {\bfseries get\+Others\+Pos} (void)
 \end{DoxyCompactItemize}
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classClient_a43f7a281a9cc2209b48704d0b8df24e6}\label{classClient_a43f7a281a9cc2209b48704d0b8df24e6}} 
-std\+::vector$<$ \mbox{\hyperlink{classGame_1_1Image}{Game\+::\+Image}} $>$ \mbox{\hyperlink{classClient_a43f7a281a9cc2209b48704d0b8df24e6}{\+\_\+images}}
+\mbox{\Hypertarget{classClient_ad918063119e00b1f9c467a1b09ddeeed}\label{classClient_ad918063119e00b1f9c467a1b09ddeeed}} 
+std\+::vector$<$ std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classGame_1_1Image}{Game\+::\+Image}} $>$ $>$ \mbox{\hyperlink{classClient_ad918063119e00b1f9c467a1b09ddeeed}{\+\_\+ennemies}}
 \begin{DoxyCompactList}\small\item\em our image list \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classClient_aab75f6401f76fc088cb4983d0aac4804}\label{classClient_aab75f6401f76fc088cb4983d0aac4804}} 
 boost\+::array$<$ \mbox{\hyperlink{structData}{Data}}, 1 $>$ {\bfseries \+\_\+recv\+\_\+buf}
@@ -63,9 +88,35 @@ Le problème de ne pas recevoir de \mbox{\hyperlink{structData}{Data}} quand on 
 
 Etant donné que la gestion des données reçues lors de async\+\_\+receive\+\_\+from est géré dans handle\+Receive\+Data lui même étant dans boost\+::bind, handle\+Receive\+Data n\textquotesingle{}est jamais appelé, les données ne sont donc jamais traitées. Pour l\textquotesingle{}instant résolu avec un système de thread + appel en continu de receive\+Data dans le thread (c\textquotesingle{}est donc à part, non bloquant pour le jeu). Autre possibilité de résolution \+: Etant donné qu\textquotesingle{}il est très probable que je reçoive bien de la data grâce à async\+\_\+receive\+\_\+from et donc que recv\+\_\+buf est update, mettre \+\_\+recv\+\_\+buf comme attribut et update les données en continu grâce à \+\_\+recv\+\_\+buf.
 
-UPDATE -\/$>$ en fait ça met pas à jour \+\_\+recv\+\_\+buf donc faire un thread à part qui appelle receive\+Data en boucle est la meilleure solution. 
+UPDATE -\/$>$ en fait ça met pas à jour \+\_\+recv\+\_\+buf donc faire un thread à part qui appelle receive\+Data en boucle est la meilleure solution.\mbox{\Hypertarget{classClient_a22d7f0a325f51e1fd3d0594ba9261c1c}\label{classClient_a22d7f0a325f51e1fd3d0594ba9261c1c}} 
+\index{Client@{Client}!getPlayerPos@{getPlayerPos}}
+\index{getPlayerPos@{getPlayerPos}!Client@{Client}}
+\doxysubsubsection{\texorpdfstring{getPlayerPos()}{getPlayerPos()}}
+{\footnotesize\ttfamily std\+::pair$<$ float, float $>$ Client\+::get\+Player\+Pos (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Returns the current player position. 
+
+\begin{DoxyReturn}{Returns}
+std\+::pair$<$float, float$>$ player position \{ x, y \} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classClient_ac16900e55248d57d241e4b3717b96c34}\label{classClient_ac16900e55248d57d241e4b3717b96c34}} 
+\index{Client@{Client}!getUuid@{getUuid}}
+\index{getUuid@{getUuid}!Client@{Client}}
+\doxysubsubsection{\texorpdfstring{getUuid()}{getUuid()}}
+{\footnotesize\ttfamily boost\+::uuids\+::uuid Client\+::get\+Uuid (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Returns the UUID of the client. 
+
+\begin{DoxyReturn}{Returns}
+boost\+::uuids\+::uuid the UUID of the client 
+\end{DoxyReturn}
+
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-src/client/Client.\+hpp\item 
-src/client/Client.\+cpp\end{DoxyCompactItemize}
+src/client/game/Client.\+hpp\item 
+src/client/game/Client.\+cpp\end{DoxyCompactItemize}

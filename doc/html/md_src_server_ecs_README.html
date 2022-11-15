@@ -149,7 +149,7 @@ The Entity</h2>
 <div class="line"><span class="keywordtype">bool</span> operator&gt; (<a class="code" href="classEntity.html">Entity</a> &amp;ent1, <a class="code" href="classEntity.html">Entity</a> &amp;ent2);</div>
 <div class="line"><span class="keywordtype">bool</span> operator&lt;=(<a class="code" href="classEntity.html">Entity</a> &amp;ent1, <a class="code" href="classEntity.html">Entity</a> &amp;ent2);</div>
 <div class="line"><span class="keywordtype">bool</span> operator&gt;=(<a class="code" href="classEntity.html">Entity</a> &amp;ent1, <a class="code" href="classEntity.html">Entity</a> &amp;ent2);</div>
-<div class="ttc" id="aclassEntity_html"><div class="ttname"><a href="classEntity.html">Entity</a></div><div class="ttdef"><b>Definition:</b> Entity.hpp:23</div></div>
+<div class="ttc" id="aclassEntity_html"><div class="ttname"><a href="classEntity.html">Entity</a></div><div class="ttdef"><b>Definition:</b> Entity.hpp:24</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md19"></a>
 The Factory</h2>
 <p>Entities are managed thanks to a <code><a class="el" href="classFactory.html" title="Takes no arguments.">Factory</a></code>, which contains a list of entities (<code>std::list&lt;std::shared_ptr&lt;<a class="el" href="classEntity.html">Entity</a>&gt;&gt;</code>) with all the entities of the game. The <a class="el" href="classFactory.html" title="Takes no arguments.">Factory</a> has methods that allow us to create or delete Entities from this list, so we can do it programmatically.</p>
@@ -183,7 +183,7 @@ The Interface</h2>
 <div class="line">    <span class="keyword">virtual</span> std::string getName(<span class="keywordtype">void</span>) = 0;</div>
 <div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">int</span> getEnum(<span class="keywordtype">void</span>) = 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassIComponent_html"><div class="ttname"><a href="classIComponent.html">IComponent</a></div><div class="ttdef"><b>Definition:</b> IComponent.hpp:5</div></div>
+<div class="ttc" id="aclassIComponent_html"><div class="ttname"><a href="classIComponent.html">IComponent</a></div><div class="ttdef"><b>Definition:</b> IComponent.hpp:6</div></div>
 </div><!-- fragment --><p>It is used as an interface the component abstract class will inherit from.</p>
 <h2><a class="anchor" id="autotoc_md22"></a>
 Abstract class</h2>
@@ -232,7 +232,7 @@ The interface</h2>
 <div class="line">    <span class="comment">// add your logic in this method</span></div>
 <div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">void</span> run(std::list&lt;std::shared_ptr&lt;Entity&gt;&gt; &amp;) = 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassISystem_html"><div class="ttname"><a href="classISystem.html">ISystem</a></div><div class="ttdef"><b>Definition:</b> ISystem.hpp:5</div></div>
+<div class="ttc" id="aclassISystem_html"><div class="ttname"><a href="classISystem.html">ISystem</a></div><div class="ttdef"><b>Definition:</b> ISystem.hpp:7</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md27"></a>
 The asbtract class</h2>
 <p>The abstract class store a list of entities that run in your game. Actually, they are a reference to the one in <code><a class="el" href="classFactory.html" title="Takes no arguments.">Factory</a></code>.</p>
@@ -281,7 +281,7 @@ Your systems</h2>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassServer_html"><div class="ttname"><a href="classServer.html">Server</a></div><div class="ttdef"><b>Definition:</b> Server.hpp:29</div></div>
+<div class="ttc" id="aclassServer_html"><div class="ttname"><a href="classServer.html">Server</a></div><div class="ttdef"><b>Definition:</b> Server.hpp:30</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md29"></a>
 Special thanks</h1>
 <p>Thank you for reading ! Do not hesitate to get inspiration from this ECS if you struggle with this notion ! </p>

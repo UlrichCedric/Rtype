@@ -88,15 +88,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>handleSendData</b> (c
 void&#160;</td><td class="memItemRight" valign="bottom"><b>receiveData</b> (void)</td></tr>
 <tr class="separator:ae7806d0072c40f0c8409b055ed42377e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a892d65bb93932d56bf935677b2bd3e"><td class="memItemLeft" align="right" valign="top"><a id="a4a892d65bb93932d56bf935677b2bd3e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>handleInitSpriteData</b> (void)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a4a892d65bb93932d56bf935677b2bd3e">handleInitSpriteData</a> (void)</td></tr>
+<tr class="memdesc:a4a892d65bb93932d56bf935677b2bd3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when you received a <a class="el" href="structInitSpriteData.html" title="Struct to init a sprite.">InitSpriteData</a> from the server. <br /></td></tr>
 <tr class="separator:a4a892d65bb93932d56bf935677b2bd3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c1063f59084b9218d95e7336a92b3af"><td class="memItemLeft" align="right" valign="top"><a id="a8c1063f59084b9218d95e7336a92b3af"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>handleSpriteData</b> (void)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a8c1063f59084b9218d95e7336a92b3af">handleSpriteData</a> (void)</td></tr>
+<tr class="memdesc:a8c1063f59084b9218d95e7336a92b3af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when you received a <a class="el" href="structSpriteData.html" title="Struct to update a sprite.">SpriteData</a> from the server. <br /></td></tr>
 <tr class="separator:a8c1063f59084b9218d95e7336a92b3af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56639639d2932796911a6b92c3666910"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a56639639d2932796911a6b92c3666910">asyncReceiveData</a> (void)</td></tr>
 <tr class="separator:a56639639d2932796911a6b92c3666910"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b698c0ab77d94c6b433ffb96dbf6208"><td class="memItemLeft" align="right" valign="top"><a id="a3b698c0ab77d94c6b433ffb96dbf6208"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>handleReceiveData</b> (const boost::system::error_code &amp;error, std::size_t)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a3b698c0ab77d94c6b433ffb96dbf6208">handleReceiveData</a> (const boost::system::error_code &amp;error, std::size_t)</td></tr>
+<tr class="memdesc:a3b698c0ab77d94c6b433ffb96dbf6208"><td class="mdescLeft">&#160;</td><td class="mdescRight">This one is actually unused. <br /></td></tr>
 <tr class="separator:a3b698c0ab77d94c6b433ffb96dbf6208"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b7fe59091041c1e7620110fcb957745"><td class="memItemLeft" align="right" valign="top"><a id="a9b7fe59091041c1e7620110fcb957745"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>handleThread</b> (void)</td></tr>
@@ -104,19 +107,46 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>handleThread</b> (voi
 <tr class="memitem:acc136797d9c0cdaa2080d059374a82a4"><td class="memItemLeft" align="right" valign="top"><a id="acc136797d9c0cdaa2080d059374a82a4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setCanReceiveData</b> (bool canReceiveData)</td></tr>
 <tr class="separator:acc136797d9c0cdaa2080d059374a82a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac16900e55248d57d241e4b3717b96c34"><td class="memItemLeft" align="right" valign="top"><a id="ac16900e55248d57d241e4b3717b96c34"></a>
-boost::uuids::uuid&#160;</td><td class="memItemRight" valign="bottom"><b>getUuid</b> (void)</td></tr>
+<tr class="memitem:adf964f8e469e51d156458c796553ad8e"><td class="memItemLeft" align="right" valign="top"><a id="adf964f8e469e51d156458c796553ad8e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>createLobby</b> (std::string name)</td></tr>
+<tr class="separator:adf964f8e469e51d156458c796553ad8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5da2c984631a23d91439a9ebb3296910"><td class="memItemLeft" align="right" valign="top"><a id="a5da2c984631a23d91439a9ebb3296910"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>joinLobby</b> (boost::uuids::uuid uuid)</td></tr>
+<tr class="separator:a5da2c984631a23d91439a9ebb3296910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a778eff5a133f15b2f20d65a56be51"><td class="memItemLeft" align="right" valign="top"><a id="a93a778eff5a133f15b2f20d65a56be51"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>writeLobbyData</b> (bool ask, bool create, bool join, std::string name=&quot;&quot;, std::size_t nb_players=0, std::size_t size=0, boost::uuids::uuid lobby_uuid={})</td></tr>
+<tr class="separator:a93a778eff5a133f15b2f20d65a56be51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dd1f929a62a7b2869c652c67a527b3a"><td class="memItemLeft" align="right" valign="top"><a id="a3dd1f929a62a7b2869c652c67a527b3a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>readData</b> (void)</td></tr>
+<tr class="separator:a3dd1f929a62a7b2869c652c67a527b3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a666f060df00f4ecc6f885acdeb40db70"><td class="memItemLeft" align="right" valign="top"><a id="a666f060df00f4ecc6f885acdeb40db70"></a>
+std::vector&lt; <a class="el" href="structLobby.html">Lobby</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getLobbies</b> (void)</td></tr>
+<tr class="separator:a666f060df00f4ecc6f885acdeb40db70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a622aedec2241e62544c6d876e30ac32c"><td class="memItemLeft" align="right" valign="top"><a id="a622aedec2241e62544c6d876e30ac32c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>asyncGetLobbies</b> (void)</td></tr>
+<tr class="separator:a622aedec2241e62544c6d876e30ac32c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d301111ab09e9336d00c522b5da1256"><td class="memItemLeft" align="right" valign="top"><a id="a6d301111ab09e9336d00c522b5da1256"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>handleGetLobbies</b> (boost::system::error_code const &amp;error, size_t bytes_transferred)</td></tr>
+<tr class="separator:a6d301111ab09e9336d00c522b5da1256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa08da224d0babac7a88b60d4a8ee6173"><td class="memItemLeft" align="right" valign="top"><a id="aa08da224d0babac7a88b60d4a8ee6173"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getHp</b> (void)</td></tr>
+<tr class="separator:aa08da224d0babac7a88b60d4a8ee6173"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16900e55248d57d241e4b3717b96c34"><td class="memItemLeft" align="right" valign="top">boost::uuids::uuid&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#ac16900e55248d57d241e4b3717b96c34">getUuid</a> (void)</td></tr>
+<tr class="memdesc:ac16900e55248d57d241e4b3717b96c34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the UUID of the client.  <a href="classClient.html#ac16900e55248d57d241e4b3717b96c34">More...</a><br /></td></tr>
 <tr class="separator:ac16900e55248d57d241e4b3717b96c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22d7f0a325f51e1fd3d0594ba9261c1c"><td class="memItemLeft" align="right" valign="top"><a id="a22d7f0a325f51e1fd3d0594ba9261c1c"></a>
-std::pair&lt; float, float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPlayerPos</b> (void)</td></tr>
+<tr class="memitem:a22d7f0a325f51e1fd3d0594ba9261c1c"><td class="memItemLeft" align="right" valign="top">std::pair&lt; float, float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a22d7f0a325f51e1fd3d0594ba9261c1c">getPlayerPos</a> (void)</td></tr>
+<tr class="memdesc:a22d7f0a325f51e1fd3d0594ba9261c1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current player position.  <a href="classClient.html#a22d7f0a325f51e1fd3d0594ba9261c1c">More...</a><br /></td></tr>
 <tr class="separator:a22d7f0a325f51e1fd3d0594ba9261c1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23c0cd348db5b533200dd28cbb158f2c"><td class="memItemLeft" align="right" valign="top"><a id="a23c0cd348db5b533200dd28cbb158f2c"></a>
+std::vector&lt; std::pair&lt; float, float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getOthersPos</b> (void)</td></tr>
+<tr class="separator:a23c0cd348db5b533200dd28cbb158f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a43f7a281a9cc2209b48704d0b8df24e6"><td class="memItemLeft" align="right" valign="top"><a id="a43f7a281a9cc2209b48704d0b8df24e6"></a>
-std::vector&lt; <a class="el" href="classGame_1_1Image.html">Game::Image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#a43f7a281a9cc2209b48704d0b8df24e6">_images</a></td></tr>
-<tr class="memdesc:a43f7a281a9cc2209b48704d0b8df24e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">our image list <br /></td></tr>
-<tr class="separator:a43f7a281a9cc2209b48704d0b8df24e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad918063119e00b1f9c467a1b09ddeeed"><td class="memItemLeft" align="right" valign="top"><a id="ad918063119e00b1f9c467a1b09ddeeed"></a>
+std::vector&lt; std::shared_ptr&lt; <a class="el" href="classGame_1_1Image.html">Game::Image</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classClient.html#ad918063119e00b1f9c467a1b09ddeeed">_ennemies</a></td></tr>
+<tr class="memdesc:ad918063119e00b1f9c467a1b09ddeeed"><td class="mdescLeft">&#160;</td><td class="mdescRight">our image list <br /></td></tr>
+<tr class="separator:ad918063119e00b1f9c467a1b09ddeeed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab75f6401f76fc088cb4983d0aac4804"><td class="memItemLeft" align="right" valign="top"><a id="aab75f6401f76fc088cb4983d0aac4804"></a>
 boost::array&lt; <a class="el" href="structData.html">Data</a>, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_recv_buf</b></td></tr>
 <tr class="separator:aab75f6401f76fc088cb4983d0aac4804"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,13 +169,55 @@ boost::array&lt; <a class="el" href="structData.html">Data</a>, 1 &gt;&#160;</td
 </div><div class="memdoc">
 <p>Le problème de ne pas recevoir de <a class="el" href="structData.html">Data</a> quand on est en async vient très probablement du boost::bind car lorsque j'envoie des données en async avec async_send_to, mon serveur reçoit bien des données, cependant la fonction "handleSendData" du boost::bind n'est pas appelé (std::cout &lt;&lt; "handleSendData" &lt;&lt; std::endl; n'est pas affiché).</p>
 <p>Etant donné que la gestion des données reçues lors de async_receive_from est géré dans handleReceiveData lui même étant dans boost::bind, handleReceiveData n'est jamais appelé, les données ne sont donc jamais traitées. Pour l'instant résolu avec un système de thread + appel en continu de receiveData dans le thread (c'est donc à part, non bloquant pour le jeu). Autre possibilité de résolution : Etant donné qu'il est très probable que je reçoive bien de la data grâce à async_receive_from et donc que recv_buf est update, mettre _recv_buf comme attribut et update les données en continu grâce à _recv_buf.</p>
-<p>UPDATE -&gt; en fait ça met pas à jour _recv_buf donc faire un thread à part qui appelle receiveData en boucle est la meilleure solution. </p>
+<p>UPDATE -&gt; en fait ça met pas à jour _recv_buf donc faire un thread à part qui appelle receiveData en boucle est la meilleure solution.</p>
+
+</div>
+</div>
+<a id="a22d7f0a325f51e1fd3d0594ba9261c1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22d7f0a325f51e1fd3d0594ba9261c1c">&#9670;&nbsp;</a></span>getPlayerPos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; float, float &gt; Client::getPlayerPos </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the current player position. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::pair&lt;float, float&gt; player position { x, y } </dd></dl>
+
+</div>
+</div>
+<a id="ac16900e55248d57d241e4b3717b96c34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac16900e55248d57d241e4b3717b96c34">&#9670;&nbsp;</a></span>getUuid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::uuids::uuid Client::getUuid </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the UUID of the client. </p>
+<dl class="section return"><dt>Returns</dt><dd>boost::uuids::uuid the UUID of the client </dd></dl>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/client/<a class="el" href="Client_8hpp_source.html">Client.hpp</a></li>
-<li>src/client/Client.cpp</li>
+<li>src/client/game/<a class="el" href="Client_8hpp_source.html">Client.hpp</a></li>
+<li>src/client/game/Client.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

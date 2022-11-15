@@ -84,7 +84,7 @@ Serveur</h1>
 <div class="line">    std::pair&lt;float, float&gt; coords;</div>
 <div class="line">    std::size_t id;</div>
 <div class="line">} <a class="code" href="structSpriteData.html">SpriteData</a>;</div>
-<div class="ttc" id="astructSpriteData_html"><div class="ttname"><a href="structSpriteData.html">SpriteData</a></div><div class="ttdoc">Struct to update a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:49</div></div>
+<div class="ttc" id="astructSpriteData_html"><div class="ttname"><a href="structSpriteData.html">SpriteData</a></div><div class="ttdoc">Struct to update a sprite.</div><div class="ttdef"><b>Definition:</b> Common.hpp:59</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md14"></a>
 Client</h1>
 <p>➁ Un client est créé et envoie des données sur le serveur</p>
@@ -95,7 +95,7 @@ Client</h1>
 <div class="line">    <span class="keyword">enum</span> Input input;</div>
 <div class="line">    boost::uuids::uuid uuid;</div>
 <div class="line">} <a class="code" href="structAction.html">Action</a>;</div>
-<div class="ttc" id="astructAction_html"><div class="ttname"><a href="structAction.html">Action</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:33</div></div>
+<div class="ttc" id="astructAction_html"><div class="ttname"><a href="structAction.html">Action</a></div><div class="ttdef"><b>Definition:</b> Common.hpp:43</div></div>
 </div><!-- fragment --><div class="fragment"><div class="line"><span class="keyword">enum</span> Input {</div>
 <div class="line">    UP,</div>
 <div class="line">    DOWN,</div>
@@ -126,7 +126,7 @@ Client</h1>
 <div class="line">    boost::uuids::uuid uuid;</div>
 <div class="line">    std::size_t idSprite;</div>
 <div class="line">} <a class="code" href="structPlayer.html">Player</a>;</div>
-<div class="ttc" id="astructPlayer_html"><div class="ttname"><a href="structPlayer.html">Player</a></div><div class="ttdef"><b>Definition:</b> Server.hpp:23</div></div>
+<div class="ttc" id="astructPlayer_html"><div class="ttname"><a href="structPlayer.html">Player</a></div><div class="ttdef"><b>Definition:</b> Server.hpp:24</div></div>
 </div><!-- fragment --><div class="fragment"><div class="line">Si l&#39;uuid est déjà connu, les coordonnées du sprite du player sont mis à jour.</div>
 <div class="line">Ils seront envoyés automatiquement dans la fonction sendSprites de la boucle handleTimer.</div>
 </div><!-- fragment --><div class="fragment"><div class="line">std::vector&lt;SpriteData&gt; _sprites;</div>
