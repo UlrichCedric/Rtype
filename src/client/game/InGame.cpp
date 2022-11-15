@@ -60,7 +60,7 @@ void InGame::handleInGame(sf::RenderWindow &window, Menu::State_menu state, Clie
     _player.setHp(client.getHp(), { client.getPlayerPos().first, client.getPlayerPos().second });
     if (_player._health.getHealth() == 0) {
         client.setCanReceiveData(false);
-        window.close();
+        _state = Menu::LOSE;
         return;
     }
     handleOthers(client);
