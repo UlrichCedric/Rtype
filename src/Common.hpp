@@ -81,7 +81,7 @@ struct InitSpriteData {
      * @brief Path of the texture
      *
      */
-    std::string path;
+    char path[128];
 
     /**
      * @brief Spawn coordinates

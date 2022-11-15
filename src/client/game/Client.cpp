@@ -6,15 +6,15 @@
 */
 
 #include "Client.hpp"
+#include "Ennemy.hpp"
 
 void Client::sendData(enum Input action)
 {
     boost::array<Action, 1> send_buf = {{action, _uuid}};
     try {
         _udp_socket.send_to(boost::asio::buffer(send_buf), _receiver_endpoint);
-        std::cout << "send input " << action << std::endl;
     } catch (const boost::system::system_error& error) {
-        std::cout << "send_to error" << std::endl;
+        std::cerr << "Error: sending failed" << std::endl;
     }
 }
 
@@ -56,17 +56,18 @@ void Client::receiveData(void)
     }
 }
 
+/**
+ * @brief Called when you received a InitSpriteData from the server
+ *
+ */
 void Client::handleInitSpriteData(void)
 {
     InitSpriteData endArray = { 0, "", { 0, 0 }, { 0, 0 }, { 0, 0 } };
 
-    for (size_t i = 0;; i++) {
-        if (_recv_buf[0].initSpriteDatas[i] == endArray) {
-            break;
-        }
-        _images.push_back(Game::Image(
+    for (size_t i = 0; _recv_buf[0].initSpriteDatas[i].id != 0; i++) {
+        _ennemies.push_back(std::make_shared<Game::Image>(
             _recv_buf[0].initSpriteDatas[i].id,
-            _recv_buf[0].initSpriteDatas[i].path,
+            Game::Config::ExecutablePath + _recv_buf[0].initSpriteDatas[i].path,
             _recv_buf[0].initSpriteDatas[i].coords,
             _recv_buf[0].initSpriteDatas[i].scale,
             _recv_buf[0].initSpriteDatas[i].maxSize,
@@ -75,16 +76,40 @@ void Client::handleInitSpriteData(void)
     }
 }
 
+/**
+ * @brief Called when you received a SpriteData from the server
+ *
+ */
 void Client::handleSpriteData(void)
 {
     std::vector<std::pair<float, float>> others_pos;
+
     for (int i = 0; _recv_buf[0].spriteDatas[i].id != 0; i++) {
         if (i == 0) {
             _player_pos.first = _recv_buf[0].spriteDatas[0].coords.first;
             _player_pos.second = _recv_buf[0].spriteDatas[0].coords.second;
+            _health = _recv_buf[0].spriteDatas[0].health;
+            continue;
+        }
+        // If id > 100 then it's an ennemy, else it's another player
+        if (_recv_buf[0].spriteDatas[i].id > 100) {
+            for (auto e: _ennemies) {
+                if (e->getId() != _recv_buf[0].spriteDatas[i].id) {
+                    continue;
+                }
+                SpriteData s = _recv_buf[0].spriteDatas[i];
+                try {
+                    e->setPos(s.coords);
+                    e->setHp(s.health, s.coords);
+                } catch (Error &e) {
+                    std::cerr << e.what() << std::endl;
+                }
+            }
         } else {
-            others_pos.push_back({_recv_buf[0].spriteDatas[i].coords.first,
-            _recv_buf[0].spriteDatas[i].coords.second});
+            others_pos.push_back({
+                _recv_buf[0].spriteDatas[i].coords.first,
+                _recv_buf[0].spriteDatas[i].coords.second
+            });
         }
     }
     _others_pos = others_pos;
@@ -110,7 +135,6 @@ void Client::asyncReceiveData(void)
      * UPDATE -> en fait ça met pas à jour _recv_buf donc faire un thread à part qui
      * appelle receiveData en boucle est la meilleure solution.
     */
-    std::cout << "Async receive Data" << std::endl;
     boost::asio::ip::udp::endpoint sender_endpoint;
     _udp_socket.async_receive_from(boost::asio::buffer(_recv_buf), sender_endpoint,
         boost::bind(&Client::handleReceiveData, this,
@@ -118,9 +142,12 @@ void Client::asyncReceiveData(void)
             boost::asio::placeholders::bytes_transferred));
 }
 
+/**
+ * @brief This one is actually unused
+ *
+ */
 void Client::handleReceiveData(const boost::system::error_code& error, std::size_t /*bytes_transferred*/)
 {
-    std::cout << "handleReceiveData" << std::endl;
     // for (int i = 0; _recv_buf[i].id != 0; i++) {
     //     std::cout << "x: " << _recv_buf[i].coords.first << " / y: " << _recv_buf[i].coords.second << std::endl;
     //     _player_pos.first = _recv_buf[i].coords.first;
@@ -129,11 +156,21 @@ void Client::handleReceiveData(const boost::system::error_code& error, std::size
     asyncReceiveData();
 }
 
+/**
+ * @brief Returns the UUID of the client
+ *
+ * @return boost::uuids::uuid the UUID of the client
+ */
 boost::uuids::uuid Client::getUuid(void)
 {
     return _uuid;
 }
 
+/**
+ * @brief Returns the current player position
+ *
+ * @return std::pair<float, float> player position { x, y }
+ */
 std::pair<float, float> Client::getPlayerPos(void)
 {
     return _player_pos;
@@ -180,7 +217,7 @@ void Client::createLobby(std::string name)
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "You successfully create a Lobby with a name : " << name << std::endl;
+        std::cout << "[+] " << name << " lobby created sucessfully" << std::endl;
     } else {
         throw Error("Create lobby failed");
     }
@@ -220,7 +257,7 @@ void Client::joinLobby(boost::uuids::uuid uuid)
     boost::asio::read(_tcp_socket, boost::asio::buffer(response_buf), error);
     if (!error) {
         if (response_buf[0] == OK) {
-            std::cout << "Join accepted in lobby " << uuid << std::endl;
+            std::cout << "[+] Join accepted in lobby " << uuid << std::endl;
             // start UDP Game:
             _udp_socket.open(boost::asio::ip::udp::v4());
             _canReceiveData = true;
@@ -230,7 +267,7 @@ void Client::joinLobby(boost::uuids::uuid uuid)
             throw Error("Join lobby refused");
         }
     } else {
-        std::cout << "read failed: " << error.message() << std::endl;
+        std::cerr << "[-] Read failed: " << error.message() << std::endl;
     }
 }
 
@@ -240,18 +277,16 @@ std::vector<Lobby> Client::getLobbies(void)
     boost::system::error_code error;
     boost::asio::read(_tcp_socket, boost::asio::buffer(_recv_buf), error);
     std::vector<Lobby> lobbies;
+
     if (!error) {
         if (_recv_buf[0].type == LobbyType) {
             for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
                 lobbies.push_back(_recv_buf[0].lobbies[i]);
             }
-            for (auto lobby : lobbies) {
-                std::cout << "+1 lobby" << std::endl;
-            }
         }
     } else {
-        std::cout << "read failed: " << error.message() << std::endl;
-        throw Error("Get lobbies failed");
+        std::cout << "[-] Read failed: " << error.message() << std::endl;
+        throw Error("Failed getting lobbies");
     }
     return lobbies;
 }
@@ -271,9 +306,6 @@ void Client::handleGetLobbies(boost::system::error_code const& error, size_t byt
             std::vector<Lobby> lobbies;
             for (std::size_t i = 0; _recv_buf[0].lobbies[i].lobby_uuid != _empty_uuid; i++) {
                 lobbies.push_back(_recv_buf[0].lobbies[i]);
-            }
-            for (auto lobby : lobbies) {
-                std::cout << "+1 lobby" << std::endl;
             }
         }
     } else {
@@ -296,9 +328,9 @@ void Client::writeLobbyData(bool ask, bool create, bool join, std::string name,
     boost::system::error_code error;
     boost::asio::write(_tcp_socket, boost::asio::buffer(array_buf), error);
     if (!error) {
-        std::cout << "Client wrote data!" << std::endl;
+        std::cout << "[+] Client wrote data!" << std::endl;
     } else {
-        std::cout << "write failed: " << error.message() << std::endl;
+        std::cerr << "[-] Writing failed: " << error.message() << std::endl;
     }
 }
 

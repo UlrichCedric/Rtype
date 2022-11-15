@@ -32,6 +32,7 @@ namespace Menu {
         GAME,
         LOSE,
         CLOSE,
+        END
     };
 
     class Menu {

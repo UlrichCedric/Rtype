@@ -14,7 +14,7 @@ class Error: public std::exception {
     public:
         Error(std::string str = "Error"): _str(str) {}
         const char *what(void) noexcept { return _str.c_str(); }
-        ~Error() {}
+        ~Error() = default;
 
     protected:
         std::string _str;

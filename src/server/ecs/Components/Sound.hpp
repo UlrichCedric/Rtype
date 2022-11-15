@@ -8,7 +8,6 @@
  *@path of the sound file
  */
 class Sound: public IComponent {
-
     public:
 
     Sound(std::string path = "NONE"): _path(path) {  }
@@ -16,12 +15,11 @@ class Sound: public IComponent {
 
     void setSound(std::string path = "NONE") { _path = path == "NONE" ? _path : path; }
     std::string getPath(void) { return _path; }
-    std::string getName(void) { return "sound"; }
-    int getEnum(void) { return SOUND; }
+    std::string getName(void) override { return "sound"; }
+    components getEnum(void) override { return SOUND; }
 
-    ~Sound() {  };
+    ~Sound() override = default;
 
     private:
-
     std::string _path;
 };

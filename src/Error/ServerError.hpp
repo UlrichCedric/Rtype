@@ -13,6 +13,6 @@ class ServerError: public Error {
     public:
     ServerError(std::string str = "Client error") { _str = str; }
     const char *what(void) noexcept { return _str.c_str(); }
-    ~ServerError() {}
+    ~ServerError() = default;
 };
 

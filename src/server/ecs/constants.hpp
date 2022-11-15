@@ -5,9 +5,9 @@
 #include <functional>
 #include <array>
 
-const int comp_nb = 9;
+const int comp_nb = 10;
 
-typedef enum comp: int {
+enum components {
     DRAWABLE,
     MOVABLE,
     HEALTH,
@@ -16,8 +16,9 @@ typedef enum comp: int {
     REPEATABLE,
     SOUND,
     UUID,
-    SCALE
-} components;
+    SCALE,
+    HITBOX
+};
 
 static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
     std::make_pair<std::string, int>("drawable", DRAWABLE),
@@ -29,7 +30,10 @@ static const std::array<std::pair<std::string, int>, comp_nb + 1> strToInt = {
     std::make_pair<std::string, int>("sound", SOUND),
     std::make_pair<std::string, int>("uuid", UUID),
     std::make_pair<std::string, int>("scale", SCALE),
+    std::make_pair<std::string, int>("hitbox", HITBOX),
     std::make_pair<std::string, int>("NULL", -1)
 };
 
+inline bool betw(float a, float b, float c) { return a < b && b < c; }
 inline bool betw(int a, int b, int c) { return a < b && b < c; }
+

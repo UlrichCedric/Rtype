@@ -19,7 +19,7 @@
 namespace Game {
     class Text {
         public:
-            Text() {};
+            Text(void) = default;
             Text(std::string path);
             /// @brief  set the position of the text
             void setPos(int x, int y) {_item.setPosition(x, y);};
@@ -33,7 +33,7 @@ namespace Game {
             void setFontColor(sf::Color color) {_item.setFillColor(color);};
             /// @brief  set the the style of the text
             void setFontStyle(sf::Text::Style style) {_item.setStyle(style);};
-            ~Text() {};
+            ~Text(void) = default;
             sf::Font _font;
             sf::Text _item;
             sf::String _data;

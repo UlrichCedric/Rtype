@@ -12,7 +12,7 @@ class Scale: public AComponent {
     Scale(Scale &s): _x(s._x), _y(s._y) {  }
 
     std::string getName(void) override { return "scale"; }
-    int getEnum(void) override { return SCALE; };
+    components getEnum(void) override { return SCALE; };
 
     float getXScale(void) { return _x; }
     float getYScale(void) { return _y; }
@@ -31,7 +31,7 @@ class Scale: public AComponent {
     void setXScale(float x) { _x = x; }
     void setYScale(float y) { _y = y; }
 
-    ~Scale(void) {  }
+    ~Scale(void) override = default;
 
     private:
 

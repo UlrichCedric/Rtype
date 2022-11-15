@@ -10,12 +10,14 @@
  */
 class Movable: public AComponent {
     public:
-    Movable(bool movable = true): _movable(movable) {  }
+    Movable(bool movable = true): _movable(movable) {}
     Movable(Movable &m) { _movable = m._movable; }
-    std::string getName(void) { return "movable"; }
-    int getEnum(void) { return MOVABLE; }
+
+    std::string getName(void) override { return "movable"; }
+    components getEnum(void) override { return MOVABLE; }
     void setMovable(bool movable) { _movable = movable; }
-    ~Movable() {  }
+
+    ~Movable() = default;
 
     private:
     bool _movable;

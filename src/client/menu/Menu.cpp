@@ -66,7 +66,6 @@ std::string convert_string_array_into_dynamic_string(std::array<char, 64UL> &arr
             str += i;
         }
     }
-    std::cout << "str = " << str << std::endl;
     return str;
 }
 

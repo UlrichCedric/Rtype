@@ -8,6 +8,7 @@
 #pragma once
 
 #include <boost/thread/thread.hpp>
+#include <memory>
 
 #include "../../Common.hpp"
 #include "../utils/Image.hpp"
@@ -15,14 +16,14 @@
 class Client {
     public:
         Client(std::string ip, std::size_t port)
-        : _receiver_endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 10001),
+        : _receiver_endpoint(boost::asio::ip::address::from_string(ip), 10001),
             _udp_socket(_io_context), _tcp_socket(_io_context), _player_pos({0, 0}), _empty_uuid({})
         {
             _uuid = boost::uuids::random_generator()();
 
             // TCP:
             try {
-                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 1234));
+                _tcp_socket.connect(boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(ip), 1234));
             } catch (const boost::system::system_error& error) {
                 std::cout << "Impossible de se connecter au serveur" << std::endl;
                 return;
@@ -45,8 +46,9 @@ class Client {
         std::vector<Lobby> getLobbies(void);
         void asyncGetLobbies(void);
         void handleGetLobbies(boost::system::error_code const& error, size_t bytes_transferred);
+        int getHp(void) { return _health; };
 
-        ~Client() {  };
+        ~Client(void) = default;
 
         boost::uuids::uuid getUuid(void);
         std::pair<float, float> getPlayerPos(void);
@@ -56,7 +58,7 @@ class Client {
          * @brief our image list
          *
          */
-        std::vector<Game::Image> _images;
+        std::vector<std::shared_ptr<Game::Image>> _ennemies;
 
     private:
         boost::asio::io_context _io_context;
@@ -68,7 +70,8 @@ class Client {
         boost::uuids::uuid _uuid;
         boost::uuids::uuid _empty_uuid;
         union { boost::array<Data, 1> _recv_buf; }; // avoid Client to try to destroy _recv_buf when destructing
-        std::pair<float, float> _player_pos;
-        std::vector<std::pair<float, float>> _others_pos;
+        std::pair<float, float> _player_pos;    // client player position
+        std::vector<std::pair<float, float>> _others_pos;   // other players' position
         bool _canReceiveData;
+        int _health;
 };
